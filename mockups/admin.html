@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin — Anime Con GIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="theme.js"></script>
+<link rel="stylesheet" href="styles.css" />
+<style>
+  /* admin top bar (distinct from public nav) */
+  .admin-bar { display: flex; align-items: center; gap: 16px; }
+  .admin-badge { font-family: var(--font-display); font-weight: 600; font-size: 12px; color: #fff;
+    background: linear-gradient(135deg, var(--blue), var(--cyan)); padding: 5px 12px; border-radius: 999px; box-shadow: 0 3px 0 var(--hard); }
+  .admin-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .who { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+  .avatar { width: 34px; height: 34px; border-radius: 11px; background: linear-gradient(135deg, var(--pink), var(--purple)); display: grid; place-items: center; font-size: 16px; box-shadow: 0 3px 0 var(--hard); }
+  .view-site { font-size: 13px; font-weight: 700; color: var(--text-1); padding: 8px 14px; border-radius: 999px; border: 2px solid var(--border); }
+  .view-site:hover { background: var(--surface-2); }
+
+  .admin-shell { max-width: 1240px; margin: 0 auto; padding: 26px 22px 50px; }
+  .admin-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+  .admin-head h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+  .admin-head p { color: var(--text-2); margin-top: 3px; font-size: 14px; }
+
+  /* stat cards */
+  .stats { grid-template-columns: repeat(4, 1fr); margin-bottom: 24px; }
+  .stat-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .stat-card .ic { font-size: 22px; }
+  .stat-card .n { font-family: var(--font-display); font-weight: 700; font-size: 30px; letter-spacing: -0.02em; }
+  .stat-card .l { font-size: 12.5px; color: var(--text-2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* toolbar */
+  .a-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+  .a-search { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 9px; background: var(--surface);
+    border: 2px solid var(--border); border-radius: 999px; padding: 9px 16px; box-shadow: 0 3px 0 var(--hard); }
+  .a-search input { background: transparent; border: 0; outline: 0; color: var(--text-0); font-size: 14px; width: 100%; }
+  .a-search input::placeholder { color: var(--text-2); }
+
+  /* table */
+  .table-card { padding: 0; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2);
+    font-weight: 800; padding: 14px 18px; border-bottom: 2px solid var(--border); }
+  tbody td { padding: 14px 18px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: var(--surface-2); }
+  .ev-name { font-weight: 700; font-family: var(--font-display); }
+  .ev-sub { font-size: 12px; color: var(--text-2); }
+  .status { font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 999px; border: 2px solid; }
+  .status.live { color: #0d9488; border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 14%, transparent); }
+  .status.draft { color: var(--text-2); border-color: var(--border); }
+  .status.pending { color: #b8860b; border-color: var(--gold); background: color-mix(in srgb, var(--gold) 18%, transparent); }
+  .row-actions { display: flex; gap: 7px; }
+  .mini-btn { width: 34px; height: 34px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface);
+    display: grid; place-items: center; font-size: 14px; box-shadow: 0 2px 0 var(--hard); transition: transform .12s ease; }
+  .mini-btn:hover { transform: translateY(-2px); }
+  .mini-btn.del:hover { border-color: var(--pink); background: color-mix(in srgb, var(--pink) 14%, transparent); }
+
+  /* section heading */
+  .a-sec { display: flex; align-items: center; gap: 10px; margin: 30px 0 14px; }
+  .a-sec h2 { font-size: 19px; font-weight: 700; }
+  .a-sec .count { font-size: 12px; font-weight: 800; color: #b8860b; background: color-mix(in srgb, var(--gold) 18%, transparent);
+    border: 2px solid var(--gold); padding: 3px 10px; border-radius: 999px; }
+
+  /* drawer (add/edit form) */
+  .overlay { position: fixed; inset: 0; background: rgba(10,8,20,0.6); backdrop-filter: blur(4px); z-index: 80; display: none; }
+  .overlay.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 420px; max-width: 92vw; z-index: 90;
+    background: var(--bg-1); border-left: 2px solid var(--border-strong); box-shadow: -10px 0 0 var(--hard);
+    transform: translateX(100%); transition: transform .26s cubic-bezier(.4,0,.2,1); overflow-y: auto; }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 20px; border-bottom: 2px solid var(--border); }
+  .drawer-head h3 { font-size: 19px; font-weight: 700; }
+  .drawer-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .field input, .field select, .field textarea { width: 100%; padding: 11px 14px; border-radius: 12px; border: 2px solid var(--border);
+    background: var(--surface); color: var(--text-0); font-family: inherit; font-size: 14px; outline: none; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--border-strong); }
+  .field-row { display: flex; gap: 12px; }
+  .field-row .field { flex: 1; }
+  .drawer-foot { padding: 18px 20px; border-top: 2px solid var(--border); display: flex; gap: 10px; }
+  .drawer-foot .btn { flex: 1; justify-content: center; }
+  .close-x { width: 34px; height: 34px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); font-size: 16px; }
+
+  @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 680px) { .hide-sm { display: none; } }
+</style>
+</head>
+<body>
+<div class="mock-banner">◆ STATIC DESIGN MOCKUP — ADMIN DASHBOARD (login-gated) · 7 of 7 ◆</div>
+
+<!-- ADMIN TOP BAR -->
+<nav class="nav">
+  <div class="nav-inner admin-bar">
+    <a class="brand" href="index.html">
+      <span class="brand-logo">⛩️</span>
+      <span class="brand-text">AnimeCon GIS<small>Admin panel</small></span>
+    </a>
+    <span class="admin-badge">🔒 ADMIN</span>
+    <div class="admin-right">
+      <a class="view-site" href="index.html">↗ View site</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"><span class="moon">🌙</span><span class="sun">☀️</span></button>
+      <div class="who"><span class="avatar">🦊</span><span class="hide-sm">Alicia</span></div>
+    </div>
+  </div>
+</nav>
+
+<div class="admin-shell">
+  <div class="admin-head">
+    <div>
+      <h1>Manage events ✏️</h1>
+      <p>Add, edit and remove conventions. Changes go live through the events API.</p>
+    </div>
+    <button class="btn" onclick="openDrawer('Add event')">＋ Add event</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="grid stats">
+    <div class="card stat-card"><span class="ic">🎌</span><span class="n">12</span><span class="l">Total events</span></div>
+    <div class="card stat-card"><span class="ic">🗓️</span><span class="n">4</span><span class="l">This month</span></div>
+    <div class="card stat-card"><span class="ic">📍</span><span class="n">7</span><span class="l">Venues</span></div>
+    <div class="card stat-card"><span class="ic">📨</span><span class="n">3</span><span class="l">Pending submissions</span></div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="a-toolbar">
+    <div class="a-search">🔍 <input placeholder="Search events or venues…" /></div>
+    <button class="btn ghost">All cities ▾</button>
+    <button class="btn ghost">Status ▾</button>
+  </div>
+
+  <!-- EVENTS TABLE -->
+  <div class="card table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th class="hide-sm">Venue</th>
+          <th class="hide-sm">Date</th>
+          <th>Status</th>
+          <th style="text-align:right;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="ev-name">Tracon Hel</div><div class="ev-sub">Helsinki</div></td>
+          <td class="hide-sm">Messukeskus</td>
+          <td class="hide-sm">11 Jul 2026</td>
+          <td><span class="status live">● Live</span></td>
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="mini-btn" title="Edit" onclick="openDrawer('Edit event')">✏️</button>
+            <button class="mini-btn del" title="Delete">🗑️</button>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="ev-name">Yukicon Summer</div><div class="ev-sub">Vantaa</div></td>
+          <td class="hide-sm">Vantaa Energia Areena</td>
+          <td class="hide-sm">23 Aug 2026</td>
+          <td><span class="status live">● Live</span></td>
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="mini-btn" title="Edit" onclick="openDrawer('Edit event')">✏️</button>
+            <button class="mini-btn del" title="Delete">🗑️</button>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="ev-name">Tsukicon Mini</div><div class="ev-sub">Helsinki</div></td>
+          <td class="hide-sm">Kaapelitehdas</td>
+          <td class="hide-sm">14 Sep 2026</td>
+          <td><span class="status draft">◌ Draft</span></td>
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="mini-btn" title="Edit" onclick="openDrawer('Edit event')">✏️</button>
+            <button class="mini-btn del" title="Delete">🗑️</button>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="ev-name">Cosvision</div><div class="ev-sub">Espoo</div></td>
+          <td class="hide-sm">Dipoli</td>
+          <td class="hide-sm">04 Oct 2026</td>
+          <td><span class="status live">● Live</span></td>
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="mini-btn" title="Edit" onclick="openDrawer('Edit event')">✏️</button>
+            <button class="mini-btn del" title="Delete">🗑️</button>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PENDING SUBMISSIONS -->
+  <div class="a-sec">
+    <h2>Community submissions</h2>
+    <span class="count">3 pending</span>
+  </div>
+  <div class="card table-card">
+    <table>
+      <thead>
+        <tr><th>Suggested event</th><th class="hide-sm">Submitted by</th><th>Status</th><th style="text-align:right;">Review</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="ev-name">Hellocon</div><div class="ev-sub">Messukeskus · 15 Nov 2026</div></td>
+          <td class="hide-sm">cosplay_fan_22</td>
+          <td><span class="status pending">⏳ Pending</span></td>
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="mini-btn" title="Approve">✅</button>
+            <button class="mini-btn del" title="Reject">❌</button>
+          </div></td>
+        </tr>
+        <tr>
+          <td><div class="ev-name">Desucon Frostbite</div><div class="ev-sub">Vantaa Energia Areena · 06 Dec 2026</div></td>
+          <td class="hide-sm">manga_mei</td>
+          <td><span class="status pending">⏳ Pending</span></td>
+          <td><div class="row-actions" style="justify-content:flex-end;">
+            <button class="mini-btn" title="Approve">✅</button>
+            <button class="mini-btn del" title="Reject">❌</button>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ADD / EDIT DRAWER -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3 id="drawerTitle">Add event</h3>
+    <button class="close-x" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="field"><label>Event name</label><input placeholder="e.g. Tracon Hel" /></div>
+    <div class="field"><label>Venue</label><input placeholder="e.g. Messukeskus" /></div>
+    <div class="field-row">
+      <div class="field"><label>City</label>
+        <select><option>Helsinki</option><option>Vantaa</option><option>Espoo</option></select>
+      </div>
+      <div class="field"><label>Date</label><input type="date" /></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Longitude</label><input placeholder="24.9354" /></div>
+      <div class="field"><label>Latitude</label><input placeholder="60.2012" /></div>
+    </div>
+    <div class="field"><label>Description</label><textarea rows="3" placeholder="Short blurb shown in the popup…"></textarea></div>
+    <div class="field"><label>Status</label>
+      <select><option>Live</option><option>Draft</option></select>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn ghost" onclick="closeDrawer()">Cancel</button>
+    <button class="btn" onclick="closeDrawer()">💾 Save event</button>
+  </div>
+</aside>
+
+<script>
+  const overlay = document.getElementById('overlay');
+  const drawer = document.getElementById('drawer');
+  function openDrawer(title) {
+    document.getElementById('drawerTitle').textContent = title;
+    overlay.classList.add('open'); drawer.classList.add('open');
+  }
+  function closeDrawer() { overlay.classList.remove('open'); drawer.classList.remove('open'); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+</script>
+</body>
+</html>
