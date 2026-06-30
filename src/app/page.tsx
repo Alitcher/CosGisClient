@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import HeroMap from "@/components/HeroMap";
 import UpcomingEvents from "@/components/UpcomingEvents";
+import SubmitEventDialog from "@/components/SubmitEventDialog";
 
 export default function Home() {
   return (
@@ -14,7 +15,7 @@ export default function Home() {
           <div>
             <span className="eyebrow">✨ your cosplay map</span>
             <h1>
-              Anime cons <span className="grad">+ cosplay spots</span> in Helsinki &amp; Vantaa 🎌
+              Anime cons + <span className="grad"> cosplay spots </span> in Nordic &amp; Baltic 🎌
             </h1>
             <p className="lead">
               Find every con near you — plus the cafés, malls and photo spots that welcome
@@ -64,7 +65,10 @@ export default function Home() {
             <span className="eyebrow">Next on the schedule</span>
             <h2 className="section-title">Upcoming conventions</h2>
           </div>
-          <Link className="btn ghost" href="/events">See all events →</Link>
+          <div className="flex gap-sm">
+            <SubmitEventDialog className="btn" label="＋ Submit an event" />
+            <Link className="btn ghost" href="/events">See all events →</Link>
+          </div>
         </div>
         <UpcomingEvents />
       </section>

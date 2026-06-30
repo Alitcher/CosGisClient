@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
+import { usePlaceStore } from "@/lib/placesStore";
 import { splitDate } from "@/lib/data";
 
 const CITIES = ["All", "Helsinki", "Vantaa", "Espoo"] as const;
@@ -10,6 +11,7 @@ type CityFilter = (typeof CITIES)[number];
 
 export default function MapView() {
   const { events } = useEventStore();
+  const { places } = usePlaceStore();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [city, setCity] = useState<CityFilter>("All");
   const [ready, setReady] = useState(false);
@@ -27,10 +29,13 @@ export default function MapView() {
     return () => window.removeEventListener("message", onMsg);
   }, []);
 
-  // push the (possibly admin-edited) events into the map
+  // push the (possibly admin-edited) events + places into the map
   useEffect(() => {
     if (ready) post({ type: "setEvents", events });
   }, [ready, events]);
+  useEffect(() => {
+    if (ready) post({ type: "setPlaces", places });
+  }, [ready, places]);
 
   // push the city filter (applies to both conventions and spots)
   useEffect(() => {

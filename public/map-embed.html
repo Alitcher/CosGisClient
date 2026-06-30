@@ -55,9 +55,11 @@
   ];
 
   function spotCard(p) {
-    return '<div class="card"><img src="' + p.photo + '" alt=""/><div class="body">' +
+    var photo = p.photo || (p.photos && p.photos[0] && p.photos[0].url) || '';
+    var desc = p.desc || p.description || '';
+    return '<div class="card">' + (photo ? '<img src="' + photo + '" alt=""/>' : '') + '<div class="body">' +
       '<div class="top"><h3>' + p.name + '</h3><span class="tag">' + (TYPE_LABEL[p.type] || p.type) + '</span></div>' +
-      '<div class="meta">📍 ' + p.address + '</div><p>' + p.desc + '</p>' +
+      '<div class="meta">📍 ' + (p.address || p.city || '') + '</div>' + (desc ? '<p>' + desc + '</p>' : '') +
       '<div class="themes">' + (p.themes || []).map(function (t) { return '<span>#' + t + '</span>'; }).join('') + '</div>' +
       '</div></div>';
   }
@@ -96,12 +98,19 @@
   }
 
   function buildEvents(list) {
-    // remove existing convention markers
     entries = entries.filter(function (e) {
       if (e.kind === 'con') { e.marker.remove(); return false; }
       return true;
     });
     list.forEach(function (e) { addMarker('con', e, CITY_COLOR[e.city] || '#ff4f96', eventCard(e)); });
+    updateCards();
+  }
+  function buildPlaces(list) {
+    entries = entries.filter(function (e) {
+      if (e.kind === 'spot') { e.marker.remove(); return false; }
+      return true;
+    });
+    list.forEach(function (p) { addMarker('spot', p, '#8b5cf6', spotCard(p)); });
     updateCards();
   }
 
@@ -119,7 +128,7 @@
   map.on('zoomend', updateCards);
 
   map.on('load', function () {
-    places.forEach(function (p) { addMarker('spot', p, '#8b5cf6', spotCard(p)); });
+    buildPlaces(places);
     buildEvents(defaultEvents);
     parent.postMessage({ type: 'mapReady' }, '*');
   });
@@ -133,6 +142,8 @@
       updateCards();
     } else if (d.type === 'setEvents' && Array.isArray(d.events)) {
       buildEvents(d.events);
+    } else if (d.type === 'setPlaces' && Array.isArray(d.places)) {
+      buildPlaces(d.places);
     } else if (d.type === 'focus') {
       map.flyTo({ center: [d.lng, d.lat], zoom: 15.5, speed: 1.2 });
     }

@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { splitDate } from "@/lib/data";
 import { useEventStore } from "@/lib/eventsStore";
+import SubmitEventDialog from "@/components/SubmitEventDialog";
 import type { City } from "@/types";
 
 const CITIES: (City | "All cities")[] = ["All cities", "Helsinki", "Vantaa", "Espoo"];
@@ -34,7 +35,10 @@ export default function EventsPage() {
             <h1>All conventions</h1>
             <p>{list.length} event{list.length === 1 ? "" : "s"} · sorted by date</p>
           </div>
-          <Link className="btn ghost" href="/calendar">📅 Calendar view</Link>
+          <div className="flex gap-sm">
+            <SubmitEventDialog className="btn ghost" label="＋ Submit an event" />
+            <Link className="btn ghost" href="/calendar">📅 Calendar view</Link>
+          </div>
         </div>
 
         <div className="toolbar">
