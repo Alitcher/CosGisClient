@@ -51,6 +51,8 @@ NEXT_PUBLIC_PLACES_API_URL=http://localhost:8788
 NEXT_PUBLIC_GIS_PROXY_URL=http://localhost:8789
 ```
 
+## More docs
+- `DOCUMENTATION.md` — file-by-file walkthrough.
 
 `src/types.ts` mirrors the server's `@anime-con/shared` contract by hand — keep
 them in sync.

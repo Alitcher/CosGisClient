@@ -22,8 +22,8 @@ export default function Nav() {
         <Link className="brand" href="/">
           <span className="brand-logo">⛩️</span>
           <span className="brand-text">
-            CosplayMap
-            <small>Helsinki · Vantaa</small>
+            AnimeGISCon
+            <small>Nordic · Baltic</small>
           </span>
         </Link>
         <div className="nav-links">
