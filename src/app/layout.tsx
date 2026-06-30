@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Cosplay Map — Helsinki & Vantaa",
+  title: "Cosplay Map — Nordic & Baltic",
   description:
     "Find every anime con near you, plus the cafés, malls and photo spots that welcome cosplayers — across Helsinki, Vantaa & Espoo.",
 };

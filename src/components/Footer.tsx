@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="shell">
         <div>
-          © 2026 CosplayMap · Helsinki · Vantaa · Espoo · Open data from
+          © 2026 CosplayMap · Nordic · Baltic · Open data from
           hel.kartta.fi
         </div>
         <div>Made with 💜 for the cosplay community</div>
