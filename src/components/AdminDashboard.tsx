@@ -184,7 +184,7 @@ export default function AdminDashboard() {
         <div className="nav-inner admin-bar">
           <Link className="brand" href="/">
             <span className="brand-logo">⛩️</span>
-            <span className="brand-text">CosplayMap<small>Admin panel</small></span>
+            <span className="brand-text">CosoraAtlas<small>Admin panel</small></span>
           </Link>
           <span className="admin-badge">🔒 ADMIN</span>
           <div className="admin-right">

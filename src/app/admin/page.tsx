@@ -2,7 +2,7 @@ import AdminDashboard from "@/components/AdminDashboard";
 import AdminGate from "@/components/AdminGate";
 
 export const metadata = {
-  title: "Admin — CosplayMap",
+  title: "Admin — CosoraAtlas",
   // Keep the admin page out of Google etc. so users never discover it.
   robots: { index: false, follow: false },
 };

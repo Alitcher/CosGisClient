@@ -22,7 +22,7 @@ export default function Nav() {
         <Link className="brand" href="/">
           <span className="brand-logo">⛩️</span>
           <span className="brand-text">
-            AnimeGISCon
+            CosoraAtlas
             <small>Nordic · Baltic</small>
           </span>
         </Link>
