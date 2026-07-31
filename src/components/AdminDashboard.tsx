@@ -37,7 +37,7 @@ const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki"
 const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live" };
 
 function fail(action: string, err: unknown) {
-  alert(`Couldn't ${action}.\nIs the server running? (events :8787 / places :8788)\n\n${(err as Error).message}`);
+  alert(`Couldn't ${action}.\nIs the API server running? (:8787)\n\n${(err as Error).message}`);
 }
 
 export default function AdminDashboard() {

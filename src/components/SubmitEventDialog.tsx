@@ -44,7 +44,7 @@ export default function SubmitEventDialog({ className = "btn", label = "＋ Subm
       });
       setSent(true);
     } catch (err) {
-      alert(`Couldn't submit.\nIs the events server running? (:8787)\n\n${(err as Error).message}`);
+      alert(`Couldn't submit.\nIs the API server running? (:8787)\n\n${(err as Error).message}`);
     } finally {
       setBusy(false);
     }

@@ -13,7 +13,10 @@ import { getAdminToken, setAdminToken, clearAdminToken } from "@/lib/adminAuth";
  * For the strongest protection on a public domain, also put /admin behind
  * Cloudflare Access (SSO) at the edge.
  */
-const EVENTS_API = process.env.NEXT_PUBLIC_EVENTS_API_URL || "http://localhost:8787";
+const API =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.NEXT_PUBLIC_EVENTS_API_URL ||
+  "http://localhost:8787";
 
 type RegOptions = Parameters<typeof startRegistration>[0]["optionsJSON"];
 type AuthOptions = Parameters<typeof startAuthentication>[0]["optionsJSON"];
@@ -22,7 +25,7 @@ type Phase = "loading" | "login" | "register" | "password";
 async function verifyToken(token: string): Promise<boolean> {
   if (!token) return false;
   try {
-    const res = await fetch(`${EVENTS_API}/v1/submissions`, { headers: { Authorization: `Bearer ${token}` } });
+    const res = await fetch(`${API}/v1/events/submissions`, { headers: { Authorization: `Bearer ${token}` } });
     return res.ok;
   } catch {
     return false;
@@ -48,7 +51,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
       if (existing && (await verifyToken(existing))) { setAuthed(true); return; }
       clearAdminToken();
       try {
-        const res = await fetch(`${EVENTS_API}/v1/admin/status`);
+        const res = await fetch(`${API}/v1/admin/status`);
         const { registered } = (await res.json()) as { registered: boolean };
         setPhase(registered ? "login" : "register");
       } catch {
@@ -60,11 +63,11 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
   async function doLogin() {
     setBusy(true); setError("");
     try {
-      const optRes = await fetch(`${EVENTS_API}/v1/admin/login/options`, { method: "POST" });
+      const optRes = await fetch(`${API}/v1/admin/login/options`, { method: "POST" });
       if (!optRes.ok) throw new Error("Could not start login. Is the server running?");
       const optionsJSON = (await optRes.json()) as AuthOptions;
       const assertion = await startAuthentication({ optionsJSON });
-      const verRes = await fetch(`${EVENTS_API}/v1/admin/login/verify`, {
+      const verRes = await fetch(`${API}/v1/admin/login/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(assertion),
@@ -84,12 +87,12 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     setBusy(true); setError("");
     try {
       const auth = { Authorization: `Bearer ${secret.trim()}` };
-      const optRes = await fetch(`${EVENTS_API}/v1/admin/register/options`, { method: "POST", headers: auth });
+      const optRes = await fetch(`${API}/v1/admin/register/options`, { method: "POST", headers: auth });
       if (optRes.status === 401) throw new Error("Wrong setup password.");
       if (!optRes.ok) throw new Error("Could not start setup. Is the server running?");
       const optionsJSON = (await optRes.json()) as RegOptions;
       const attestation = await startRegistration({ optionsJSON });
-      const verRes = await fetch(`${EVENTS_API}/v1/admin/register/verify`, {
+      const verRes = await fetch(`${API}/v1/admin/register/verify`, {
         method: "POST",
         headers: { ...auth, "Content-Type": "application/json" },
         body: JSON.stringify(attestation),
@@ -107,7 +110,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     setBusy(true); setError("");
     const t = secret.trim();
     if (await verifyToken(t)) { setAdminToken(t); setAuthed(true); }
-    else setError("Wrong password, or the events server is not running (port 8787).");
+    else setError("Wrong password, or the API server is not running (port 8787).");
     setBusy(false);
   }
 
