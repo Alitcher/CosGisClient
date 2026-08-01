@@ -48,7 +48,7 @@ export default function SubmitSpotDialog({ className = "btn", label = "＋ Submi
       });
       setSent(true);
     } catch (err) {
-      alert(`Couldn't submit.\nIs the places server running? (:8788)\n\n${(err as Error).message}`);
+      alert(`Couldn't submit.\nIs the API server running? (:8787)\n\n${(err as Error).message}`);
     } finally {
       setBusy(false);
     }
