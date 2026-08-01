@@ -13,6 +13,7 @@ import {
   apiApprovePlace,
   apiDeleteEvent,
   apiDeletePlace,
+  apiSyncLinkedEvents,
 } from "@/lib/api";
 import type { Event, Place, City, Status, PlaceType } from "@/types";
 
@@ -109,6 +110,26 @@ export default function AdminDashboard() {
       setBusy(false);
     }
   }
+  // Import cosplay/manga events from Helsinki's Linked Events API into the pending
+  // queue (server: api-service services/linkedevents.ts). Same thing the daily cron
+  // does; this is the on-demand admin button.
+  async function runImport() {
+    setBusy(true);
+    try {
+      const r = await apiSyncLinkedEvents(); // force=true: bypass the 12h freshness guard
+      await loadPending();
+      alert(
+        r.skipped
+          ? "Already up to date — nothing new from Helsinki right now."
+          : `Imported ${r.created} new event(s) from Helsinki (fetched ${r.fetched}, ${r.duplicates} already had).\nThey're in the pending queue below for approval.`,
+      );
+    } catch (err) {
+      fail("import from Helsinki", err);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   const selectedItems = () => pendingItems.filter((it) => selected.has(keyOf(it)));
   const approveOne = (it: PendingItem) => runOnItems([it], "approve");
   const rejectOne = (it: PendingItem) => { if (confirm(`Reject "${it.name}"? This deletes the submission.`)) runOnItems([it], "reject"); };
@@ -295,6 +316,7 @@ export default function AdminDashboard() {
           <div className="card table-card">
             <div className="a-toolbar" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", padding: "12px 14px", borderBottom: "1px solid var(--border, #2a2a35)" }}>
               <span style={{ color: "var(--text-2)" }}>{pendingItems.length} pending · {selected.size} selected</span>
+              <button className="btn ghost" type="button" disabled={busy} title="Fetch cosplay/manga events from Helsinki's open data into the queue" onClick={runImport}>🔄 Import from Helsinki</button>
               <div style={{ flex: 1 }} />
               <button className="btn ghost" type="button" disabled={busy || selected.size === 0} onClick={approveSelected}>✓ Approve selected</button>
               <button className="btn ghost" type="button" style={danger} disabled={busy || selected.size === 0} onClick={rejectSelected}>✕ Reject selected</button>

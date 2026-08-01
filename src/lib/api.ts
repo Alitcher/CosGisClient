@@ -95,6 +95,30 @@ export async function apiApproveEvent(id: string): Promise<Event> {
   );
 }
 
+/** Summary returned by the Helsinki Linked Events import. */
+export type SyncResult = {
+  skipped?: "fresh";
+  fetched: number;
+  created: number;
+  duplicates: number;
+  ignored: number;
+  lastModified: string | null;
+};
+/**
+ * Admin: import cosplay/manga events from Helsinki's Linked Events API. They land
+ * in the pending queue for approval. `force` bypasses the 12h freshness guard
+ * (what an admin pressing the button wants). Server: services/linkedevents.ts.
+ */
+export async function apiSyncLinkedEvents(force = true): Promise<SyncResult> {
+  return jsonOrThrow(
+    await fetch(`${API}/v1/events/sync/linkedevents${force ? "?force=1" : ""}`, {
+      method: "POST",
+      headers: adminHeaders(),
+    }),
+    "POST /v1/events/sync/linkedevents",
+  );
+}
+
 /* ---------------- Places (api-service /v1/places) ---------------- */
 
 export type NewPlaceInput = Omit<Place, "id" | "status" | "createdAt">;
