@@ -50,6 +50,8 @@
   var TYPE_LABEL = { cafe: 'Café', restaurant: 'Restaurant', mall: 'Mall', studio: 'Studio', outdoor: 'Outdoor' };
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtDate(iso) { var p = (iso || '').split('-'); if (p.length < 3) return iso || ''; return p[2] + ' ' + (MON[(+p[1]) - 1] || '') + ' ' + p[0]; }
+  // Local 'YYYY-MM-DD' for today; events on/after this stay on the map, past ones drop.
+  function todayISO() { var n = new Date(); function p(x){ return String(x).padStart(2, '0'); } return n.getFullYear() + '-' + p(n.getMonth() + 1) + '-' + p(n.getDate()); }
   // Escape user-submitted text so a name/description with < > & " can't break the card.
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   // Precise location line — events have no street address, only a venue + coordinates.
@@ -172,6 +174,9 @@
   }
 
   function buildEvents(list) {
+    // Map shows upcoming only — past events live in the calendar / Events archive.
+    var t = todayISO();
+    list = (list || []).filter(function (e) { return (e.date || '') >= t; });
     entries = entries.filter(function (e) {
       if (e.kind === 'con') { e.marker.remove(); return false; }
       return true;

@@ -56,7 +56,12 @@ export default function MapView() {
     return () => clearTimeout(t);
   }, [ready, params]);
 
+  // Local 'YYYY-MM-DD' today; the map shows only today + future (past = archive).
+  const now = new Date();
+  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
   const list = events
+    .filter((e) => e.date >= todayISO)
     .filter((e) => (city === "All" ? true : e.city === city))
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date));

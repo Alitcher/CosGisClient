@@ -10,13 +10,19 @@ import SubmitEventDialog from "@/components/SubmitEventDialog";
 import type { City } from "@/types";
 
 const CITIES: (City | "All cities")[] = ["All cities", "Helsinki", "Vantaa", "Espoo"];
+const WHENS = ["Upcoming", "Past", "All"] as const;
 
 export default function EventsPage() {
   const { events } = useEventStore();
   const [city, setCity] = useState<(typeof CITIES)[number]>("All cities");
+  const [when, setWhen] = useState<(typeof WHENS)[number]>("Upcoming");
   const [q, setQ] = useState("");
 
+  const now = new Date();
+  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
   const list = events
+    .filter((e) => (when === "All" ? true : when === "Upcoming" ? e.date >= todayISO : e.date < todayISO))
     .filter((e) => (city === "All cities" ? true : e.city === city))
     .filter(
       (e) =>
@@ -24,7 +30,8 @@ export default function EventsPage() {
         e.venue.toLowerCase().includes(q.toLowerCase()),
     )
     .slice()
-    .sort((a, b) => a.date.localeCompare(b.date));
+    // upcoming: soonest first; past archive: most recent first
+    .sort((a, b) => (when === "Past" ? b.date.localeCompare(a.date) : a.date.localeCompare(b.date)));
 
   return (
     <>
@@ -49,6 +56,13 @@ export default function EventsPage() {
             {CITIES.map((c) => (
               <button key={c} className={city === c ? "on" : ""} type="button" onClick={() => setCity(c)}>
                 {c}
+              </button>
+            ))}
+          </div>
+          <div className="seg">
+            {WHENS.map((w) => (
+              <button key={w} className={when === w ? "on" : ""} type="button" onClick={() => setWhen(w)}>
+                {w === "Past" ? "🗄️ Past" : w}
               </button>
             ))}
           </div>
