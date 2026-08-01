@@ -21,6 +21,7 @@ export interface Event {
   lng: number;
   lat: number;
   description?: string;
+  url?: string; // link to the event's info page (organizer / Linked Events)
   status: Status;
   createdAt?: string;
 }

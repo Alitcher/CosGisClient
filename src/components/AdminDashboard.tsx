@@ -25,7 +25,7 @@ type PendingItem = { kind: "event" | "place"; id: string; name: string; meta: st
 type EventForm = {
   id: string | null;
   name: string; venue: string; city: City; date: string;
-  lng: string; lat: string; description: string; status: Status;
+  lng: string; lat: string; description: string; url: string; status: Status;
 };
 type PlaceForm = {
   id: string | null;
@@ -34,7 +34,7 @@ type PlaceForm = {
   description: string; openingHours: string; status: Status;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", lng: "", lat: "", description: "", status: "live" };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", lng: "", lat: "", description: "", url: "", status: "live" };
 const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live" };
 
 function fail(action: string, err: unknown) {
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", status: e.status });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", status: e.status });
     setDrawerKind("events");
     setOpen(true);
   }
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
   async function saveEvent() {
     const f = eventForm;
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and date are required.");
-    const data = { name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim() };
+    const data = { name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(), ...(f.url.trim() ? { url: f.url.trim() } : {}) };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
       else await addEvent(data);
@@ -381,6 +381,7 @@ export default function AdminDashboard() {
                 <div className="field"><label>Latitude</label><input value={eventForm.lat} onChange={(e) => setE("lat", e.target.value)} placeholder="60.2012" /></div>
               </div>
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
+              <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://… event page" /></div>
               {eventForm.id && (
                 <div className="field"><label>Status</label><select value={eventForm.status} onChange={(e) => setE("status", e.target.value as Status)}><option value="live">Live</option><option value="draft">Draft</option></select></div>
               )}

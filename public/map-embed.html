@@ -27,6 +27,9 @@
   .card .themes span { font-size: 10px; font-weight: 700; color: #5b4779; background: #f3eefb;
         border: 1.5px solid #e3d6f6; padding: 2px 7px; border-radius: 999px; }
   .card .date { font-size: 12px; font-weight: 700; color: #be185d; }
+  .card .ev-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700;
+        color: #7c3aad; text-decoration: none; border-bottom: 1.5px solid #d9c4f5; }
+  .card .ev-link:hover { border-bottom-color: #7c3aad; }
   /* custom rotation compass */
   .compass { display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .compass .rose { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #d9c4f5;
@@ -95,6 +98,7 @@
       row('📍', e.venue ? (e.venue + (e.city ? ', ' + e.city : '')) : '') +
       row('🧭', fmtCoord(e.lat, e.lng)) +
       (desc ? '<p>' + esc(desc) + '</p>' : '') +
+      (e.url ? '<a class="ev-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">🔗 Event page ↗</a>' : '') +
       '</div></div>';
   }
 
