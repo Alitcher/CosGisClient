@@ -1,11 +1,14 @@
 "use client";
 
-import { splitDate } from "@/lib/data";
+import { splitDate, eventEndsOn } from "@/lib/data";
 import { useEventStore } from "@/lib/eventsStore";
 
 export default function UpcomingEvents() {
   const { events } = useEventStore();
+  const now = new Date();
+  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const upcoming = events
+    .filter((e) => eventEndsOn(e) >= todayISO)
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 3);

@@ -13,10 +13,10 @@ const REGION_CITIES: City[] = ["Helsinki", "Vantaa", "Espoo"];
  * approves them in the admin dashboard's Pending tab.
  */
 type Form = {
-  name: string; venue: string; city: City; date: string;
+  name: string; venue: string; city: City; date: string; endDate: string;
   lng: string; lat: string; description: string; submittedBy: string;
 };
-const EMPTY: Form = { name: "", venue: "", city: "Helsinki", date: "", lng: "", lat: "", description: "", submittedBy: "" };
+const EMPTY: Form = { name: "", venue: "", city: "Helsinki", date: "", endDate: "", lng: "", lat: "", description: "", submittedBy: "" };
 
 export default function SubmitEventDialog({ className = "btn", label = "＋ Submit an event" }: { className?: string; label?: string }) {
   const [open, setOpen] = useState(false);
@@ -30,7 +30,8 @@ export default function SubmitEventDialog({ className = "btn", label = "＋ Subm
   function start() { setF(EMPTY); setLocQuery(""); setSent(false); setOpen(true); }
 
   async function submit() {
-    if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and date are required.");
+    if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and start date are required.");
+    if (f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
     const lng = Number(f.lng), lat = Number(f.lat);
     if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
       return alert("Please add the location's longitude and latitude.\nTip: right-click a spot in Google Maps to copy its coordinates.");
@@ -38,6 +39,7 @@ export default function SubmitEventDialog({ className = "btn", label = "＋ Subm
     try {
       await apiSubmitEvent({
         name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date,
+        endDate: f.endDate || undefined,
         lng, lat,
         description: f.description.trim() || undefined,
         submittedBy: f.submittedBy.trim() || undefined,
@@ -80,8 +82,9 @@ export default function SubmitEventDialog({ className = "btn", label = "＋ Subm
               <div className="field"><label>Venue *</label><input value={f.venue} onChange={(e) => set("venue", e.target.value)} placeholder="e.g. Messukeskus" /></div>
               <div className="field-row">
                 <div className="field"><label>City</label><select value={f.city} onChange={(e) => set("city", e.target.value as City)}><option>Helsinki</option><option>Vantaa</option><option>Espoo</option></select></div>
-                <div className="field"><label>Date *</label><input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
+                <div className="field"><label>Start date *</label><input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
               </div>
+              <div className="field"><label>End date (optional — multi-day)</label><input type="date" value={f.endDate} min={f.date || undefined} onChange={(e) => set("endDate", e.target.value)} /></div>
               <div className="field">
                 <label>Location *</label>
                 <AddressAutocomplete

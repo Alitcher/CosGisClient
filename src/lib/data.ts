@@ -181,6 +181,25 @@ export function splitDate(iso: string) {
   return { day: d, mon, year: y };
 }
 
+/**
+ * Human date range. Single day → "11 Jul 2026". Multi-day, collapsed sensibly:
+ * same month → "11–13 Jul 2026", same year → "30 Aug – 1 Sep 2026",
+ * else → "30 Dec 2026 – 2 Jan 2027".
+ */
+export function fmtRange(start: string, end?: string): string {
+  const s = splitDate(start);
+  if (!end || end <= start) return `${s.day} ${s.mon} ${s.year}`;
+  const e = splitDate(end);
+  if (s.year === e.year && s.mon === e.mon) return `${s.day}–${e.day} ${s.mon} ${s.year}`;
+  if (s.year === e.year) return `${s.day} ${s.mon} – ${e.day} ${e.mon} ${s.year}`;
+  return `${s.day} ${s.mon} ${s.year} – ${e.day} ${e.mon} ${e.year}`;
+}
+
+/** The day an event is considered "over" for upcoming/past filtering. */
+export function eventEndsOn(e: { date: string; endDate?: string }): string {
+  return e.endDate && e.endDate >= e.date ? e.endDate : e.date;
+}
+
 export const placeTypeLabel: Record<Place["type"], string> = {
   cafe: "Café",
   restaurant: "Restaurant",

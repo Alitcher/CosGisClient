@@ -52,6 +52,16 @@
   function fmtDate(iso) { var p = (iso || '').split('-'); if (p.length < 3) return iso || ''; return p[2] + ' ' + (MON[(+p[1]) - 1] || '') + ' ' + p[0]; }
   // Local 'YYYY-MM-DD' for today; events on/after this stay on the map, past ones drop.
   function todayISO() { var n = new Date(); function p(x){ return String(x).padStart(2, '0'); } return n.getFullYear() + '-' + p(n.getMonth() + 1) + '-' + p(n.getDate()); }
+  // Date, or a collapsed range for multi-day events.
+  function fmtRange(start, end) {
+    if (!end || end <= start) return fmtDate(start);
+    var s = (start || '').split('-'), e = (end || '').split('-');
+    if (s.length < 3 || e.length < 3) return fmtDate(start);
+    var sMon = MON[(+s[1]) - 1] || '', eMon = MON[(+e[1]) - 1] || '';
+    if (s[0] === e[0] && s[1] === e[1]) return s[2] + '–' + e[2] + ' ' + sMon + ' ' + s[0];
+    if (s[0] === e[0]) return s[2] + ' ' + sMon + ' – ' + e[2] + ' ' + eMon + ' ' + s[0];
+    return s[2] + ' ' + sMon + ' ' + s[0] + ' – ' + e[2] + ' ' + eMon + ' ' + e[0];
+  }
   // Escape user-submitted text so a name/description with < > & " can't break the card.
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   // Precise location line — events have no street address, only a venue + coordinates.
@@ -96,7 +106,7 @@
     var desc = e.description || e.desc || '';
     return '<div class="card"><div class="body">' +
       '<div class="top"><h3>' + esc(e.name) + '</h3><span class="tag" style="color:' + color + ';border-color:' + color + '">' + esc(e.city) + '</span></div>' +
-      '<div class="date" style="margin-top:6px;">🎌 ' + esc(fmtDate(e.date)) + '</div>' +
+      '<div class="date" style="margin-top:6px;">🎌 ' + esc(fmtRange(e.date, e.endDate)) + '</div>' +
       row('📍', e.venue ? (e.venue + (e.city ? ', ' + e.city : '')) : '') +
       row('🧭', fmtCoord(e.lat, e.lng)) +
       (desc ? '<p>' + esc(desc) + '</p>' : '') +
@@ -175,8 +185,9 @@
 
   function buildEvents(list) {
     // Map shows upcoming only — past events live in the calendar / Events archive.
+    // A multi-day event counts as "over" only after its end date.
     var t = todayISO();
-    list = (list || []).filter(function (e) { return (e.date || '') >= t; });
+    list = (list || []).filter(function (e) { return (e.endDate || e.date || '') >= t; });
     entries = entries.filter(function (e) {
       if (e.kind === 'con') { e.marker.remove(); return false; }
       return true;

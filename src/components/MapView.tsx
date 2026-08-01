@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
-import { splitDate } from "@/lib/data";
+import { splitDate, eventEndsOn } from "@/lib/data";
 
 const CITIES = ["All", "Helsinki", "Vantaa", "Espoo"] as const;
 type CityFilter = (typeof CITIES)[number];
@@ -61,7 +61,7 @@ export default function MapView() {
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   const list = events
-    .filter((e) => e.date >= todayISO)
+    .filter((e) => eventEndsOn(e) >= todayISO)
     .filter((e) => (city === "All" ? true : e.city === city))
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date));

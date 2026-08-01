@@ -5,7 +5,7 @@ import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
-import { splitDate, placeTypeLabel } from "@/lib/data";
+import { fmtRange, placeTypeLabel } from "@/lib/data";
 import {
   apiListPendingEvents,
   apiListPendingPlaces,
@@ -24,7 +24,7 @@ type PendingItem = { kind: "event" | "place"; id: string; name: string; meta: st
 
 type EventForm = {
   id: string | null;
-  name: string; venue: string; city: City; date: string;
+  name: string; venue: string; city: City; date: string; endDate: string;
   lng: string; lat: string; description: string; url: string; status: Status;
 };
 type PlaceForm = {
@@ -34,7 +34,7 @@ type PlaceForm = {
   description: string; openingHours: string; status: Status;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", lng: "", lat: "", description: "", url: "", status: "live" };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", endDate: "", lng: "", lat: "", description: "", url: "", status: "live" };
 const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live" };
 
 function fail(action: string, err: unknown) {
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
       setPendingItems([
         ...ev.map((e): PendingItem => ({
           kind: "event", id: e.id, name: e.name, lng: e.lng, lat: e.lat,
-          meta: `📍 ${[e.venue, e.city].filter(Boolean).join(", ")} · ${e.date}`,
+          meta: `📍 ${[e.venue, e.city].filter(Boolean).join(", ")} · ${fmtRange(e.date, e.endDate)}`,
         })),
         ...pl.map((p): PendingItem => ({
           kind: "place", id: p.id, name: p.name, lng: p.lng, lat: p.lat,
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", status: e.status });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, endDate: e.endDate ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", status: e.status });
     setDrawerKind("events");
     setOpen(true);
   }
@@ -165,8 +165,9 @@ export default function AdminDashboard() {
   // ---- save ----
   async function saveEvent() {
     const f = eventForm;
-    if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and date are required.");
-    const data = { name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(), ...(f.url.trim() ? { url: f.url.trim() } : {}) };
+    if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and start date are required.");
+    if (f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
+    const data = { name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(), ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.url.trim() ? { url: f.url.trim() } : {}) };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
       else await addEvent(data);
@@ -273,12 +274,11 @@ export default function AdminDashboard() {
               <thead><tr><th>Event</th><th className="hide-sm">Venue</th><th className="hide-sm">Date</th><th>Status</th><th style={{ textAlign: "right" }}>Actions</th></tr></thead>
               <tbody>
                 {visEvents.map((e) => {
-                  const { day, mon, year } = splitDate(e.date);
                   return (
                     <tr key={e.id}>
                       <td><div className="ev-name">{e.name}</div><div className="ev-sub">{e.city}</div></td>
                       <td className="hide-sm">{e.venue}</td>
-                      <td className="hide-sm">{day} {mon} {year}</td>
+                      <td className="hide-sm">{fmtRange(e.date, e.endDate)}</td>
                       <td><span className={`status ${e.status}`}>{e.status === "live" ? "● Live" : e.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
                         <a className="mini-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
@@ -374,8 +374,9 @@ export default function AdminDashboard() {
               <div className="field"><label>Venue</label><input value={eventForm.venue} onChange={(e) => setE("venue", e.target.value)} placeholder="e.g. Messukeskus" /></div>
               <div className="field-row">
                 <div className="field"><label>City</label><select value={eventForm.city} onChange={(e) => setE("city", e.target.value as City)}><option>Helsinki</option><option>Vantaa</option><option>Espoo</option></select></div>
-                <div className="field"><label>Date</label><input type="date" value={eventForm.date} onChange={(e) => setE("date", e.target.value)} /></div>
+                <div className="field"><label>Start date</label><input type="date" value={eventForm.date} onChange={(e) => setE("date", e.target.value)} /></div>
               </div>
+              <div className="field"><label>End date (optional — for multi-day events)</label><input type="date" value={eventForm.endDate} min={eventForm.date || undefined} onChange={(e) => setE("endDate", e.target.value)} /></div>
               <div className="field-row">
                 <div className="field"><label>Longitude</label><input value={eventForm.lng} onChange={(e) => setE("lng", e.target.value)} placeholder="24.9354" /></div>
                 <div className="field"><label>Latitude</label><input value={eventForm.lat} onChange={(e) => setE("lat", e.target.value)} placeholder="60.2012" /></div>

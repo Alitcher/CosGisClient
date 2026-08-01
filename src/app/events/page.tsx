@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { splitDate } from "@/lib/data";
+import { splitDate, fmtRange, eventEndsOn } from "@/lib/data";
 import { useEventStore } from "@/lib/eventsStore";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import type { City } from "@/types";
@@ -22,7 +22,7 @@ export default function EventsPage() {
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   const list = events
-    .filter((e) => (when === "All" ? true : when === "Upcoming" ? e.date >= todayISO : e.date < todayISO))
+    .filter((e) => (when === "All" ? true : when === "Upcoming" ? eventEndsOn(e) >= todayISO : eventEndsOn(e) < todayISO))
     .filter((e) => (city === "All cities" ? true : e.city === city))
     .filter(
       (e) =>
@@ -83,6 +83,7 @@ export default function EventsPage() {
                   <div className="meta">
                     <span>📍 <b>{e.venue}</b></span>
                     <span className={`chip ${e.city.toLowerCase()}`}>{e.city}</span>
+                    {e.endDate && e.endDate > e.date && <span>🗓️ {fmtRange(e.date, e.endDate)}</span>}
                   </div>
                 </div>
                 <div className="r-cta">

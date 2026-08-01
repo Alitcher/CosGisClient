@@ -17,7 +17,8 @@ export interface Event {
   name: string;
   venue: string;
   city: City;
-  date: string; // ISO 'YYYY-MM-DD'
+  date: string; // start date, ISO 'YYYY-MM-DD'
+  endDate?: string; // last day for multi-day events (>= date)
   lng: number;
   lat: number;
   description?: string;

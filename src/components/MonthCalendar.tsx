@@ -33,14 +33,18 @@ export default function MonthCalendar() {
   const total = firstDow + daysInMonth;
   const trail = (7 - (total % 7)) % 7;
 
-  // events for this month, keyed by day
+  // events for this month, keyed by day — multi-day events appear on every day
+  // they span (start..endDate), not just their first day.
   const byDay = new Map<number, typeof events>();
   for (const e of events) {
-    if (e.date.startsWith(`${year}-${pad(month + 1)}-`)) {
-      const day = Number(e.date.slice(8, 10));
-      const arr = byDay.get(day) ?? [];
-      arr.push(e);
-      byDay.set(day, arr);
+    const end = e.endDate && e.endDate >= e.date ? e.endDate : e.date;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dayISO = `${year}-${pad(month + 1)}-${pad(d)}`;
+      if (e.date <= dayISO && dayISO <= end) {
+        const arr = byDay.get(d) ?? [];
+        arr.push(e);
+        byDay.set(d, arr);
+      }
     }
   }
 
