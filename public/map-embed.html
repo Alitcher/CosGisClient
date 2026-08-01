@@ -13,7 +13,8 @@
   .mk.spot { border-radius: 6px; }
   .maplibregl-popup-content { padding: 0; border-radius: 14px; overflow: hidden;
         box-shadow: 0 10px 28px rgba(0,0,0,.28); border: 2px solid rgba(124,58,173,.25); }
-  .card { width: 230px; font-family: Inter, sans-serif; color: #2a1840; background: #fff; }
+  .card { width: 250px; font-family: Inter, sans-serif; color: #2a1840; background: #fff; }
+  .card .meta + .meta { margin-top: 2px; }
   .card img { width: 100%; height: 110px; object-fit: cover; display: block; background: #eee; }
   .card .body { padding: 10px 12px 12px; }
   .card .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -36,6 +37,11 @@
   var TYPE_LABEL = { cafe: 'Café', restaurant: 'Restaurant', mall: 'Mall', studio: 'Studio', outdoor: 'Outdoor' };
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtDate(iso) { var p = (iso || '').split('-'); if (p.length < 3) return iso || ''; return p[2] + ' ' + (MON[(+p[1]) - 1] || '') + ' ' + p[0]; }
+  // Escape user-submitted text so a name/description with < > & " can't break the card.
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  // Precise location line — events have no street address, only a venue + coordinates.
+  function fmtCoord(lat, lng) { return (typeof lat === 'number' && typeof lng === 'number') ? lat.toFixed(4) + ', ' + lng.toFixed(4) : ''; }
+  function row(icon, text) { return text ? '<div class="meta">' + icon + ' ' + esc(text) + '</div>' : ''; }
 
   // cosplay-friendly places (static)
   var places = [
@@ -57,17 +63,28 @@
   function spotCard(p) {
     var photo = p.photo || (p.photos && p.photos[0] && p.photos[0].url) || '';
     var desc = p.desc || p.description || '';
-    return '<div class="card">' + (photo ? '<img src="' + photo + '" alt=""/>' : '') + '<div class="body">' +
-      '<div class="top"><h3>' + p.name + '</h3><span class="tag">' + (TYPE_LABEL[p.type] || p.type) + '</span></div>' +
-      '<div class="meta">📍 ' + (p.address || p.city || '') + '</div>' + (desc ? '<p>' + desc + '</p>' : '') +
-      '<div class="themes">' + (p.themes || []).map(function (t) { return '<span>#' + t + '</span>'; }).join('') + '</div>' +
+    var hours = p.openingHours || p.opening_hours || '';
+    // Show the street address if we have one; append the city unless it's already in there.
+    var addr = p.address || '';
+    var loc = addr ? (addr + (p.city && addr.indexOf(p.city) < 0 ? ', ' + p.city : '')) : (p.city || '');
+    return '<div class="card">' + (photo ? '<img src="' + esc(photo) + '" alt=""/>' : '') + '<div class="body">' +
+      '<div class="top"><h3>' + esc(p.name) + '</h3><span class="tag">' + esc(TYPE_LABEL[p.type] || p.type) + '</span></div>' +
+      row('📍', loc) +
+      row('🕐', hours) +
+      row('🧭', fmtCoord(p.lat, p.lng)) +
+      (desc ? '<p>' + esc(desc) + '</p>' : '') +
+      '<div class="themes">' + (p.themes || []).map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>' +
       '</div></div>';
   }
   function eventCard(e) {
     var color = CITY_COLOR[e.city] || '#ff4f96';
+    var desc = e.description || e.desc || '';
     return '<div class="card"><div class="body">' +
-      '<div class="top"><h3>' + e.name + '</h3><span class="tag" style="color:' + color + ';border-color:' + color + '">' + e.city + '</span></div>' +
-      '<div class="meta">📍 ' + (e.venue || '') + '</div><div class="date" style="margin-top:6px;">🎌 ' + fmtDate(e.date) + '</div>' +
+      '<div class="top"><h3>' + esc(e.name) + '</h3><span class="tag" style="color:' + color + ';border-color:' + color + '">' + esc(e.city) + '</span></div>' +
+      '<div class="date" style="margin-top:6px;">🎌 ' + esc(fmtDate(e.date)) + '</div>' +
+      row('📍', e.venue ? (e.venue + (e.city ? ', ' + e.city : '')) : '') +
+      row('🧭', fmtCoord(e.lat, e.lng)) +
+      (desc ? '<p>' + esc(desc) + '</p>' : '') +
       '</div></div>';
   }
 
@@ -82,7 +99,7 @@
     var el = document.createElement('div');
     el.className = 'mk' + (kind === 'spot' ? ' spot' : '');
     el.style.background = color;
-    var popup = new maplibregl.Popup({ offset: 16, closeButton: false, closeOnClick: false, maxWidth: '250px' }).setHTML(html);
+    var popup = new maplibregl.Popup({ offset: 16, closeButton: true, closeOnClick: false, maxWidth: '280px' }).setHTML(html);
     var marker = new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).setPopup(popup).addTo(map);
     var entry = { kind: kind, city: item.city, marker: marker, popup: popup, el: el, visible: true };
     el.addEventListener('click', function () { marker.togglePopup(); });
