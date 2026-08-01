@@ -72,7 +72,7 @@ export default function EventsPage() {
                   </div>
                 </div>
                 <div className="r-cta">
-                  <Link className="icon-btn" href="/map" title="View on map">🗺️</Link>
+                  <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title="Show this location on the map">🗺️</Link>
                 </div>
               </div>
             );

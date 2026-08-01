@@ -275,6 +275,7 @@ export default function AdminDashboard() {
                       <td className="hide-sm">{day} {mon} {year}</td>
                       <td><span className={`status ${e.status}`}>{e.status === "live" ? "● Live" : e.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
+                        <a className="mini-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
                         <button className="mini-btn" type="button" title="Edit" onClick={() => editEvent(e)}>✏️</button>
                         <button className="mini-btn del" type="button" title="Delete" onClick={async () => { try { await deleteEvent(e.id); } catch (err) { fail("delete the event", err); } }}>🗑️</button>
                       </div></td>
@@ -300,6 +301,7 @@ export default function AdminDashboard() {
                     <td className="hide-sm">{p.city}</td>
                     <td><span className={`status ${p.status}`}>{p.status === "live" ? "● Live" : p.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
                     <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
+                      <a className="mini-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
                       <button className="mini-btn" type="button" title="Edit" onClick={() => editPlace(p)}>✏️</button>
                       <button className="mini-btn del" type="button" title="Delete" onClick={async () => { try { await deletePlace(p.id); } catch (err) { fail("delete the spot", err); } }}>🗑️</button>
                     </div></td>

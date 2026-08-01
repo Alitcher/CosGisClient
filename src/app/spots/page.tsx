@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { placeTypeLabel } from "@/lib/data";
@@ -31,7 +32,10 @@ export default function SpotsPage() {
               <div className="spot-body">
                 <div className="spot-top">
                   <h3>{p.name}</h3>
-                  <span className="spot-type">{placeTypeLabel[p.type]}</span>
+                  <div className="flex gap-sm" style={{ alignItems: "center" }}>
+                    <span className="spot-type">{placeTypeLabel[p.type]}</span>
+                    <Link className="icon-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} title="Show this location on the map">🗺️</Link>
+                  </div>
                 </div>
                 <div className="spot-meta">📍 {p.address ?? p.city}</div>
                 {p.description && <p className="muted" style={{ fontSize: 13 }}>{p.description}</p>}
