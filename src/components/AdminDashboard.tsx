@@ -20,7 +20,7 @@ import type { Event, Place, City, Status, PlaceType } from "@/types";
 type Tab = "events" | "spots" | "pending";
 
 /** A row in the Pending tab — either a pending event or a pending place. */
-type PendingItem = { kind: "event" | "place"; id: string; name: string; meta: string };
+type PendingItem = { kind: "event" | "place"; id: string; name: string; meta: string; lng: number; lat: number };
 
 type EventForm = {
   id: string | null;
@@ -70,8 +70,14 @@ export default function AdminDashboard() {
     try {
       const [ev, pl] = await Promise.all([apiListPendingEvents(), apiListPendingPlaces()]);
       setPendingItems([
-        ...ev.map((e): PendingItem => ({ kind: "event", id: e.id, name: e.name, meta: `${e.city} · ${e.date}` })),
-        ...pl.map((p): PendingItem => ({ kind: "place", id: p.id, name: p.name, meta: `${p.city} · ${placeTypeLabel[p.type]}` })),
+        ...ev.map((e): PendingItem => ({
+          kind: "event", id: e.id, name: e.name, lng: e.lng, lat: e.lat,
+          meta: `📍 ${[e.venue, e.city].filter(Boolean).join(", ")} · ${e.date}`,
+        })),
+        ...pl.map((p): PendingItem => ({
+          kind: "place", id: p.id, name: p.name, lng: p.lng, lat: p.lat,
+          meta: `📍 ${p.address ?? p.city} · ${placeTypeLabel[p.type]}`,
+        })),
       ]);
       setSelected(new Set());
     } catch (err) {
@@ -340,6 +346,7 @@ export default function AdminDashboard() {
                       <td className="hide-sm">{it.kind === "event" ? "Event" : "Spot"}</td>
                       <td className="hide-sm">{it.meta}</td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
+                        <a className="mini-btn" href={`/map?lng=${it.lng}&lat=${it.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
                         <button className="mini-btn" type="button" title="Approve" disabled={busy} onClick={() => approveOne(it)}>✓</button>
                         <button className="mini-btn del" type="button" title="Reject" disabled={busy} onClick={() => rejectOne(it)}>✕</button>
                       </div></td>
