@@ -27,6 +27,16 @@
   .card .themes span { font-size: 10px; font-weight: 700; color: #5b4779; background: #f3eefb;
         border: 1.5px solid #e3d6f6; padding: 2px 7px; border-radius: 999px; }
   .card .date { font-size: 12px; font-weight: 700; color: #be185d; }
+  /* custom rotation compass */
+  .compass { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .compass .rose { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #d9c4f5;
+        background: #fff; cursor: pointer; padding: 0; display: grid; place-items: center;
+        box-shadow: 0 3px 8px rgba(0,0,0,.22); transition: opacity .15s, box-shadow .15s; }
+  .compass .rose:hover { box-shadow: 0 4px 12px rgba(124,58,173,.35); }
+  .compass .needle { transform-origin: 50% 50%; transition: transform .12s ease-out; }
+  .compass .deg { font: 800 11px Inter, sans-serif; color: #5b4779; background: #fff;
+        border: 1.5px solid #e3d6f6; border-radius: 999px; padding: 1px 8px; min-width: 26px;
+        text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.16); }
 </style>
 </head>
 <body>
@@ -89,7 +99,50 @@
   }
 
   var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/liberty', center: [24.945, 60.2], zoom: 10.5 });
-  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }));
+  // Keep the zoom buttons but drop the stock compass — we add our own below.
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+
+  // --- custom compass: needle points to true north as you rotate, the pill shows how
+  // many degrees you've turned from the default (north-up), and clicking it resets. ---
+  var compassNeedle, compassDeg, compassBtn;
+  var CompassControl = {
+    onAdd: function (m) {
+      this._map = m;
+      var c = document.createElement('div');
+      c.className = 'maplibregl-ctrl compass';
+      c.innerHTML =
+        '<button class="rose" type="button" aria-label="Reset bearing to north">' +
+          '<svg class="needle" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">' +
+            '<polygon points="12,2 7.5,13 12,10.5 16.5,13" fill="#e5484d"></polygon>' +   /* N half (red) */
+            '<polygon points="12,22 7.5,11 12,13.5 16.5,11" fill="#9aa0b4"></polygon>' +  /* S half (grey) */
+          '</svg>' +
+        '</button>' +
+        '<div class="deg">0°</div>';
+      compassBtn = c.querySelector('.rose');
+      compassNeedle = c.querySelector('.needle');
+      compassDeg = c.querySelector('.deg');
+      // Click = ease back to the default orientation (north up, no pitch).
+      compassBtn.addEventListener('click', function () { m.easeTo({ bearing: 0, pitch: 0, duration: 500 }); });
+      this._el = c;
+      return c;
+    },
+    onRemove: function () { if (this._el && this._el.parentNode) this._el.parentNode.removeChild(this._el); this._map = undefined; }
+  };
+  function updateCompass() {
+    if (!compassNeedle) return;
+    var b = map.getBearing();                       // -180..180 (0 = north up = default)
+    compassNeedle.style.transform = 'rotate(' + (-b) + 'deg)'; // keep the red arrow on true north
+    var heading = (Math.round(b) + 360) % 360;      // 0..359
+    var diff = Math.min(heading, 360 - heading);    // shortest turn from default, 0..180
+    compassDeg.textContent = diff + '°';
+    compassBtn.title = diff === 0
+      ? 'Facing north (default)'
+      : 'Rotated ' + diff + '° from north — click to reset';
+    compassBtn.style.opacity = diff === 0 ? '.7' : '1';
+  }
+  map.addControl(CompassControl, 'top-right');
+  map.on('rotate', updateCompass);
+  map.on('pitch', updateCompass);
 
   var CARD_ZOOM = 14;
   var entries = [];          // { kind, city, marker, popup, el, visible }
@@ -147,6 +200,7 @@
   map.on('load', function () {
     buildPlaces(places);
     buildEvents(defaultEvents);
+    updateCompass();
     parent.postMessage({ type: 'mapReady' }, '*');
   });
 

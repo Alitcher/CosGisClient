@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
@@ -12,6 +13,7 @@ type CityFilter = (typeof CITIES)[number];
 export default function MapView() {
   const { events } = useEventStore();
   const { places } = usePlaceStore();
+  const params = useSearchParams();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [city, setCity] = useState<CityFilter>("All");
   const [ready, setReady] = useState(false);
@@ -41,6 +43,18 @@ export default function MapView() {
   useEffect(() => {
     if (ready) post({ type: "filterCity", city: city === "All" ? "all" : city });
   }, [ready, city]);
+
+  // When arrived here via a "show on map" button (/map?lng=..&lat=..), fly to that
+  // node. Small delay lets setEvents/setPlaces build the markers first, so the
+  // target pin's detail popup auto-opens once we're zoomed in on it.
+  useEffect(() => {
+    if (!ready) return;
+    const lng = Number(params.get("lng"));
+    const lat = Number(params.get("lat"));
+    if (!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+    const t = setTimeout(() => post({ type: "focus", lng, lat }), 200);
+    return () => clearTimeout(t);
+  }, [ready, params]);
 
   const list = events
     .filter((e) => (city === "All" ? true : e.city === city))
