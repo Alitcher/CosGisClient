@@ -126,9 +126,7 @@
     "noConventions": "Ei tapahtumia: {city}.",
     "mapTitle": "Cosplay-kartta",
     "legendSpots": "Cosplay-paikat",
-    "legendHelsinki": "Helsingin conit",
-    "legendVantaa": "Vantaan conit",
-    "legendEspoo": "Espoon conit"
+    "legendCity": "Conit: {city}"
   },
   "MiniCalendar": {
     "conDay": "● = con-päivä",
@@ -146,6 +144,10 @@
     "submitting": "Lähetetään…",
     "submit": "📨 Lähetä tarkistettavaksi",
     "city": "Kaupunki",
+    "cityDetecting": "📍 Haetaan kaupunkia sijainnin perusteella…",
+    "cityDetected": "📍 Asetettu sijainnin perusteella — vaihda, jos se on väärin.",
+    "cityUnsupported": "⚠️ Sijainti ei ole tuetussa kaupungissa. Valitse lähin.",
+    "cityUnknown": "⚠️ Kaupunkia ei juuri nyt voitu tunnistaa. Valitse se itse.",
     "longitude": "Pituusaste *",
     "latitude": "Leveysaste *",
     "coordsHint": "📍 Valitse yllä olevasta hakulistasta, niin nämä täyttyvät automaattisesti.",
@@ -164,12 +166,17 @@
     "venue": "Tapahtumapaikka *",
     "venuePlaceholder": "esim. Messukeskus",
     "startDate": "Alkamispäivä *",
-    "endDate": "Päättymispäivä (vapaaehtoinen — monipäiväinen)",
+    "endDate": "Päättymispäivä (vapaaehtoinen)",
+    "startTime": "Alkamisaika (vapaaehtoinen)",
+    "endTime": "Päättymisaika (vapaaehtoinen)",
     "location": "Sijainti *",
     "locationPlaceholder": "Hae paikkaa, osoitetta tai postinumeroa",
     "descriptionPlaceholder": "Mistä tapahtumassa on kyse?",
+    "image": "Pikkukuvan / logon URL (vapaaehtoinen)",
+    "imagePlaceholder": "https://… linkki tapahtuman logoon tai julisteeseen",
     "required": "Nimi, paikka ja alkamispäivä ovat pakollisia.",
     "endBeforeStart": "Päättymispäivä ei voi olla ennen alkamispäivää.",
+    "endTimeBeforeStart": "Päättymisaika ei voi olla ennen alkamisaikaa yksipäiväisessä tapahtumassa.",
     "needCoords": "Lisää sijainnin pituus- ja leveysaste."
   },
   "SubmitSpot": {

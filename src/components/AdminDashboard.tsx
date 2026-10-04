@@ -6,6 +6,10 @@ import ThemeToggle from "./ThemeToggle";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { fmtRange, placeTypeLabel } from "@/lib/data";
+import { cityLabel } from "@/lib/cities";
+import { useCityFromCoords } from "@/lib/useCityFromCoords";
+import CitySelect from "./CitySelect";
+import EventThumb from "./EventThumb";
 import {
   apiListPendingEvents,
   apiListPendingPlaces,
@@ -29,7 +33,8 @@ type PendingItem = { id: string; name: string; meta: string; lng: number; lat: n
 type EventForm = {
   id: string | null;
   name: string; venue: string; city: City; date: string; endDate: string;
-  lng: string; lat: string; description: string; url: string; status: Status;
+  startTime: string; endTime: string;
+  lng: string; lat: string; description: string; url: string; image: string; status: Status;
 };
 type PlaceForm = {
   id: string | null;
@@ -38,7 +43,7 @@ type PlaceForm = {
   description: string; openingHours: string; status: Status;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", endDate: "", lng: "", lat: "", description: "", url: "", status: "live" };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live" };
 const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live" };
 
 function fail(action: string, err: unknown) {
@@ -156,7 +161,7 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, endDate: e.endDate ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", status: e.status });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status });
     setDrawerKind("events");
     setOpen(true);
   }
@@ -175,7 +180,12 @@ export default function AdminDashboard() {
     const f = eventForm;
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and start date are required.");
     if (f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
-    const data = { name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(), ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.url.trim() ? { url: f.url.trim() } : {}) };
+    if (!f.endDate && f.startTime && f.endTime && f.endTime < f.startTime) return alert("End time can't be before the start time on a one-day event.");
+    const data = {
+      name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
+      ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
+      ...(f.url.trim() ? { url: f.url.trim() } : {}), ...(f.image.trim() ? { image: f.image.trim() } : {}),
+    };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
       else await addEvent(data);
@@ -212,6 +222,9 @@ export default function AdminDashboard() {
 
   const setE = <K extends keyof EventForm>(k: K, v: EventForm[K]) => setEventForm((f) => ({ ...f, [k]: v }));
   const setP = <K extends keyof PlaceForm>(k: K, v: PlaceForm[K]) => setPlaceForm((f) => ({ ...f, [k]: v }));
+  // City follows the coordinates (see useCityFromCoords); still editable by hand.
+  const eventCityDetect = useCityFromCoords(eventForm.lng, eventForm.lat, (c) => setE("city", c));
+  const placeCityDetect = useCityFromCoords(placeForm.lng, placeForm.lat, (c) => setP("city", c));
 
   const danger = { color: "#e5484d" } as const;
   const allChecked = pendingItems.length > 0 && selected.size === pendingItems.length;
@@ -286,7 +299,7 @@ export default function AdminDashboard() {
                 {visEvents.map((e) => {
                   return (
                     <tr key={e.id}>
-                      <td><div className="ev-name">{e.name}</div><div className="ev-sub">{e.city}</div></td>
+                      <td><div className="ev-name-cell"><EventThumb event={e} size={36} /><div><div className="ev-name">{e.name}</div><div className="ev-sub">{cityLabel(e.city)}</div></div></div></td>
                       <td className="hide-sm">{e.venue}</td>
                       <td className="hide-sm">{fmtRange(e.date, e.endDate)}</td>
                       <td><span className={`status ${e.status}`}>{e.status === "live" ? "● Live" : e.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
@@ -314,7 +327,7 @@ export default function AdminDashboard() {
                   <tr key={p.id}>
                     <td><div className="ev-name">{p.name}</div><div className="ev-sub">{p.address ?? p.city}</div></td>
                     <td className="hide-sm">{placeTypeLabel[p.type]}</td>
-                    <td className="hide-sm">{p.city}</td>
+                    <td className="hide-sm">{cityLabel(p.city)}</td>
                     <td><span className={`status ${p.status}`}>{p.status === "live" ? "● Live" : p.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
                     <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
                       <a className="mini-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
@@ -384,16 +397,27 @@ export default function AdminDashboard() {
               <div className="field"><label>Event name</label><input value={eventForm.name} onChange={(e) => setE("name", e.target.value)} placeholder="e.g. Tracon Hel" /></div>
               <div className="field"><label>Venue</label><input value={eventForm.venue} onChange={(e) => setE("venue", e.target.value)} placeholder="e.g. Messukeskus" /></div>
               <div className="field-row">
-                <div className="field"><label>City</label><select value={eventForm.city} onChange={(e) => setE("city", e.target.value as City)}><option>Helsinki</option><option>Vantaa</option><option>Espoo</option></select></div>
                 <div className="field"><label>Start date</label><input type="date" value={eventForm.date} onChange={(e) => setE("date", e.target.value)} /></div>
+                <div className="field"><label>End date (optional)</label><input type="date" value={eventForm.endDate} min={eventForm.date || undefined} onChange={(e) => setE("endDate", e.target.value)} /></div>
               </div>
-              <div className="field"><label>End date (optional — for multi-day events)</label><input type="date" value={eventForm.endDate} min={eventForm.date || undefined} onChange={(e) => setE("endDate", e.target.value)} /></div>
+              <div className="field-row">
+                <div className="field"><label>Start time (optional)</label><input type="time" value={eventForm.startTime} onChange={(e) => setE("startTime", e.target.value)} /></div>
+                <div className="field"><label>End time (optional)</label><input type="time" value={eventForm.endTime} onChange={(e) => setE("endTime", e.target.value)} /></div>
+              </div>
               <div className="field-row">
                 <div className="field"><label>Longitude</label><input value={eventForm.lng} onChange={(e) => setE("lng", e.target.value)} placeholder="24.9354" /></div>
                 <div className="field"><label>Latitude</label><input value={eventForm.lat} onChange={(e) => setE("lat", e.target.value)} placeholder="60.2012" /></div>
               </div>
+              <CitySelect value={eventForm.city} onChange={(c) => setE("city", c)} detect={eventCityDetect} />
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
               <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://… event page" /></div>
+              <div className="field">
+                <label>Thumbnail / logo URL (optional)</label>
+                <div className="thumb-input">
+                  <EventThumb event={{ name: eventForm.name, image: eventForm.image.trim() || undefined }} size={44} />
+                  <input type="url" value={eventForm.image} onChange={(e) => setE("image", e.target.value)} placeholder="https://… .png / .jpg" />
+                </div>
+              </div>
               {eventForm.id && (
                 <div className="field"><label>Status</label><select value={eventForm.status} onChange={(e) => setE("status", e.target.value as Status)}>{isPendingId(eventForm.id) && <option value="pending">Pending (keep in queue)</option>}<option value="live">Live</option><option value="draft">Draft</option></select></div>
               )}
@@ -407,15 +431,13 @@ export default function AdminDashboard() {
           <>
             <div className="drawer-body">
               <div className="field"><label>Spot name</label><input value={placeForm.name} onChange={(e) => setP("name", e.target.value)} placeholder="e.g. Café Sakura" /></div>
-              <div className="field-row">
-                <div className="field"><label>Type</label><select value={placeForm.type} onChange={(e) => setP("type", e.target.value as PlaceType)}><option value="cafe">Café</option><option value="restaurant">Restaurant</option><option value="mall">Mall</option><option value="studio">Studio</option><option value="outdoor">Outdoor / Park</option></select></div>
-                <div className="field"><label>City</label><select value={placeForm.city} onChange={(e) => setP("city", e.target.value as City)}><option>Helsinki</option><option>Vantaa</option><option>Espoo</option></select></div>
-              </div>
+              <div className="field"><label>Type</label><select value={placeForm.type} onChange={(e) => setP("type", e.target.value as PlaceType)}><option value="cafe">Café</option><option value="restaurant">Restaurant</option><option value="mall">Mall</option><option value="studio">Studio</option><option value="outdoor">Outdoor / Park</option></select></div>
               <div className="field"><label>Address</label><input value={placeForm.address} onChange={(e) => setP("address", e.target.value)} placeholder="Street, City" /></div>
               <div className="field-row">
                 <div className="field"><label>Longitude</label><input value={placeForm.lng} onChange={(e) => setP("lng", e.target.value)} placeholder="24.9402" /></div>
                 <div className="field"><label>Latitude</label><input value={placeForm.lat} onChange={(e) => setP("lat", e.target.value)} placeholder="60.1641" /></div>
               </div>
+              <CitySelect value={placeForm.city} onChange={(c) => setP("city", c)} detect={placeCityDetect} />
               <div className="field"><label>Themes (comma-separated)</label><input value={placeForm.themes} onChange={(e) => setP("themes", e.target.value)} placeholder="pastel, kawaii, neon" /></div>
               <div className="field"><label>Photo URL</label><input value={placeForm.photo} onChange={(e) => setP("photo", e.target.value)} placeholder="https://…" /></div>
               <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00–20:00" /></div>

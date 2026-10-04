@@ -195,6 +195,16 @@ export function fmtRange(start: string, end?: string): string {
   return `${s.day} ${s.mon} ${s.year} – ${e.day} ${e.mon} ${e.year}`;
 }
 
+/**
+ * Opening hours line: "10:00–18:00", "10:00–" (start only), "–18:00" (end
+ * only), or "" when no times are known. For multi-day events the start is on
+ * the first day and the end on the last.
+ */
+export function fmtTimes(start?: string, end?: string): string {
+  if (!start && !end) return "";
+  return `${start ?? ""}–${end ?? ""}`;
+}
+
 /** The day an event is considered "over" for upcoming/past filtering. */
 export function eventEndsOn(e: { date: string; endDate?: string }): string {
   return e.endDate && e.endDate >= e.date ? e.endDate : e.date;

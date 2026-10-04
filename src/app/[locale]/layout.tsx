@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -46,7 +47,9 @@ export default async function RootLayout({ children, params }: Props) {
         />
       </head>
       <body suppressHydrationWarning>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        {/* beforeInteractive: runs before paint (no wrong-theme flash). next/script
+            instead of a raw <script>, which React warns about on client renders. */}
+        <Script id="theme-init" strategy="beforeInteractive">{themeInit}</Script>
         {/* Hands this language's messages to the client components ("use client"). */}
         <NextIntlClientProvider>
           <ThemeSync />

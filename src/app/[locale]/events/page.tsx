@@ -5,12 +5,13 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { splitDate, fmtRange, eventEndsOn } from "@/lib/data";
+import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
+import { citiesIn, cityLabel } from "@/lib/cities";
 import { useEventStore } from "@/lib/eventsStore";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
+import EventThumb from "@/components/EventThumb";
 import type { City } from "@/types";
 
-const CITIES: (City | "All cities")[] = ["All cities", "Helsinki", "Vantaa", "Espoo"];
 const WHENS = ["Upcoming", "Past", "All"] as const;
 const WHEN_LABEL = { Upcoming: "upcoming", Past: "past", All: "all" } as const;
 
@@ -18,7 +19,9 @@ export default function EventsPage() {
   const t = useTranslations("Events");
   const tc = useTranslations("Common");
   const { events } = useEventStore();
-  const [city, setCity] = useState<(typeof CITIES)[number]>("All cities");
+  const [city, setCity] = useState<City | "All cities">("All cities");
+  // Only offer cities that actually have events, so nine empty chips don't pile up.
+  const cityOptions: (City | "All cities")[] = ["All cities", ...citiesIn(events)];
   const [when, setWhen] = useState<(typeof WHENS)[number]>("Upcoming");
   const [q, setQ] = useState("");
 
@@ -57,9 +60,9 @@ export default function EventsPage() {
             🔍 <input type="text" placeholder={t("search")} value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
           <div className="seg">
-            {CITIES.map((c) => (
+            {cityOptions.map((c) => (
               <button key={c} className={city === c ? "on" : ""} type="button" onClick={() => setCity(c)}>
-                {c === "All cities" ? t("allCities") : c}
+                {c === "All cities" ? t("allCities") : cityLabel(c)}
               </button>
             ))}
           </div>
@@ -75,6 +78,7 @@ export default function EventsPage() {
         <div className="ev-rows">
           {list.map((e) => {
             const { day, mon, year } = splitDate(e.date);
+            const times = fmtTimes(e.startTime, e.endTime);
             return (
               <div className="card row" key={e.id}>
                 <div className="r-date">
@@ -82,12 +86,16 @@ export default function EventsPage() {
                   <div className="m">{mon}</div>
                   <div className="y">{year}</div>
                 </div>
-                <div className="r-main">
-                  <h3>{e.name}</h3>
-                  <div className="meta">
-                    <span>📍 <b>{e.venue}</b></span>
-                    <span className={`chip ${e.city.toLowerCase()}`}>{e.city}</span>
-                    {e.endDate && e.endDate > e.date && <span>🗓️ {fmtRange(e.date, e.endDate)}</span>}
+                <div className="r-main r-with-thumb">
+                  <EventThumb event={e} size={52} />
+                  <div>
+                    <h3>{e.name}</h3>
+                    <div className="meta">
+                      <span>📍 <b>{e.venue}</b></span>
+                      <span className={`chip ${e.city.toLowerCase()}`}>{cityLabel(e.city)}</span>
+                      {e.endDate && e.endDate > e.date && <span>🗓️ {fmtRange(e.date, e.endDate)}</span>}
+                      {times && <span>🕐 {times}</span>}
+                    </div>
                   </div>
                 </div>
                 <div className="r-cta">

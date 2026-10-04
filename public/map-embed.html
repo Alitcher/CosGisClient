@@ -30,6 +30,8 @@
   .card .ev-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700;
         color: #7c3aad; text-decoration: none; border-bottom: 1.5px solid #d9c4f5; }
   .card .ev-link:hover { border-bottom-color: #7c3aad; }
+  .card .ev-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .card img.thumb { width: 44px; height: 44px; flex: none; border-radius: 10px; border: 1.5px solid #e3d6f6; }
   /* custom rotation compass */
   .compass { display: flex; flex-direction: column; align-items: center; gap: 3px; }
   .compass .rose { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #d9c4f5;
@@ -46,7 +48,15 @@
 <div id="map"></div>
 <script src="/maplibre/maplibre-gl.js"></script>
 <script>
-  var CITY_COLOR = { Helsinki: '#ff4f96', Vantaa: '#ffc93c', Espoo: '#2dd4bf' };
+  // Same colours as CITY_COLOR in src/lib/cities.ts.
+  var CITY_COLOR = {
+    Helsinki: '#ff4f96', Vantaa: '#ffc93c', Espoo: '#2dd4bf',
+    Tampere: '#f97316', Turku: '#3b82f6', Lahti: '#22c55e',
+    Oulu: '#a16207', Jyvaskyla: '#ef4444', Kuopio: '#64748b'
+  };
+  function cityLabel(c) { return c === 'Jyvaskyla' ? 'Jyväskylä' : (c || ''); }
+  // "10:00–18:00", "10:00–", "–18:00" or "" (matches fmtTimes in src/lib/data.ts).
+  function fmtTimes(s, e) { return (s || e) ? (s || '') + '–' + (e || '') : ''; }
   var TYPE_LABEL = { cafe: 'Café', restaurant: 'Restaurant', mall: 'Mall', studio: 'Studio', outdoor: 'Outdoor' };
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtDate(iso) { var p = (iso || '').split('-'); if (p.length < 3) return iso || ''; return p[2] + ' ' + (MON[(+p[1]) - 1] || '') + ' ' + p[0]; }
@@ -104,10 +114,14 @@
   function eventCard(e) {
     var color = CITY_COLOR[e.city] || '#ff4f96';
     var desc = e.description || e.desc || '';
+    var city = cityLabel(e.city);
+    // A dead image link just disappears instead of showing a broken icon.
+    var thumb = e.image ? '<img class="thumb" src="' + esc(e.image) + '" alt="" referrerpolicy="no-referrer" onerror="this.remove()"/>' : '';
     return '<div class="card"><div class="body">' +
-      '<div class="top"><h3>' + esc(e.name) + '</h3><span class="tag" style="color:' + color + ';border-color:' + color + '">' + esc(e.city) + '</span></div>' +
+      '<div class="top"><div class="ev-head">' + thumb + '<h3>' + esc(e.name) + '</h3></div><span class="tag" style="color:' + color + ';border-color:' + color + '">' + esc(city) + '</span></div>' +
       '<div class="date" style="margin-top:6px;">🎌 ' + esc(fmtRange(e.date, e.endDate)) + '</div>' +
-      row('📍', e.venue ? (e.venue + (e.city ? ', ' + e.city : '')) : '') +
+      row('🕐', fmtTimes(e.startTime, e.endTime)) +
+      row('📍', e.venue ? (e.venue + (city ? ', ' + city : '')) : '') +
       row('🧭', fmtCoord(e.lat, e.lng)) +
       (desc ? '<p>' + esc(desc) + '</p>' : '') +
       (e.url ? '<a class="ev-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">🔗 Event page ↗</a>' : '') +

@@ -168,6 +168,18 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 :root[data-theme="dark"] .chip.vantaa { color: var(--gold); }
 .chip.espoo { color: #0d9488; border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 16%, transparent); }
 :root[data-theme="dark"] .chip.espoo { color: var(--cyan); }
+/* Cities outside the capital region: one rule, colour via --c (same as CITY_COLOR in lib/cities). */
+.chip.tampere, .ev.tampere { --c: #f97316; }
+.chip.turku, .ev.turku { --c: #3b82f6; }
+.chip.lahti, .ev.lahti { --c: #22c55e; }
+.chip.oulu, .ev.oulu { --c: #a16207; }
+.chip.jyvaskyla, .ev.jyvaskyla { --c: #ef4444; }
+.chip.kuopio, .ev.kuopio { --c: #64748b; }
+.chip:is(.tampere, .turku, .lahti, .oulu, .jyvaskyla, .kuopio) { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+
+/* event thumbnail / logo (EventThumb) */
+.ev-thumb { display: inline-grid; place-items: center; flex: none; border-radius: 12px; overflow: hidden; border: 2px solid var(--border); background: color-mix(in srgb, var(--purple) 14%, transparent); line-height: 1; }
+.ev-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ---------- Footer ---------- */
 .footer { border-top: 2px solid var(--border); margin-top: 70px; padding: 30px 0; color: var(--text-2); font-size: 13px; }
@@ -217,6 +229,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .up-grid { grid-template-columns: repeat(3, 1fr); }
 .ev-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: transform .18s ease; }
 .ev-card:hover { transform: translateY(-4px); }
+.ev-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .ev-date { display: flex; align-items: baseline; gap: 8px; }
 .ev-date .d { font-size: 30px; font-weight: 900; letter-spacing: -0.03em; }
 .ev-date .m { font-size: 13px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; }
@@ -310,6 +323,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .ev.helsinki { background: linear-gradient(90deg, rgba(255,74,141,0.85), rgba(255,74,141,0.5)); }
 .ev.vantaa { background: linear-gradient(90deg, rgba(251,191,36,0.85), rgba(251,191,36,0.45)); color: #1a1340; }
 .ev.espoo { background: linear-gradient(90deg, rgba(34,211,238,0.8), rgba(34,211,238,0.45)); color: #07223a; }
+.ev:is(.tampere, .turku, .lahti, .oulu, .jyvaskyla, .kuopio) { background: linear-gradient(90deg, color-mix(in srgb, var(--c) 88%, transparent), color-mix(in srgb, var(--c) 50%, transparent)); }
 .ev .dot { display:inline-block; width:6px;height:6px;border-radius:50%;background:#fff;margin-right:5px;vertical-align:middle; }
 .ev-more { margin-top: 4px; font-size: 11px; color: var(--text-2); font-weight: 600; padding-left: 4px; }
 .cal-foot { display: flex; gap: 18px; margin-top: 18px; flex-wrap: wrap; align-items: center; }
@@ -337,6 +351,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .r-date .d { font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
 .r-date .m { font-size: 11px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.08em; }
 .r-date .y { font-size: 11px; color: var(--text-2); }
+.r-with-thumb { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .r-main h3 { font-size: 18px; }
 .r-main .meta { display: flex; align-items: center; gap: 12px; margin-top: 6px; flex-wrap: wrap; color: var(--text-2); font-size: 13px; }
 .r-main .meta b { color: var(--text-1); font-weight: 600; }
@@ -453,6 +468,7 @@ tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: var(--surface-2); }
 .ev-name { font-weight: 700; font-family: var(--font-display); }
 .ev-sub { font-size: 12px; color: var(--text-2); }
+.ev-name-cell { display: flex; align-items: center; gap: 10px; }
 .status { font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 999px; border: 2px solid; }
 .status.live { color: #0d9488; border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 14%, transparent); }
 .status.draft { color: var(--text-2); border-color: var(--border); }
@@ -474,7 +490,11 @@ tbody tr:hover { background: var(--surface-2); }
 .field input, .field select, .field textarea { width: 100%; padding: 11px 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface); color: var(--text-0); font-family: inherit; font-size: 14px; outline: none; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--border-strong); }
 .field-row { display: flex; gap: 12px; }
-.field-row .field { flex: 1; }
+.field-row .field { flex: 1; min-width: 0; } /* min-width: date/time inputs won't shrink otherwise */
+.field-note { font-size: 12px; margin-top: 6px; }
+.field-note.warn { color: #e5484d; }
+.thumb-input { display: flex; align-items: center; gap: 10px; }
+.thumb-input input { flex: 1; min-width: 0; }
 .drawer-foot { padding: 18px 20px; border-top: 2px solid var(--border); display: flex; gap: 10px; }
 .drawer-foot .btn { flex: 1; justify-content: center; }
 .close-x { width: 34px; height: 34px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); font-size: 16px; color: var(--text-0); }

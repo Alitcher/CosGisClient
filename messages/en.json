@@ -126,9 +126,7 @@
     "noConventions": "No conventions in {city}.",
     "mapTitle": "Cosplay map",
     "legendSpots": "Cosplay spots",
-    "legendHelsinki": "Helsinki cons",
-    "legendVantaa": "Vantaa cons",
-    "legendEspoo": "Espoo cons"
+    "legendCity": "{city} cons"
   },
   "MiniCalendar": {
     "conDay": "● = con day",
@@ -146,6 +144,10 @@
     "submitting": "Submitting…",
     "submit": "📨 Submit for review",
     "city": "City",
+    "cityDetecting": "📍 Finding the city from the location…",
+    "cityDetected": "📍 Set from the location — change it if it's wrong.",
+    "cityUnsupported": "⚠️ This location isn't in a supported city. Pick the nearest one.",
+    "cityUnknown": "⚠️ Couldn't detect the city right now. Please choose it.",
     "longitude": "Longitude *",
     "latitude": "Latitude *",
     "coordsHint": "📍 Pick from the search list above and these fill in automatically.",
@@ -164,12 +166,17 @@
     "venue": "Venue *",
     "venuePlaceholder": "e.g. Messukeskus",
     "startDate": "Start date *",
-    "endDate": "End date (optional — multi-day)",
+    "endDate": "End date (optional)",
+    "startTime": "Start time (optional)",
+    "endTime": "End time (optional)",
     "location": "Location *",
     "locationPlaceholder": "Search a venue, address or postcode",
     "descriptionPlaceholder": "What is the event about?",
+    "image": "Thumbnail / logo URL (optional)",
+    "imagePlaceholder": "https://… link to the event's logo or poster",
     "required": "Name, venue and start date are required.",
     "endBeforeStart": "End date can't be before the start date.",
+    "endTimeBeforeStart": "End time can't be before the start time on a one-day event.",
     "needCoords": "Please add the location's longitude and latitude."
   },
   "SubmitSpot": {

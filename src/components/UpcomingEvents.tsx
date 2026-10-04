@@ -1,7 +1,9 @@
 "use client";
 
-import { splitDate, eventEndsOn } from "@/lib/data";
+import { splitDate, eventEndsOn, fmtTimes } from "@/lib/data";
+import { cityLabel } from "@/lib/cities";
 import { useEventStore } from "@/lib/eventsStore";
+import EventThumb from "./EventThumb";
 
 export default function UpcomingEvents() {
   const { events } = useEventStore();
@@ -17,11 +19,16 @@ export default function UpcomingEvents() {
     <div className="grid up-grid">
       {upcoming.map((e) => {
         const { day, mon } = splitDate(e.date);
+        const times = fmtTimes(e.startTime, e.endTime);
         return (
           <div className="card ev-card" key={e.id}>
-            <div className="ev-date"><span className="d">{day}</span><span className="m">{mon}</span></div>
+            <div className="ev-card-head">
+              <div className="ev-date"><span className="d">{day}</span><span className="m">{mon}</span></div>
+              <EventThumb event={e} size={56} />
+            </div>
             <h4>{e.name}</h4>
-            <div className="ev-meta">📍 {e.venue} <span className={`chip ${e.city.toLowerCase()}`}>{e.city}</span></div>
+            <div className="ev-meta">📍 {e.venue} <span className={`chip ${e.city.toLowerCase()}`}>{cityLabel(e.city)}</span></div>
+            {times && <div className="ev-meta">🕐 {times}</div>}
             {e.description && <p className="muted" style={{ fontSize: 13 }}>{e.description}</p>}
           </div>
         );

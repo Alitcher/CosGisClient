@@ -7,9 +7,11 @@ import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { splitDate, eventEndsOn } from "@/lib/data";
+import { CITY_COLOR, citiesIn, cityLabel } from "@/lib/cities";
+import EventThumb from "./EventThumb";
+import type { City } from "@/types";
 
-const CITIES = ["All", "Helsinki", "Vantaa", "Espoo"] as const;
-type CityFilter = (typeof CITIES)[number];
+type CityFilter = City | "All";
 
 export default function MapView() {
   const t = useTranslations("Map");
@@ -67,8 +69,12 @@ export default function MapView() {
   const now = new Date();
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
-  const list = events
-    .filter((e) => eventEndsOn(e) >= todayISO)
+  const upcoming = events.filter((e) => eventEndsOn(e) >= todayISO);
+  // Filter chips and legend only list cities that have something on the map.
+  const cityOptions: CityFilter[] = ["All", ...citiesIn([...upcoming, ...places])];
+  const legendCities = citiesIn(upcoming);
+
+  const list = upcoming
     .filter((e) => (city === "All" ? true : e.city === city))
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date));
@@ -81,9 +87,9 @@ export default function MapView() {
           <p>{t("subtitle")}</p>
         </div>
         <div className="filters">
-          {CITIES.map((c) => (
+          {cityOptions.map((c) => (
             <button key={c} className={`fchip${city === c ? " on" : ""}`} type="button" onClick={() => setCity(c)}>
-              {c === "All" ? t("all") : c}
+              {c === "All" ? t("all") : cityLabel(c)}
             </button>
           ))}
         </div>
@@ -97,16 +103,17 @@ export default function MapView() {
                 onClick={() => post({ type: "focus", lng: e.lng, lat: e.lat })}
               >
                 <div className="li-date"><div className="d">{day}</div><div className="m">{mon}</div></div>
+                <EventThumb event={e} size={36} />
                 <div className="li-body">
                   <h4>{e.name}</h4>
-                  <div className="meta">{e.venue} · {e.city}</div>
+                  <div className="meta">{e.venue} · {cityLabel(e.city)}</div>
                 </div>
               </div>
             );
           })}
           {list.length === 0 && (
             <div style={{ padding: 16, color: "var(--text-2)", fontSize: 13 }}>
-              {t("noConventions", { city: city === "All" ? t("all") : city })}
+              {t("noConventions", { city: city === "All" ? t("all") : cityLabel(city) })}
             </div>
           )}
         </div>
@@ -122,9 +129,9 @@ export default function MapView() {
         />
         <div className="map-legend">
           <div className="legend-row"><span className="sw" style={{ background: "#8b5cf6", borderRadius: 3 }} /> {t("legendSpots")}</div>
-          <div className="legend-row"><span className="sw" style={{ background: "var(--pink)" }} /> {t("legendHelsinki")}</div>
-          <div className="legend-row"><span className="sw" style={{ background: "var(--gold)" }} /> {t("legendVantaa")}</div>
-          <div className="legend-row"><span className="sw" style={{ background: "var(--cyan)" }} /> {t("legendEspoo")}</div>
+          {legendCities.map((c) => (
+            <div className="legend-row" key={c}><span className="sw" style={{ background: CITY_COLOR[c] }} /> {t("legendCity", { city: cityLabel(c) })}</div>
+          ))}
         </div>
         <MiniCalendar />
       </div>

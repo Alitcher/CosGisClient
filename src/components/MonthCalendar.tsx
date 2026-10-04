@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useEventStore } from "@/lib/eventsStore";
+import { CITY_COLOR, citiesIn, cityLabel } from "@/lib/cities";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -101,9 +102,9 @@ export default function MonthCalendar() {
       </div>
 
       <div className="cal-foot">
-        <div className="lg"><span className="sw" style={{ background: "var(--pink)" }} /> Helsinki</div>
-        <div className="lg"><span className="sw" style={{ background: "var(--gold)" }} /> Vantaa</div>
-        <div className="lg"><span className="sw" style={{ background: "var(--cyan)" }} /> Espoo</div>
+        {citiesIn(events).map((c) => (
+          <div className="lg" key={c}><span className="sw" style={{ background: CITY_COLOR[c] }} /> {cityLabel(c)}</div>
+        ))}
         <div className="lg" style={{ marginLeft: "auto", color: "var(--text-2)" }}>
           {t("browseHint")}
         </div>

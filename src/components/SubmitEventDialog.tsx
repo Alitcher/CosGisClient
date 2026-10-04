@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { apiSubmitEvent } from "@/lib/api";
+import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
+import CitySelect from "./CitySelect";
+import EventThumb from "./EventThumb";
 import type { City } from "@/types";
-
-const REGION_CITIES: City[] = ["Helsinki", "Vantaa", "Espoo"];
 
 /**
  * A "Submit event" button + slide-in form for the public. Submissions land in the
@@ -15,9 +16,10 @@ const REGION_CITIES: City[] = ["Helsinki", "Vantaa", "Espoo"];
  */
 type Form = {
   name: string; venue: string; city: City; date: string; endDate: string;
-  lng: string; lat: string; description: string; submittedBy: string;
+  startTime: string; endTime: string;
+  lng: string; lat: string; description: string; image: string; submittedBy: string;
 };
-const EMPTY: Form = { name: "", venue: "", city: "Helsinki", date: "", endDate: "", lng: "", lat: "", description: "", submittedBy: "" };
+const EMPTY: Form = { name: "", venue: "", city: "Helsinki", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", image: "", submittedBy: "" };
 
 export default function SubmitEventDialog({ className = "btn", label }: { className?: string; label?: string }) {
   const t = useTranslations("SubmitEvent");
@@ -29,6 +31,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
   const [f, setF] = useState<Form>(EMPTY);
   const [locQuery, setLocQuery] = useState("");
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((s) => ({ ...s, [k]: v }));
+  const cityDetect = useCityFromCoords(f.lng, f.lat, (c) => set("city", c));
 
   function close() { setOpen(false); }
   function start() { setF(EMPTY); setLocQuery(""); setSent(false); setOpen(true); }
@@ -36,6 +39,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
   async function submit() {
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert(t("required"));
     if (f.endDate && f.endDate < f.date) return alert(t("endBeforeStart"));
+    if ((!f.endDate || f.endDate === f.date) && f.startTime && f.endTime && f.endTime < f.startTime) return alert(t("endTimeBeforeStart"));
     const lng = Number(f.lng), lat = Number(f.lat);
     if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
       return alert(`${t("needCoords")}\n${tf("needCoordsTip")}`);
@@ -44,8 +48,11 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
       await apiSubmitEvent({
         name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date,
         endDate: f.endDate || undefined,
+        startTime: f.startTime || undefined,
+        endTime: f.endTime || undefined,
         lng, lat,
         description: f.description.trim() || undefined,
+        image: f.image.trim() || undefined,
         submittedBy: f.submittedBy.trim() || undefined,
       });
       setSent(true);
@@ -83,10 +90,13 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
               <div className="field"><label>{t("name")}</label><input value={f.name} onChange={(e) => set("name", e.target.value)} placeholder={t("namePlaceholder")} /></div>
               <div className="field"><label>{t("venue")}</label><input value={f.venue} onChange={(e) => set("venue", e.target.value)} placeholder={t("venuePlaceholder")} /></div>
               <div className="field-row">
-                <div className="field"><label>{tf("city")}</label><select value={f.city} onChange={(e) => set("city", e.target.value as City)}><option>Helsinki</option><option>Vantaa</option><option>Espoo</option></select></div>
                 <div className="field"><label>{t("startDate")}</label><input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
+                <div className="field"><label>{t("endDate")}</label><input type="date" value={f.endDate} min={f.date || undefined} onChange={(e) => set("endDate", e.target.value)} /></div>
               </div>
-              <div className="field"><label>{t("endDate")}</label><input type="date" value={f.endDate} min={f.date || undefined} onChange={(e) => set("endDate", e.target.value)} /></div>
+              <div className="field-row">
+                <div className="field"><label>{t("startTime")}</label><input type="time" value={f.startTime} onChange={(e) => set("startTime", e.target.value)} /></div>
+                <div className="field"><label>{t("endTime")}</label><input type="time" value={f.endTime} onChange={(e) => set("endTime", e.target.value)} /></div>
+              </div>
               <div className="field">
                 <label>{t("location")}</label>
                 <AddressAutocomplete
@@ -95,7 +105,6 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
                   onSelect={(r) => {
                     set("lng", String(r.lng));
                     set("lat", String(r.lat));
-                    if (r.city && REGION_CITIES.includes(r.city as City)) set("city", r.city as City);
                   }}
                   placeholder={t("locationPlaceholder")}
                 />
@@ -105,7 +114,15 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
                 <div className="field"><label>{tf("latitude")}</label><input value={f.lat} onChange={(e) => set("lat", e.target.value)} placeholder="60.2012" /></div>
               </div>
               <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
+              <CitySelect value={f.city} onChange={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{tf("description")}</label><textarea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder={t("descriptionPlaceholder")} /></div>
+              <div className="field">
+                <label>{t("image")}</label>
+                <div className="thumb-input">
+                  <EventThumb event={{ name: f.name, image: f.image.trim() || undefined }} size={44} />
+                  <input type="url" value={f.image} onChange={(e) => set("image", e.target.value)} placeholder={t("imagePlaceholder")} />
+                </div>
+              </div>
               <div className="field"><label>{tf("yourName")}</label><input value={f.submittedBy} onChange={(e) => set("submittedBy", e.target.value)} placeholder={tf("yourNamePlaceholder")} /></div>
             </div>
             <div className="drawer-foot">

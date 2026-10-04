@@ -7,7 +7,11 @@
  * the server's `@anime-con/shared` schemas.
  */
 
-export type City = 'Helsinki' | 'Vantaa' | 'Espoo';
+// Matches the server's CityEnum. Values are ASCII ('Jyvaskyla'); show them with
+// cityLabel() from lib/cities for the accented spelling.
+export type City =
+  | 'Helsinki' | 'Vantaa' | 'Espoo'
+  | 'Tampere' | 'Turku' | 'Lahti' | 'Oulu' | 'Jyvaskyla' | 'Kuopio';
 export type Status = 'live' | 'draft' | 'pending';
 export type PlaceType = 'cafe' | 'restaurant' | 'mall' | 'studio' | 'outdoor';
 
@@ -23,6 +27,9 @@ export interface Event {
   lat: number;
   description?: string;
   url?: string; // link to the event's info page (organizer / Linked Events)
+  image?: string; // thumbnail / logo URL
+  startTime?: string; // local 'HH:MM' on `date`
+  endTime?: string; // local 'HH:MM' on `endDate` (or `date`)
   status: Status;
   createdAt?: string;
 }

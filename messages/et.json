@@ -126,9 +126,7 @@
     "noConventions": "Üritusi pole: {city}.",
     "mapTitle": "Cosplay-kaart",
     "legendSpots": "Cosplay-kohad",
-    "legendHelsinki": "Helsingi conid",
-    "legendVantaa": "Vantaa conid",
-    "legendEspoo": "Espoo conid"
+    "legendCity": "Conid: {city}"
   },
   "MiniCalendar": {
     "conDay": "● = con-päev",
@@ -146,6 +144,10 @@
     "submitting": "Saatmine…",
     "submit": "📨 Saada ülevaatamiseks",
     "city": "Linn",
+    "cityDetecting": "📍 Linna otsimine asukoha järgi…",
+    "cityDetected": "📍 Määratud asukoha järgi — muuda, kui see on vale.",
+    "cityUnsupported": "⚠️ See asukoht ei ole toetatud linnas. Vali lähim.",
+    "cityUnknown": "⚠️ Linna ei õnnestunud praegu tuvastada. Palun vali see ise.",
     "longitude": "Pikkuskraad *",
     "latitude": "Laiuskraad *",
     "coordsHint": "📍 Vali ülalolevast otsingunimekirjast ja need täidetakse automaatselt.",
@@ -164,12 +166,17 @@
     "venue": "Toimumiskoht *",
     "venuePlaceholder": "nt Messukeskus",
     "startDate": "Alguskuupäev *",
-    "endDate": "Lõppkuupäev (valikuline — mitmepäevane)",
+    "endDate": "Lõppkuupäev (valikuline)",
+    "startTime": "Algusaeg (valikuline)",
+    "endTime": "Lõpuaeg (valikuline)",
     "location": "Asukoht *",
     "locationPlaceholder": "Otsi kohta, aadressi või postiindeksit",
     "descriptionPlaceholder": "Millest üritus räägib?",
+    "image": "Pisipildi / logo URL (valikuline)",
+    "imagePlaceholder": "https://… link ürituse logole või plakatile",
     "required": "Nimi, toimumiskoht ja alguskuupäev on kohustuslikud.",
     "endBeforeStart": "Lõppkuupäev ei saa olla enne alguskuupäeva.",
+    "endTimeBeforeStart": "Ühepäevase ürituse lõpuaeg ei saa olla enne algusaega.",
     "needCoords": "Lisa asukoha pikkus- ja laiuskraad."
   },
   "SubmitSpot": {
