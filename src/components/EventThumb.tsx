@@ -30,9 +30,7 @@ export default function EventThumb({
         alt=""
         loading="lazy"
         referrerPolicy="no-referrer"
-        // Shrinks on narrow rows (phones) instead of squeezing the event name;
-        // object-fit: contain keeps the whole logo visible at any width.
-        style={{ height: size, maxWidth: `min(${size * 3}px, 40%)` }}
+        style={{ height: size, maxWidth: size * 3 }}
         onError={() => setFailedSrc(src)}
       />
     );

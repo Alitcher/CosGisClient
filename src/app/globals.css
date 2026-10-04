@@ -180,7 +180,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* event thumbnail / logo (EventThumb) */
 .ev-thumb { display: inline-grid; place-items: center; flex: none; border-radius: 12px; overflow: hidden; border: 2px solid var(--border); background: color-mix(in srgb, var(--purple) 14%, transparent); line-height: 1; }
 /* a real logo: natural shape, whole picture, no frame (height/max-width set inline) */
-.ev-logo { display: block; flex: 0 1 auto; min-width: 0; width: auto; object-fit: contain; border-radius: 6px; }
+.ev-logo { display: block; flex: none; width: auto; object-fit: contain; border-radius: 6px; }
 
 /* ---------- Footer ---------- */
 .footer { border-top: 2px solid var(--border); margin-top: 70px; padding: 30px 0; color: var(--text-2); font-size: 13px; }
