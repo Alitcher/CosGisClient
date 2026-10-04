@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { splitDate, eventEndsOn } from "@/lib/data";
-import { CITY_COLOR, citiesIn, cityLabel } from "@/lib/cities";
+import { CITY_COLOR, citiesIn, cityLabel, countriesIn } from "@/lib/cities";
+import { DEFAULT_FILTERS, filterEvents, filterPlaces, todayISO, type MapFilters as Filters } from "@/lib/mapFilters";
 import EventThumb from "./EventThumb";
-import type { City } from "@/types";
-
-type CityFilter = City | "All";
+import MapFilters from "./MapFilters";
+import { isPracticeType } from "@/types";
 
 export default function MapView() {
   const t = useTranslations("Map");
@@ -19,7 +19,7 @@ export default function MapView() {
   const { places } = usePlaceStore();
   const params = useSearchParams();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const [city, setCity] = useState<CityFilter>("All");
+  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [ready, setReady] = useState(false);
 
   function post(msg: unknown) {
@@ -35,18 +35,19 @@ export default function MapView() {
     return () => window.removeEventListener("message", onMsg);
   }, []);
 
-  // push the (possibly admin-edited) events + places into the map
-  useEffect(() => {
-    if (ready) post({ type: "setEvents", events });
-  }, [ready, events]);
-  useEffect(() => {
-    if (ready) post({ type: "setPlaces", places });
-  }, [ready, places]);
+  // The map only shows today + future (past = archive), narrowed by the filter panel.
+  const today = todayISO();
+  const upcoming = useMemo(() => events.filter((e) => eventEndsOn(e) >= today), [events, today]);
+  const list = useMemo(() => filterEvents(events, filters, today), [events, filters, today]);
+  const shownPlaces = useMemo(() => filterPlaces(places, filters), [places, filters]);
 
-  // push the city filter (applies to both conventions and spots)
+  // push the filtered (possibly admin-edited) events + places into the map
   useEffect(() => {
-    if (ready) post({ type: "filterCity", city: city === "All" ? "all" : city });
-  }, [ready, city]);
+    if (ready) post({ type: "setEvents", events: list });
+  }, [ready, list]);
+  useEffect(() => {
+    if (ready) post({ type: "setPlaces", places: shownPlaces });
+  }, [ready, shownPlaces]);
 
   // When arrived here via a "show on map" button (/map?lng=..&lat=..), fly to that
   // node. Small delay lets setEvents/setPlaces build the markers first, so the
@@ -65,19 +66,10 @@ export default function MapView() {
     return () => clearTimeout(t);
   }, [ready, params]);
 
-  // Local 'YYYY-MM-DD' today; the map shows only today + future (past = archive).
-  const now = new Date();
-  const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-
-  const upcoming = events.filter((e) => eventEndsOn(e) >= todayISO);
-  // Filter chips and legend only list cities that have something on the map.
-  const cityOptions: CityFilter[] = ["All", ...citiesIn([...upcoming, ...places])];
-  const legendCities = citiesIn(upcoming);
-
-  const list = upcoming
-    .filter((e) => (city === "All" ? true : e.city === city))
-    .slice()
-    .sort((a, b) => a.date.localeCompare(b.date));
+  // Filter chips only offer places that have something on the map; the legend
+  // only lists what's currently shown.
+  const optionItems = [...upcoming, ...places];
+  const legendCities = citiesIn(list);
 
   return (
     <div className="map-layout">
@@ -85,13 +77,6 @@ export default function MapView() {
         <div className="side-head">
           <h2>{t("title")}</h2>
           <p>{t("subtitle")}</p>
-        </div>
-        <div className="filters">
-          {cityOptions.map((c) => (
-            <button key={c} className={`fchip${city === c ? " on" : ""}`} type="button" onClick={() => setCity(c)}>
-              {c === "All" ? t("all") : cityLabel(c)}
-            </button>
-          ))}
         </div>
         <div className="list">
           {list.map((e) => {
@@ -113,7 +98,7 @@ export default function MapView() {
           })}
           {list.length === 0 && (
             <div style={{ padding: 16, color: "var(--text-2)", fontSize: 13 }}>
-              {t("noConventions", { city: city === "All" ? t("all") : cityLabel(city) })}
+              {t("noMatches")}
             </div>
           )}
         </div>
@@ -127,8 +112,23 @@ export default function MapView() {
           className="map-canvas"
           style={{ border: 0, width: "100%", height: "100%" }}
         />
+        {/* Floats over the map (top-left) rather than living in the sidebar, so the
+            event list keeps its height and phones — which hide the sidebar — still
+            get filters. */}
+        <MapFilters
+          value={filters}
+          onChange={setFilters}
+          countries={countriesIn(optionItems)}
+          cities={citiesIn(optionItems)}
+          resultCount={list.length}
+        />
         <div className="map-legend">
-          <div className="legend-row"><span className="sw" style={{ background: "#8b5cf6", borderRadius: 3 }} /> {t("legendSpots")}</div>
+          {shownPlaces.some((p) => !isPracticeType(p.type)) && (
+            <div className="legend-row"><span className="sw" style={{ background: "#8b5cf6", borderRadius: 3 }} /> {t("legendSpots")}</div>
+          )}
+          {shownPlaces.some((p) => isPracticeType(p.type)) && (
+            <div className="legend-row"><span className="sw" style={{ background: "#0ea5e9", borderRadius: 3 }} /> {t("legendPractice")}</div>
+          )}
           {legendCities.map((c) => (
             <div className="legend-row" key={c}><span className="sw" style={{ background: CITY_COLOR[c] }} /> {t("legendCity", { city: cityLabel(c) })}</div>
           ))}

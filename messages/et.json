@@ -9,6 +9,7 @@
     "calendar": "Kalender",
     "events": "Üritused",
     "spots": "Kohad",
+    "practice": "Trenn",
     "about": "Projektist",
     "donate": "Toeta",
     "tagline": "Põhjamaad · Baltikum",
@@ -24,14 +25,17 @@
     "submitSpot": "＋ Soovita kohta",
     "showOnMap": "Näita asukohta kaardil",
     "previousMonth": "Eelmine kuu",
-    "nextMonth": "Järgmine kuu"
+    "nextMonth": "Järgmine kuu",
+    "submitPracticeSpot": "＋ Soovita harjutuskohta"
   },
   "PlaceTypes": {
     "cafe": "Kohvik",
     "restaurant": "Restoran",
     "mall": "Kaubanduskeskus",
-    "studio": "Stuudio",
-    "outdoor": "Väljas"
+    "studio": "Fotostuudio",
+    "outdoor": "Väljas",
+    "dance-studio": "Tantsustuudio",
+    "practice-space": "Harjutusruum"
   },
   "Home": {
     "eyebrow": "✨ sinu cosplay-kaart",
@@ -40,12 +44,14 @@
     "statConventions": "Üritused",
     "statVenues": "Toimumiskohad",
     "statCities": "Linnad",
-    "statHosting": "Majutuskulu",
     "mapTitle": "Cosplay-kohtade kaart",
     "exploreMap": "🗺️ Uuri kaarti",
     "upcomingEyebrow": "Järgmisena kavas",
     "upcomingTitle": "Tulevased üritused",
-    "seeAllEvents": "Kõik üritused →"
+    "seeAllEvents": "Kõik üritused →",
+    "hotSpotsEyebrow": "📸 kus pildistada",
+    "hotSpotsTitle": "Cosplay kuumad kohad",
+    "seeAllSpots": "Kõik kohad →"
   },
   "About": {
     "eyebrow": "Projektist",
@@ -121,12 +127,42 @@
   "Map": {
     "loading": "Kaardi laadimine…",
     "title": "Üritused & kohad",
-    "subtitle": "Filtreeri linna järgi · klõpsa üritusel, et sinna lennata",
+    "subtitle": "Filtreeri üritusi · klõpsa üritusel, et sinna lennata",
     "all": "Kõik",
-    "noConventions": "Üritusi pole: {city}.",
+    "noMatches": "Nende filtritega üritusi pole.",
     "mapTitle": "Cosplay-kaart",
     "legendSpots": "Cosplay-kohad",
-    "legendCity": "Conid: {city}"
+    "legendCity": "Conid: {city}",
+    "legendPractice": "Harjutuskohad"
+  },
+  "MapFilters": {
+    "filters": "Filtrid",
+    "results": "{count, plural, one {# üritus} other {# üritust}}",
+    "all": "Kõik",
+    "show": "Näita",
+    "layer": {
+      "events": "Üritused",
+      "spots": "Cosplay-kohad",
+      "practice": "Harjutuskohad"
+    },
+    "category": "Tüüp",
+    "cat": {
+      "cosplay": "Cosplay",
+      "cover": "Tantsukaver"
+    },
+    "country": "Riik",
+    "city": "Linn",
+    "dates": "Kuupäevad",
+    "date": {
+      "any": "Igal ajal",
+      "7d": "Järgmised 7 päeva",
+      "30d": "Järgmised 30 päeva",
+      "3m": "Järgmised 3 kuud",
+      "custom": "Vali ise"
+    },
+    "from": "Alates",
+    "to": "Kuni",
+    "reset": "Lähtesta filtrid"
   },
   "MiniCalendar": {
     "conDay": "● = con-päev",
@@ -196,5 +232,38 @@
     "descriptionPlaceholder": "Miks see sobib cosplay-pildistamiseks?",
     "required": "Koha nimi on kohustuslik.",
     "needCoords": "Lisa koha pikkus- ja laiuskraad."
+  },
+  "Practice": {
+    "eyebrow": "💃 harjutame koos",
+    "title": "Harjutuskohad",
+    "intro": "J-popile ja K-popile avatud tantsustuudiod ning spordisaalid, noortekeskused ja muud ruumid, kus saad harjutada cover-tantse ja cosplay-etteasteid.",
+    "empty": "Harjutuskohti veel pole. Tead mõnda? Soovita seda!",
+    "drop-in": "Vaba sissepääs",
+    "booking-required": "Vajab broneerimist",
+    "classes-only": "Ainult tunnid",
+    "free": "Tasuta",
+    "paid": "Tasuline",
+    "mirrors": "Peeglid",
+    "sound-system": "Helisüsteem",
+    "changing-room": "Riietusruum",
+    "big-floor": "Suur põrand",
+    "youthFriendly": "Alla 18-aastased oodatud",
+    "bookingLink": "Broneeri / lisainfo ↗"
+  },
+  "SubmitPractice": {
+    "title": "Soovita harjutuskohta",
+    "intro": "Soovita tantsustuudiot või ruumi, kus saab harjutada. Administraator vaatab selle enne avaldamist üle. Ainult avalikud kohad, mitte eramajad.",
+    "thanksText": "Sinu harjutuskoht saadeti ülevaatamiseks. Administraator kinnitab selle enne, kui see ilmub.",
+    "namePlaceholder": "nt Kisahalli",
+    "genres": "Žanrid (komadega eraldatud)",
+    "genresPlaceholder": "k-pop, j-pop, cosplay-sketsid",
+    "booking": "Kuidas sisse saab",
+    "price": "Hind",
+    "priceNote": "Hinna üksikasjad",
+    "priceNotePlaceholder": "nt 15 €/h, alla 18-aastastele tasuta",
+    "facilities": "Varustus",
+    "bookingUrl": "Broneerimise / info link",
+    "descriptionPlaceholder": "Milline on koht harjutamiseks? Põranda suurus, reeglid…",
+    "notSet": "— ei tea —"
   }
 }

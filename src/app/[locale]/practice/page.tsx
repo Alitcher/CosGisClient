@@ -8,11 +8,15 @@ import SubmitSpotDialog from "@/components/SubmitSpotDialog";
 import SpotCard from "@/components/SpotCard";
 import { isPracticeType } from "@/types";
 
-export default function SpotsPage() {
-  const t = useTranslations("Spots");
+/**
+ * Practice tab: dance studios open to J-pop/K-pop and practice spaces (sports
+ * halls, youth centres) for rehearsing cover dances and cosplay performances.
+ * Same `places` data as the Spots page, filtered to the practice types.
+ */
+export default function PracticePage() {
+  const t = useTranslations("Practice");
   const tc = useTranslations("Common");
-  // Photo-shoot spots only; dance studios and practice spaces live on /practice.
-  const places = usePlaceStore().places.filter((p) => !isPracticeType(p.type));
+  const places = usePlaceStore().places.filter((p) => isPracticeType(p.type));
 
   return (
     <>
@@ -22,7 +26,7 @@ export default function SpotsPage() {
         <h1 className="section-title">{t("title")}</h1>
         <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>{t("intro")}</p>
         <div style={{ margin: "18px 0 6px" }}>
-          <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
+          <SubmitSpotDialog className="btn" label={tc("submitPracticeSpot")} purpose="practice" />
         </div>
 
         <div className="grid spots-grid">

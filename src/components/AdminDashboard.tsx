@@ -19,7 +19,7 @@ import {
   apiDeletePlace,
   apiSyncLinkedEvents,
 } from "@/lib/api";
-import type { Event, Place, City, Status, PlaceType } from "@/types";
+import { isPracticeType, FACILITIES, type Event, type Place, type City, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
 type Tab = "events" | "spots" | "pending";
 
@@ -41,10 +41,13 @@ type PlaceForm = {
   name: string; type: PlaceType; city: City; address: string;
   lng: string; lat: string; themes: string; photo: string;
   description: string; openingHours: string; status: Status;
+  // practice places only
+  booking: Booking | ""; price: Price | ""; priceNote: string; facilities: Facility[];
+  youthFriendly: "" | "yes" | "no"; bookingUrl: string;
 };
 
 const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live" };
-const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live" };
+const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "" };
 
 function fail(action: string, err: unknown) {
   alert(`Couldn't ${action}.\nIs the API server running? (:8787)\n\n${(err as Error).message}`);
@@ -166,7 +169,9 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editPlace(p: Place) {
-    setPlaceForm({ id: p.id, name: p.name, type: p.type, city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status });
+    setPlaceForm({ id: p.id, name: p.name, type: p.type, city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status,
+      booking: p.booking ?? "", price: p.price ?? "", priceNote: p.priceNote ?? "", facilities: p.facilities ?? [],
+      youthFriendly: p.youthFriendly == null ? "" : p.youthFriendly ? "yes" : "no", bookingUrl: p.bookingUrl ?? "" });
     setDrawerKind("spots");
     setOpen(true);
   }
@@ -202,6 +207,15 @@ export default function AdminDashboard() {
       themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),
       photos: f.photo.trim() ? [{ url: f.photo.trim() }] : [],
       description: f.description.trim(), openingHours: f.openingHours.trim(),
+      // Empty selects are sent as "not given" (undefined), so the API leaves the saved value as is.
+      ...(isPracticeType(f.type) && {
+        booking: f.booking || undefined,
+        price: f.price || undefined,
+        priceNote: f.priceNote.trim(),
+        facilities: f.facilities,
+        youthFriendly: f.youthFriendly === "" ? undefined : f.youthFriendly === "yes",
+        bookingUrl: f.bookingUrl.trim() || undefined,
+      }),
     };
     try {
       if (f.id) await updatePlace(f.id, { ...data, status: f.status });
@@ -431,7 +445,7 @@ export default function AdminDashboard() {
           <>
             <div className="drawer-body">
               <div className="field"><label>Spot name</label><input value={placeForm.name} onChange={(e) => setP("name", e.target.value)} placeholder="e.g. Café Sakura" /></div>
-              <div className="field"><label>Type</label><select value={placeForm.type} onChange={(e) => setP("type", e.target.value as PlaceType)}><option value="cafe">Café</option><option value="restaurant">Restaurant</option><option value="mall">Mall</option><option value="studio">Studio</option><option value="outdoor">Outdoor / Park</option></select></div>
+              <div className="field"><label>Type</label><select value={placeForm.type} onChange={(e) => setP("type", e.target.value as PlaceType)}><optgroup label="Photo spots (Spots tab)"><option value="cafe">Café</option><option value="restaurant">Restaurant</option><option value="mall">Mall</option><option value="studio">Photo studio</option><option value="outdoor">Outdoor / Park</option></optgroup><optgroup label="Practice places (Practice tab)"><option value="dance-studio">Dance studio</option><option value="practice-space">Practice space (hall, youth centre)</option></optgroup></select></div>
               <div className="field"><label>Address</label><input value={placeForm.address} onChange={(e) => setP("address", e.target.value)} placeholder="Street, City" /></div>
               <div className="field-row">
                 <div className="field"><label>Longitude</label><input value={placeForm.lng} onChange={(e) => setP("lng", e.target.value)} placeholder="24.9402" /></div>
@@ -442,6 +456,27 @@ export default function AdminDashboard() {
               <div className="field"><label>Photo URL</label><input value={placeForm.photo} onChange={(e) => setP("photo", e.target.value)} placeholder="https://…" /></div>
               <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00–20:00" /></div>
               <div className="field"><label>Description</label><textarea rows={3} value={placeForm.description} onChange={(e) => setP("description", e.target.value)} /></div>
+              {isPracticeType(placeForm.type) && (
+                <>
+                  <div className="field-row">
+                    <div className="field"><label>Access</label><select value={placeForm.booking} onChange={(e) => setP("booking", e.target.value as PlaceForm["booking"])}><option value="">—</option><option value="drop-in">Drop-in</option><option value="booking-required">Booking needed</option><option value="classes-only">Classes only</option></select></div>
+                    <div className="field"><label>Price</label><select value={placeForm.price} onChange={(e) => setP("price", e.target.value as PlaceForm["price"])}><option value="">—</option><option value="free">Free</option><option value="paid">Paid</option></select></div>
+                  </div>
+                  <div className="field"><label>Price details</label><input value={placeForm.priceNote} onChange={(e) => setP("priceNote", e.target.value)} placeholder="15 €/h, free for under 18s" /></div>
+                  <div className="field">
+                    <label>Facilities</label>
+                    <div className="flex gap-sm" style={{ flexWrap: "wrap" }}>
+                      {FACILITIES.map((x) => (
+                        <label key={x} style={{ display: "inline-flex", gap: 6, alignItems: "center", fontWeight: 400 }}>
+                          <input type="checkbox" checked={placeForm.facilities.includes(x)} onChange={() => setP("facilities", placeForm.facilities.includes(x) ? placeForm.facilities.filter((y) => y !== x) : [...placeForm.facilities, x])} /> {x}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="field"><label>Under-18s welcome? (check the venue&apos;s own rules)</label><select value={placeForm.youthFriendly} onChange={(e) => setP("youthFriendly", e.target.value as PlaceForm["youthFriendly"])}><option value="">Not verified</option><option value="yes">Yes</option><option value="no">No</option></select></div>
+                  <div className="field"><label>Booking / info link</label><input value={placeForm.bookingUrl} onChange={(e) => setP("bookingUrl", e.target.value)} placeholder="https://…" /></div>
+                </>
+              )}
               {placeForm.id && (
                 <div className="field"><label>Status</label><select value={placeForm.status} onChange={(e) => setP("status", e.target.value as Status)}>{isPendingId(placeForm.id) && <option value="pending">Pending (keep in queue)</option>}<option value="live">Live</option><option value="draft">Draft</option></select></div>
               )}

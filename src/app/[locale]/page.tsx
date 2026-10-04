@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 import HeroMap from "@/components/HeroMap";
 import UpcomingEvents from "@/components/UpcomingEvents";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
+import SubmitSpotDialog from "@/components/SubmitSpotDialog";
+import HotSpots from "@/components/HotSpots";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -29,7 +31,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <div className="stat"><div className="n">12</div><div className="l">{t("statConventions")}</div></div>
               <div className="stat"><div className="n">7</div><div className="l">{t("statVenues")}</div></div>
               <div className="stat"><div className="n">3</div><div className="l">{t("statCities")}</div></div>
-              <div className="stat"><div className="n">€0</div><div className="l">{t("statHosting")}</div></div>
             </div>
           </div>
 
@@ -53,6 +54,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
         </div>
         <UpcomingEvents />
+      </section>
+
+      <section className="upcoming hot-spots shell">
+        <div className="up-head">
+          <div>
+            <span className="eyebrow">{t("hotSpotsEyebrow")}</span>
+            <h2 className="section-title">{t("hotSpotsTitle")}</h2>
+          </div>
+          <div className="flex gap-sm">
+            <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
+            <Link className="btn ghost" href="/spots">{t("seeAllSpots")}</Link>
+          </div>
+        </div>
+        <HotSpots />
       </section>
 
       <Footer />

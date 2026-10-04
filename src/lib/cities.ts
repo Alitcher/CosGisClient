@@ -1,5 +1,30 @@
 import type { City } from "@/types";
 
+/** ISO 3166 codes of the countries we cover, in display order (Nordics, then Baltics). */
+export type Country = "FI" | "SE" | "NO" | "DK" | "IS" | "EE" | "LV" | "LT";
+export const COUNTRIES: Country[] = ["FI", "SE", "NO", "DK", "IS", "EE", "LV", "LT"];
+
+/** Which country each city is in. Add new cities here when City grows past Finland. */
+export const CITY_COUNTRY: Record<City, Country> = {
+  Helsinki: "FI", Vantaa: "FI", Espoo: "FI", Tampere: "FI", Turku: "FI",
+  Lahti: "FI", Oulu: "FI", Jyvaskyla: "FI", Kuopio: "FI",
+};
+
+/** Countries that actually appear in a list, in COUNTRIES order. */
+export function countriesIn(items: { city: City }[]): Country[] {
+  const seen = new Set(items.map((i) => CITY_COUNTRY[i.city]));
+  return COUNTRIES.filter((c) => seen.has(c));
+}
+
+/** Country name in the UI language ("FI" -> "Finland" / "Suomi" / "ฟินแลนด์"). */
+export function countryLabel(code: Country, locale: string): string {
+  try {
+    return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
 /**
  * Every city the map supports, in display order (capital region first). Keep in
  * sync with City in types.ts, the server's CityEnum, CITY_COLOR in

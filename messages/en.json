@@ -9,6 +9,7 @@
     "calendar": "Calendar",
     "events": "Events",
     "spots": "Spots",
+    "practice": "Practice",
     "about": "About",
     "donate": "Donate",
     "tagline": "Nordic · Baltic",
@@ -24,14 +25,17 @@
     "submitSpot": "＋ Submit a spot",
     "showOnMap": "Show this location on the map",
     "previousMonth": "Previous month",
-    "nextMonth": "Next month"
+    "nextMonth": "Next month",
+    "submitPracticeSpot": "＋ Suggest a practice place"
   },
   "PlaceTypes": {
     "cafe": "Café",
     "restaurant": "Restaurant",
     "mall": "Mall",
-    "studio": "Studio",
-    "outdoor": "Outdoor"
+    "studio": "Photo studio",
+    "outdoor": "Outdoor",
+    "dance-studio": "Dance studio",
+    "practice-space": "Practice space"
   },
   "Home": {
     "eyebrow": "✨ your cosplay map",
@@ -40,12 +44,14 @@
     "statConventions": "Conventions",
     "statVenues": "Venues",
     "statCities": "Cities",
-    "statHosting": "Hosting cost",
     "mapTitle": "Map of cosplay venues",
     "exploreMap": "🗺️ Explore the map",
     "upcomingEyebrow": "Next on the schedule",
     "upcomingTitle": "Upcoming conventions",
-    "seeAllEvents": "See all events →"
+    "seeAllEvents": "See all events →",
+    "hotSpotsEyebrow": "📸 where to shoot",
+    "hotSpotsTitle": "Cosplay hot spots",
+    "seeAllSpots": "See all spots →"
   },
   "About": {
     "eyebrow": "About the project",
@@ -121,12 +127,42 @@
   "Map": {
     "loading": "Loading map…",
     "title": "Conventions & venues",
-    "subtitle": "Filter by city · click an event to fly there",
+    "subtitle": "Filter events · click an event to fly there",
     "all": "All",
-    "noConventions": "No conventions in {city}.",
+    "noMatches": "No events match these filters.",
     "mapTitle": "Cosplay map",
     "legendSpots": "Cosplay spots",
-    "legendCity": "{city} cons"
+    "legendCity": "{city} cons",
+    "legendPractice": "Practice places"
+  },
+  "MapFilters": {
+    "filters": "Filters",
+    "results": "{count, plural, one {# event} other {# events}}",
+    "all": "All",
+    "show": "Show",
+    "layer": {
+      "events": "Events",
+      "spots": "Cosplay spots",
+      "practice": "Practice places"
+    },
+    "category": "Type",
+    "cat": {
+      "cosplay": "Cosplay",
+      "cover": "Dance cover"
+    },
+    "country": "Country",
+    "city": "City",
+    "dates": "Dates",
+    "date": {
+      "any": "Any time",
+      "7d": "Next 7 days",
+      "30d": "Next 30 days",
+      "3m": "Next 3 months",
+      "custom": "Custom"
+    },
+    "from": "From",
+    "to": "To",
+    "reset": "Reset filters"
   },
   "MiniCalendar": {
     "conDay": "● = con day",
@@ -196,5 +232,38 @@
     "descriptionPlaceholder": "Why is it good for cosplay shoots?",
     "required": "Spot name is required.",
     "needCoords": "Please add the spot's longitude and latitude."
+  },
+  "Practice": {
+    "eyebrow": "💃 practice together",
+    "title": "Rehearsal places",
+    "intro": "Dance studios open to J-pop and K-pop, plus sports halls, youth centres and other spaces where you can rehearse cover dances and cosplay performances.",
+    "empty": "No practice places yet. Know one? Suggest it!",
+    "drop-in": "Drop-in",
+    "booking-required": "Booking needed",
+    "classes-only": "Classes only",
+    "free": "Free",
+    "paid": "Paid",
+    "mirrors": "Mirrors",
+    "sound-system": "Sound system",
+    "changing-room": "Changing room",
+    "big-floor": "Big floor",
+    "youthFriendly": "Under-18s welcome",
+    "bookingLink": "Book / more info ↗"
+  },
+  "SubmitPractice": {
+    "title": "Suggest a practice place",
+    "intro": "Suggest a dance studio or space where people can rehearse. It's reviewed by an admin before going live. Public venues only: no private homes.",
+    "thanksText": "Your practice place was sent for review. An admin will approve it before it appears.",
+    "namePlaceholder": "e.g. Kisahalli",
+    "genres": "Genres (comma-separated)",
+    "genresPlaceholder": "k-pop, j-pop, cosplay skits",
+    "booking": "How to get in",
+    "price": "Price",
+    "priceNote": "Price details",
+    "priceNotePlaceholder": "e.g. 15 €/h, free for under 18s",
+    "facilities": "Facilities",
+    "bookingUrl": "Booking / info link",
+    "descriptionPlaceholder": "What's it like for rehearsing? Floor size, rules…",
+    "notSet": "— not sure —"
   }
 }

@@ -157,7 +157,8 @@ export async function apiDeletePlace(id: string): Promise<void> {
   if (!res.ok) throw new Error(`DELETE /v1/places/${id} -> ${res.status}`);
 }
 /** Public: suggest a spot. Lands in the pending queue for admin approval. */
-export type PlaceSubmissionInput = NewPlaceInput & { submittedBy?: string };
+// `youthFriendly` is admin-only; the server drops it from submissions.
+export type PlaceSubmissionInput = Omit<NewPlaceInput, "youthFriendly"> & { submittedBy?: string };
 export async function apiSubmitPlace(input: PlaceSubmissionInput): Promise<{ ok: boolean; id: string }> {
   return jsonOrThrow(
     await fetch(`${API}/v1/places/submissions`, {

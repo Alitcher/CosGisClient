@@ -57,7 +57,12 @@
   function cityLabel(c) { return c === 'Jyvaskyla' ? 'Jyväskylä' : (c || ''); }
   // "10:00–18:00", "10:00–", "–18:00" or "" (matches fmtTimes in src/lib/data.ts).
   function fmtTimes(s, e) { return (s || e) ? (s || '') + '–' + (e || '') : ''; }
-  var TYPE_LABEL = { cafe: 'Café', restaurant: 'Restaurant', mall: 'Mall', studio: 'Studio', outdoor: 'Outdoor' };
+  var TYPE_LABEL = { cafe: 'Café', restaurant: 'Restaurant', mall: 'Mall', studio: 'Photo studio', outdoor: 'Outdoor',
+                     'dance-studio': 'Dance studio', 'practice-space': 'Practice space' };
+  var ACCESS_LABEL = { 'drop-in': 'Drop-in', 'booking-required': 'Booking needed', 'classes-only': 'Classes only' };
+  var PRICE_LABEL = { free: 'Free', paid: 'Paid' };
+  var FACILITY_LABEL = { mirrors: 'Mirrors', 'sound-system': 'Sound system', 'changing-room': 'Changing room', 'big-floor': 'Big floor' };
+  var SPOT_COLOR = '#8b5cf6', PRACTICE_COLOR = '#0ea5e9'; // keep in sync with the legend in MapView.tsx
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtDate(iso) { var p = (iso || '').split('-'); if (p.length < 3) return iso || ''; return p[2] + ' ' + (MON[(+p[1]) - 1] || '') + ' ' + p[0]; }
   // Local 'YYYY-MM-DD' for today; events on/after this stay on the map, past ones drop.
@@ -107,9 +112,21 @@
       row('📍', loc) +
       row('🕐', hours) +
       row('🧭', fmtCoord(p.lat, p.lng)) +
+      (isPractice(p) ? practiceRows(p) : '') +
       (desc ? '<p>' + esc(desc) + '</p>' : '') +
       '<div class="themes">' + (p.themes || []).map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>' +
       '</div></div>';
+  }
+  // Practice places (dance studios, practice spaces) also show access, price,
+  // facilities and a booking link. The link must be http(s) - never javascript:.
+  function isPractice(p) { return p.type === 'dance-studio' || p.type === 'practice-space'; }
+  function practiceRows(p) {
+    var access = [ACCESS_LABEL[p.booking], PRICE_LABEL[p.price], p.priceNote].filter(Boolean).join(' · ');
+    var link = p.bookingUrl && /^https?:\/\//i.test(p.bookingUrl) ? p.bookingUrl : '';
+    return row('🎟️', access) +
+      (p.youthFriendly ? row('🧒', 'Under-18s welcome') : '') +
+      row('🪞', (p.facilities || []).map(function (f) { return FACILITY_LABEL[f] || f; }).join(', ')) +
+      (link ? '<a class="ev-link" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">🔗 Book / more info ↗</a>' : '');
   }
   function eventCard(e) {
     var color = CITY_COLOR[e.city] || '#ff4f96';
@@ -214,7 +231,7 @@
       if (e.kind === 'spot') { e.marker.remove(); return false; }
       return true;
     });
-    list.forEach(function (p) { addMarker('spot', p, '#8b5cf6', spotCard(p)); });
+    list.forEach(function (p) { addMarker('spot', p, isPractice(p) ? PRACTICE_COLOR : SPOT_COLOR, spotCard(p)); });
     updateCards();
   }
 

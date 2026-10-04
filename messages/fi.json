@@ -9,6 +9,7 @@
     "calendar": "Kalenteri",
     "events": "Tapahtumat",
     "spots": "Paikat",
+    "practice": "Treenit",
     "about": "Tietoa",
     "donate": "Lahjoita",
     "tagline": "Pohjoismaat · Baltia",
@@ -24,14 +25,17 @@
     "submitSpot": "＋ Ehdota paikkaa",
     "showOnMap": "Näytä sijainti kartalla",
     "previousMonth": "Edellinen kuukausi",
-    "nextMonth": "Seuraava kuukausi"
+    "nextMonth": "Seuraava kuukausi",
+    "submitPracticeSpot": "＋ Ehdota treenipaikkaa"
   },
   "PlaceTypes": {
     "cafe": "Kahvila",
     "restaurant": "Ravintola",
     "mall": "Ostoskeskus",
-    "studio": "Studio",
-    "outdoor": "Ulkona"
+    "studio": "Kuvausstudio",
+    "outdoor": "Ulkona",
+    "dance-studio": "Tanssistudio",
+    "practice-space": "Harjoitustila"
   },
   "Home": {
     "eyebrow": "✨ sinun cosplay-karttasi",
@@ -40,12 +44,14 @@
     "statConventions": "Tapahtumat",
     "statVenues": "Tapahtumapaikat",
     "statCities": "Kaupungit",
-    "statHosting": "Ylläpitokulut",
     "mapTitle": "Cosplay-paikkojen kartta",
     "exploreMap": "🗺️ Tutki karttaa",
     "upcomingEyebrow": "Seuraavaksi ohjelmassa",
     "upcomingTitle": "Tulevat tapahtumat",
-    "seeAllEvents": "Kaikki tapahtumat →"
+    "seeAllEvents": "Kaikki tapahtumat →",
+    "hotSpotsEyebrow": "📸 missä kuvata",
+    "hotSpotsTitle": "Cosplay-kuumat paikat",
+    "seeAllSpots": "Kaikki paikat →"
   },
   "About": {
     "eyebrow": "Tietoa projektista",
@@ -121,12 +127,42 @@
   "Map": {
     "loading": "Ladataan karttaa…",
     "title": "Tapahtumat & paikat",
-    "subtitle": "Suodata kaupungin mukaan · klikkaa tapahtumaa siirtyäksesi sinne",
+    "subtitle": "Suodata tapahtumia · klikkaa tapahtumaa siirtyäksesi sinne",
     "all": "Kaikki",
-    "noConventions": "Ei tapahtumia: {city}.",
+    "noMatches": "Ei tapahtumia näillä suodattimilla.",
     "mapTitle": "Cosplay-kartta",
     "legendSpots": "Cosplay-paikat",
-    "legendCity": "Conit: {city}"
+    "legendCity": "Conit: {city}",
+    "legendPractice": "Treenipaikat"
+  },
+  "MapFilters": {
+    "filters": "Suodattimet",
+    "results": "{count, plural, one {# tapahtuma} other {# tapahtumaa}}",
+    "all": "Kaikki",
+    "show": "Näytä",
+    "layer": {
+      "events": "Tapahtumat",
+      "spots": "Cosplay-paikat",
+      "practice": "Treenipaikat"
+    },
+    "category": "Tyyppi",
+    "cat": {
+      "cosplay": "Cosplay",
+      "cover": "Tanssicover"
+    },
+    "country": "Maa",
+    "city": "Kaupunki",
+    "dates": "Päivät",
+    "date": {
+      "any": "Milloin tahansa",
+      "7d": "Seuraavat 7 päivää",
+      "30d": "Seuraavat 30 päivää",
+      "3m": "Seuraavat 3 kuukautta",
+      "custom": "Oma aikaväli"
+    },
+    "from": "Alkaen",
+    "to": "Asti",
+    "reset": "Tyhjennä suodattimet"
   },
   "MiniCalendar": {
     "conDay": "● = con-päivä",
@@ -196,5 +232,38 @@
     "descriptionPlaceholder": "Miksi se sopii cosplay-kuvauksiin?",
     "required": "Paikan nimi on pakollinen.",
     "needCoords": "Lisää paikan pituus- ja leveysaste."
+  },
+  "Practice": {
+    "eyebrow": "💃 treenataan yhdessä",
+    "title": "Treenipaikat",
+    "intro": "J-pop- ja K-pop-tanssille avoimet tanssistudiot sekä urheiluhallit, nuorisotalot ja muut tilat, joissa voit harjoitella cover-tansseja ja cosplay-esityksiä.",
+    "empty": "Ei vielä treenipaikkoja. Tiedätkö jonkin? Ehdota sitä!",
+    "drop-in": "Drop-in",
+    "booking-required": "Varaus tarvitaan",
+    "classes-only": "Vain tunnit",
+    "free": "Ilmainen",
+    "paid": "Maksullinen",
+    "mirrors": "Peilit",
+    "sound-system": "Äänentoisto",
+    "changing-room": "Pukuhuone",
+    "big-floor": "Iso lattia",
+    "youthFriendly": "Alle 18-vuotiaat tervetulleita",
+    "bookingLink": "Varaa / lisätietoa ↗"
+  },
+  "SubmitPractice": {
+    "title": "Ehdota treenipaikkaa",
+    "intro": "Ehdota tanssistudiota tai tilaa, jossa voi harjoitella. Ylläpitäjä tarkistaa sen ennen julkaisua. Vain julkiset paikat, ei yksityiskoteja.",
+    "thanksText": "Treenipaikkasi lähetettiin tarkistettavaksi. Ylläpitäjä hyväksyy sen ennen kuin se näkyy.",
+    "namePlaceholder": "esim. Kisahalli",
+    "genres": "Tyylit (pilkuilla erotettuna)",
+    "genresPlaceholder": "k-pop, j-pop, cosplay-sketsit",
+    "booking": "Miten pääsee",
+    "price": "Hinta",
+    "priceNote": "Hinnan tiedot",
+    "priceNotePlaceholder": "esim. 15 €/h, ilmainen alle 18-vuotiaille",
+    "facilities": "Varustelu",
+    "bookingUrl": "Varaus- / infolinkki",
+    "descriptionPlaceholder": "Millainen paikka on treenaamiseen? Lattian koko, säännöt…",
+    "notSet": "— en tiedä —"
   }
 }

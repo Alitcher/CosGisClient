@@ -11,6 +11,7 @@ const links = [
   ["/calendar", "calendar"],
   ["/events", "events"],
   ["/spots", "spots"],
+  ["/practice", "practice"],
   ["/about", "about"],
   ["/donate", "donate"],
 ] as const;

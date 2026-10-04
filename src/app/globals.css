@@ -225,7 +225,8 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .hero-pin .d { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); }
 
 /* upcoming */
-.upcoming { padding: 40px 0 50px; }
+.upcoming { padding: 40px 0 10px; }
+.hot-spots { padding-bottom: 50px; } /* last section before the footer */
 .up-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
 .up-grid { grid-template-columns: repeat(3, 1fr); }
 .ev-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: transform .18s ease; }
@@ -245,9 +246,29 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .side-head { padding: 18px 18px 12px; border-bottom: 2px solid var(--border); }
 .side-head h2 { font-size: 18px; }
 .side-head p { font-size: 12.5px; color: var(--text-2); margin-top: 3px; }
-.filters { padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 8px; border-bottom: 2px solid var(--border); }
 .fchip { padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--surface); border: 2px solid var(--border); color: var(--text-1); }
 .fchip.on { color: #fff; background: linear-gradient(135deg, var(--pink), var(--purple)); border-color: transparent; }
+
+/* map filter panel (MapFilters.tsx): a floating card on the map's top-left */
+.mf {
+  position: absolute; left: 18px; top: 18px; z-index: 6; width: 340px; max-width: calc(100% - 36px);
+  background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(16px);
+  border: 2px solid var(--border-strong); border-radius: var(--radius-sm); box-shadow: 0 4px 0 var(--hard); overflow: hidden;
+}
+.mf-toggle { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 16px; background: none; border: 0; color: var(--text-0); font: inherit; cursor: pointer; text-align: left; }
+.mf-toggle:hover { background: var(--surface); }
+.mf-title { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; }
+.mf-badge { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; display: inline-grid; place-items: center; font-size: 11.5px; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--pink), var(--purple)); }
+.mf-count { margin-left: auto; font-size: 12.5px; color: var(--text-2); }
+.mf-caret { color: var(--text-2); transition: transform .15s ease; }
+.mf-caret.up { transform: rotate(180deg); }
+.mf-panel { max-height: min(60vh, calc(100vh - 220px)); overflow-y: auto; padding: 4px 16px 16px; border-top: 2px solid var(--border); display: flex; flex-direction: column; gap: 14px; }
+.mf-panel h5 { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); margin-bottom: 7px; }
+.mf-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.mf-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; }
+.mf-dates label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--text-2); }
+.mf-dates input { padding: 6px 8px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); color: var(--text-0); font: inherit; font-size: 12.5px; color-scheme: light dark; }
+.mf-reset { align-self: flex-start; padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: none; border: 2px solid var(--border-strong); color: var(--pink); cursor: pointer; }
 .list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
 .list-item { padding: 13px 14px; border-radius: var(--radius-sm); border: 2px solid transparent; display: flex; gap: 12px; cursor: pointer; transition: all .15s ease; }
 .list-item:hover { background: var(--surface); border-color: var(--border); }
@@ -283,7 +304,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .mini-cal .mc-foot a { color: var(--cyan); font-weight: 700; }
 
 .map-legend {
-  position: absolute; left: 18px; top: 18px; z-index: 5;
+  position: absolute; left: 18px; bottom: 18px; z-index: 5; /* bottom-left: the filters own the top-left */
   background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(12px);
   border: 2px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 4px 0 var(--hard);
   padding: 11px 14px; font-size: 12px; font-weight: 600; display: flex; flex-direction: column; gap: 7px;
@@ -509,6 +530,9 @@ tbody tr:hover { background: var(--surface-2); }
   .map-layout { grid-template-columns: 1fr; }
   .side { display: none; }
   .mini-cal { width: 240px; right: 10px; bottom: 10px; }
+  /* Phones: the mini calendar takes the bottom, so the legend tucks under the filter button. */
+  .mf { left: 10px; top: 10px; max-width: calc(100% - 20px); }
+  .map-legend { left: 10px; top: 66px; bottom: auto; }
   .nav-links a:not(.active) { display: none; }
   .stats { grid-template-columns: repeat(2, 1fr); }
 }

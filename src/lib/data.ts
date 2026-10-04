@@ -214,6 +214,8 @@ export const placeTypeLabel: Record<Place["type"], string> = {
   cafe: "Café",
   restaurant: "Restaurant",
   mall: "Mall",
-  studio: "Studio",
+  studio: "Photo studio",
   outdoor: "Outdoor",
+  "dance-studio": "Dance studio",
+  "practice-space": "Practice space",
 };

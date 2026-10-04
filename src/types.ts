@@ -13,7 +13,21 @@ export type City =
   | 'Helsinki' | 'Vantaa' | 'Espoo'
   | 'Tampere' | 'Turku' | 'Lahti' | 'Oulu' | 'Jyvaskyla' | 'Kuopio';
 export type Status = 'live' | 'draft' | 'pending';
-export type PlaceType = 'cafe' | 'restaurant' | 'mall' | 'studio' | 'outdoor';
+/** What kind of event: a cosplay con/meetup, or a K-pop/J-pop dance cover event. */
+export type EventCategory = 'cosplay' | 'cover';
+export const EVENT_CATEGORIES: readonly EventCategory[] = ['cosplay', 'cover'];
+export type PlaceType =
+  | 'cafe' | 'restaurant' | 'mall' | 'studio' | 'outdoor' // photo spots ('studio' = photo studio)
+  | 'dance-studio' | 'practice-space';                     // practice / rehearsal places
+export type Booking = 'drop-in' | 'booking-required' | 'classes-only';
+export type Price = 'free' | 'paid';
+export type Facility = 'mirrors' | 'sound-system' | 'changing-room' | 'big-floor';
+
+/** Types listed on the Practice tab instead of the Spots tab (matches the server). */
+export const PRACTICE_TYPES: readonly PlaceType[] = ['dance-studio', 'practice-space'];
+export const PHOTO_TYPES: readonly PlaceType[] = ['cafe', 'restaurant', 'mall', 'studio', 'outdoor'];
+export const FACILITIES: readonly Facility[] = ['mirrors', 'sound-system', 'changing-room', 'big-floor'];
+export const isPracticeType = (t: PlaceType): boolean => PRACTICE_TYPES.includes(t);
 
 /** A dated anime convention. From `GET /v1/events`. */
 export interface Event {
@@ -21,6 +35,7 @@ export interface Event {
   name: string;
   venue: string;
   city: City;
+  category?: EventCategory; // client-only for now; missing = 'cosplay' (see eventCategory in lib/mapFilters)
   date: string; // start date, ISO 'YYYY-MM-DD'
   endDate?: string; // last day for multi-day events (>= date)
   lng: number;
@@ -53,6 +68,13 @@ export interface Place {
   photos: Photo[];
   description?: string;
   openingHours?: string;
+  // ---- practice places only (dance-studio / practice-space) ----
+  booking?: Booking;
+  price?: Price;
+  priceNote?: string;
+  facilities?: Facility[];
+  youthFriendly?: boolean; // admin-set; under-18s may use it
+  bookingUrl?: string;
   status: Status;
   createdAt?: string;
 }
