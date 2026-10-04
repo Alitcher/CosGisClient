@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useEventStore } from "@/lib/eventsStore";
 
 const MONTHS = [
@@ -11,6 +12,8 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const cityClass = (c: string) => c.toLowerCase();
 
 export default function MonthCalendar() {
+  const t = useTranslations("Calendar");
+  const tc = useTranslations("Common");
   const { events } = useEventStore();
   const today = new Date();
   const [view, setView] = useState({ year: today.getFullYear(), month: today.getMonth() });
@@ -55,9 +58,9 @@ export default function MonthCalendar() {
     <div className="cal-shell">
       <div className="cal-toolbar">
         <div className="tb-nav">
-          <button type="button" aria-label="Previous month" onClick={() => shift(-1)}>‹</button>
-          <button className="tb-today" type="button" onClick={goToday}>Today</button>
-          <button type="button" aria-label="Next month" onClick={() => shift(1)}>›</button>
+          <button type="button" aria-label={tc("previousMonth")} onClick={() => shift(-1)}>‹</button>
+          <button className="tb-today" type="button" onClick={goToday}>{t("today")}</button>
+          <button type="button" aria-label={tc("nextMonth")} onClick={() => shift(1)}>›</button>
         </div>
         <h1>{MONTHS[month]} <span>{year}</span></h1>
       </div>
@@ -86,7 +89,7 @@ export default function MonthCalendar() {
                     {e.name}
                   </span>
                 ))}
-                {list.length > 2 && <div className="ev-more">+{list.length - 2} more</div>}
+                {list.length > 2 && <div className="ev-more">{t("more", { count: list.length - 2 })}</div>}
               </div>
             );
           })}
@@ -102,7 +105,7 @@ export default function MonthCalendar() {
         <div className="lg"><span className="sw" style={{ background: "var(--gold)" }} /> Vantaa</div>
         <div className="lg"><span className="sw" style={{ background: "var(--cyan)" }} /> Espoo</div>
         <div className="lg" style={{ marginLeft: "auto", color: "var(--text-2)" }}>
-          ‹ › to browse past &amp; future months
+          {t("browseHint")}
         </div>
       </div>
     </div>

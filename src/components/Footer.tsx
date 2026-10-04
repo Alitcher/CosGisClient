@@ -1,12 +1,12 @@
+import { useTranslations } from "next-intl";
+
 export default function Footer() {
+  const t = useTranslations("Footer");
   return (
     <footer className="footer">
       <div className="shell">
-        <div>
-          © 2026 CosoraAtlas · Nordic · Baltic · Open data from
-          hel.kartta.fi
-        </div>
-        <div>Made with 💜 for the cosplay community</div>
+        <div>{t("copyright")}</div>
+        <div>{t("madeWith")}</div>
       </div>
     </footer>
   );

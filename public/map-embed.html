@@ -236,6 +236,8 @@
     } else if (d.type === 'setPlaces' && Array.isArray(d.places)) {
       buildPlaces(d.places);
     } else if (d.type === 'focus') {
+      // Ignore missing/0,0 coordinates rather than flying into the Atlantic.
+      if (!isFinite(d.lng) || !isFinite(d.lat) || (d.lng === 0 && d.lat === 0)) return;
       map.flyTo({ center: [d.lng, d.lat], zoom: 15.5, speed: 1.2 });
     }
   });

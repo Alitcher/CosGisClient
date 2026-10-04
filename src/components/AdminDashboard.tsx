@@ -19,8 +19,12 @@ import type { Event, Place, City, Status, PlaceType } from "@/types";
 
 type Tab = "events" | "spots" | "pending";
 
-/** A row in the Pending tab — either a pending event or a pending place. */
-type PendingItem = { kind: "event" | "place"; id: string; name: string; meta: string; lng: number; lat: number };
+/** A row in the Pending tab — either a pending event or a pending place. Keeps
+ *  the full record so the admin can open it in the edit drawer before approving. */
+type PendingItem = { id: string; name: string; meta: string; lng: number; lat: number } & (
+  | { kind: "event"; event: Event }
+  | { kind: "place"; place: Place }
+);
 
 type EventForm = {
   id: string | null;
@@ -71,11 +75,11 @@ export default function AdminDashboard() {
       const [ev, pl] = await Promise.all([apiListPendingEvents(), apiListPendingPlaces()]);
       setPendingItems([
         ...ev.map((e): PendingItem => ({
-          kind: "event", id: e.id, name: e.name, lng: e.lng, lat: e.lat,
+          kind: "event", event: e, id: e.id, name: e.name, lng: e.lng, lat: e.lat,
           meta: `📍 ${[e.venue, e.city].filter(Boolean).join(", ")} · ${fmtRange(e.date, e.endDate)}`,
         })),
         ...pl.map((p): PendingItem => ({
-          kind: "place", id: p.id, name: p.name, lng: p.lng, lat: p.lat,
+          kind: "place", place: p, id: p.id, name: p.name, lng: p.lng, lat: p.lat,
           meta: `📍 ${p.address ?? p.city} · ${placeTypeLabel[p.type]}`,
         })),
       ]);
@@ -161,6 +165,10 @@ export default function AdminDashboard() {
     setDrawerKind("spots");
     setOpen(true);
   }
+  const editPending = (it: PendingItem) => (it.kind === "event" ? editEvent(it.event) : editPlace(it.place));
+  // A pending item keeps "Pending" as an option in the drawer, so an admin can fix a
+  // submission and leave it in the queue, or set it Live to approve in one go.
+  const isPendingId = (id: string | null) => !!id && pendingItems.some((it) => it.id === id);
 
   // ---- save ----
   async function saveEvent() {
@@ -171,6 +179,7 @@ export default function AdminDashboard() {
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
       else await addEvent(data);
+      if (isPendingId(f.id)) await loadPending();
       setOpen(false);
     } catch (err) { fail("save the event", err); }
   }
@@ -187,6 +196,7 @@ export default function AdminDashboard() {
     try {
       if (f.id) await updatePlace(f.id, { ...data, status: f.status });
       else await addPlace(data);
+      if (isPendingId(f.id)) await loadPending();
       setOpen(false);
     } catch (err) { fail("save the spot", err); }
   }
@@ -347,6 +357,7 @@ export default function AdminDashboard() {
                       <td className="hide-sm">{it.meta}</td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
                         <a className="mini-btn" href={`/map?lng=${it.lng}&lat=${it.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
+                        <button className="mini-btn" type="button" title="Edit" disabled={busy} onClick={() => editPending(it)}>✏️</button>
                         <button className="mini-btn" type="button" title="Approve" disabled={busy} onClick={() => approveOne(it)}>✓</button>
                         <button className="mini-btn del" type="button" title="Reject" disabled={busy} onClick={() => rejectOne(it)}>✕</button>
                       </div></td>
@@ -384,7 +395,7 @@ export default function AdminDashboard() {
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
               <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://… event page" /></div>
               {eventForm.id && (
-                <div className="field"><label>Status</label><select value={eventForm.status} onChange={(e) => setE("status", e.target.value as Status)}><option value="live">Live</option><option value="draft">Draft</option></select></div>
+                <div className="field"><label>Status</label><select value={eventForm.status} onChange={(e) => setE("status", e.target.value as Status)}>{isPendingId(eventForm.id) && <option value="pending">Pending (keep in queue)</option>}<option value="live">Live</option><option value="draft">Draft</option></select></div>
               )}
             </div>
             <div className="drawer-foot">
@@ -410,7 +421,7 @@ export default function AdminDashboard() {
               <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00–20:00" /></div>
               <div className="field"><label>Description</label><textarea rows={3} value={placeForm.description} onChange={(e) => setP("description", e.target.value)} /></div>
               {placeForm.id && (
-                <div className="field"><label>Status</label><select value={placeForm.status} onChange={(e) => setP("status", e.target.value as Status)}><option value="live">Live</option><option value="draft">Draft</option></select></div>
+                <div className="field"><label>Status</label><select value={placeForm.status} onChange={(e) => setP("status", e.target.value as Status)}>{isPendingId(placeForm.id) && <option value="pending">Pending (keep in queue)</option>}<option value="live">Live</option><option value="draft">Draft</option></select></div>
               )}
             </div>
             <div className="drawer-foot">

@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 // July 2026 starts on a Wednesday (Mon-indexed column 2). 31 days.
 const FIRST_DOW = 2;
@@ -10,6 +11,8 @@ const DOW = ["M", "T", "W", "T", "F", "S", "S"];
 
 /** Compact calendar docked inside the map. */
 export default function MiniCalendar() {
+  const t = useTranslations("MiniCalendar");
+  const tc = useTranslations("Common");
   const cells: { key: string; label: number; cls: string }[] = [];
 
   for (let i = 0; i < FIRST_DOW; i++) {
@@ -27,8 +30,8 @@ export default function MiniCalendar() {
       <div className="mc-head">
         <div className="mc-title">July 2026</div>
         <div className="mc-nav">
-          <button type="button" aria-label="Previous month">‹</button>
-          <button type="button" aria-label="Next month">›</button>
+          <button type="button" aria-label={tc("previousMonth")}>‹</button>
+          <button type="button" aria-label={tc("nextMonth")}>›</button>
         </div>
       </div>
       <div className="mc-grid">
@@ -40,8 +43,8 @@ export default function MiniCalendar() {
         ))}
       </div>
       <div className="mc-foot">
-        <span>● = con day</span>
-        <Link href="/calendar">Full calendar →</Link>
+        <span>{t("conDay")}</span>
+        <Link href="/calendar">{t("fullCalendar")}</Link>
       </div>
     </div>
   );

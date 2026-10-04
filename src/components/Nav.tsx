@@ -1,21 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
+import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 
-const links: [string, string][] = [
-  ["/", "Home"],
-  ["/map", "Map"],
-  ["/calendar", "Calendar"],
-  ["/events", "Events"],
-  ["/spots", "Spots"],
-  ["/about", "About"],
-  ["/donate", "Donate"],
-];
+const links = [
+  ["/", "home"],
+  ["/map", "map"],
+  ["/calendar", "calendar"],
+  ["/events", "events"],
+  ["/spots", "spots"],
+  ["/about", "about"],
+  ["/donate", "donate"],
+] as const;
 
 export default function Nav() {
-  const pathname = usePathname();
+  const t = useTranslations("Nav");
+  const pathname = usePathname(); // without the language prefix, so /fi/map -> /map
   return (
     <nav className="nav">
       <div className="nav-inner">
@@ -23,19 +25,20 @@ export default function Nav() {
           <span className="brand-logo">⛩️</span>
           <span className="brand-text">
             CosoraAtlas
-            <small>Nordic · Baltic</small>
+            <small>{t("tagline")}</small>
           </span>
         </Link>
         <div className="nav-links">
-          {links.map(([href, label]) => (
+          {links.map(([href, key]) => (
             <Link
               key={href}
               href={href}
               className={pathname === href ? "active" : ""}
             >
-              {label}
+              {t(key)}
             </Link>
           ))}
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </div>

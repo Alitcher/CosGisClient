@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
@@ -11,6 +12,7 @@ const CITIES = ["All", "Helsinki", "Vantaa", "Espoo"] as const;
 type CityFilter = (typeof CITIES)[number];
 
 export default function MapView() {
+  const t = useTranslations("Map");
   const { events } = useEventStore();
   const { places } = usePlaceStore();
   const params = useSearchParams();
@@ -49,8 +51,13 @@ export default function MapView() {
   // target pin's detail popup auto-opens once we're zoomed in on it.
   useEffect(() => {
     if (!ready) return;
-    const lng = Number(params.get("lng"));
-    const lat = Number(params.get("lat"));
+    // Check presence first: Number(null) is 0, so a plain /map visit would
+    // otherwise fly to 0,0 in the ocean off Africa.
+    const rawLng = params.get("lng");
+    const rawLat = params.get("lat");
+    if (!rawLng || !rawLat) return;
+    const lng = Number(rawLng);
+    const lat = Number(rawLat);
     if (!Number.isFinite(lng) || !Number.isFinite(lat)) return;
     const t = setTimeout(() => post({ type: "focus", lng, lat }), 200);
     return () => clearTimeout(t);
@@ -70,13 +77,13 @@ export default function MapView() {
     <div className="map-layout">
       <aside className="side">
         <div className="side-head">
-          <h2>Conventions &amp; venues</h2>
-          <p>Filter by city · click an event to fly there</p>
+          <h2>{t("title")}</h2>
+          <p>{t("subtitle")}</p>
         </div>
         <div className="filters">
           {CITIES.map((c) => (
             <button key={c} className={`fchip${city === c ? " on" : ""}`} type="button" onClick={() => setCity(c)}>
-              {c}
+              {c === "All" ? t("all") : c}
             </button>
           ))}
         </div>
@@ -99,7 +106,7 @@ export default function MapView() {
           })}
           {list.length === 0 && (
             <div style={{ padding: 16, color: "var(--text-2)", fontSize: 13 }}>
-              No conventions in {city}.
+              {t("noConventions", { city: city === "All" ? t("all") : city })}
             </div>
           )}
         </div>
@@ -109,15 +116,15 @@ export default function MapView() {
         <iframe
           ref={iframeRef}
           src="/map-embed.html"
-          title="Cosplay map"
+          title={t("mapTitle")}
           className="map-canvas"
           style={{ border: 0, width: "100%", height: "100%" }}
         />
         <div className="map-legend">
-          <div className="legend-row"><span className="sw" style={{ background: "#8b5cf6", borderRadius: 3 }} /> Cosplay spots</div>
-          <div className="legend-row"><span className="sw" style={{ background: "var(--pink)" }} /> Helsinki cons</div>
-          <div className="legend-row"><span className="sw" style={{ background: "var(--gold)" }} /> Vantaa cons</div>
-          <div className="legend-row"><span className="sw" style={{ background: "var(--cyan)" }} /> Espoo cons</div>
+          <div className="legend-row"><span className="sw" style={{ background: "#8b5cf6", borderRadius: 3 }} /> {t("legendSpots")}</div>
+          <div className="legend-row"><span className="sw" style={{ background: "var(--pink)" }} /> {t("legendHelsinki")}</div>
+          <div className="legend-row"><span className="sw" style={{ background: "var(--gold)" }} /> {t("legendVantaa")}</div>
+          <div className="legend-row"><span className="sw" style={{ background: "var(--cyan)" }} /> {t("legendEspoo")}</div>
         </div>
         <MiniCalendar />
       </div>

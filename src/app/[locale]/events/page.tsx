@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { splitDate, fmtRange, eventEndsOn } from "@/lib/data";
@@ -11,8 +12,11 @@ import type { City } from "@/types";
 
 const CITIES: (City | "All cities")[] = ["All cities", "Helsinki", "Vantaa", "Espoo"];
 const WHENS = ["Upcoming", "Past", "All"] as const;
+const WHEN_LABEL = { Upcoming: "upcoming", Past: "past", All: "all" } as const;
 
 export default function EventsPage() {
+  const t = useTranslations("Events");
+  const tc = useTranslations("Common");
   const { events } = useEventStore();
   const [city, setCity] = useState<(typeof CITIES)[number]>("All cities");
   const [when, setWhen] = useState<(typeof WHENS)[number]>("Upcoming");
@@ -39,30 +43,30 @@ export default function EventsPage() {
       <div className="ev-shell">
         <div className="ev-top">
           <div>
-            <h1>All conventions</h1>
-            <p>{list.length} event{list.length === 1 ? "" : "s"} · sorted by date</p>
+            <h1>{t("title")}</h1>
+            <p>{t("count", { count: list.length })}</p>
           </div>
           <div className="flex gap-sm">
-            <SubmitEventDialog className="btn ghost" label="＋ Submit an event" />
-            <Link className="btn ghost" href="/calendar">📅 Calendar view</Link>
+            <SubmitEventDialog className="btn ghost" label={tc("submitEvent")} />
+            <Link className="btn ghost" href="/calendar">{t("calendarView")}</Link>
           </div>
         </div>
 
         <div className="toolbar">
           <div className="search">
-            🔍 <input type="text" placeholder="Search conventions, venues…" value={q} onChange={(e) => setQ(e.target.value)} />
+            🔍 <input type="text" placeholder={t("search")} value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
           <div className="seg">
             {CITIES.map((c) => (
               <button key={c} className={city === c ? "on" : ""} type="button" onClick={() => setCity(c)}>
-                {c}
+                {c === "All cities" ? t("allCities") : c}
               </button>
             ))}
           </div>
           <div className="seg">
             {WHENS.map((w) => (
               <button key={w} className={when === w ? "on" : ""} type="button" onClick={() => setWhen(w)}>
-                {w === "Past" ? "🗄️ Past" : w}
+                {t(WHEN_LABEL[w])}
               </button>
             ))}
           </div>
@@ -87,14 +91,14 @@ export default function EventsPage() {
                   </div>
                 </div>
                 <div className="r-cta">
-                  <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title="Show this location on the map">🗺️</Link>
+                  <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}>🗺️</Link>
                 </div>
               </div>
             );
           })}
           {list.length === 0 && (
             <div className="card" style={{ padding: 30, textAlign: "center", color: "var(--text-2)" }}>
-              No conventions match your filters.
+              {t("noMatches")}
             </div>
           )}
         </div>

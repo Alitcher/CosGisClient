@@ -1,27 +1,27 @@
 "use client";
 
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { placeTypeLabel } from "@/lib/data";
 import { usePlaceStore } from "@/lib/placesStore";
 import SubmitSpotDialog from "@/components/SubmitSpotDialog";
 
 export default function SpotsPage() {
+  const t = useTranslations("Spots");
+  const tc = useTranslations("Common");
+  const tType = useTranslations("PlaceTypes");
   const { places } = usePlaceStore();
 
   return (
     <>
       <Nav />
       <div className="spots-shell">
-        <span className="eyebrow">📸 cosplay-friendly</span>
-        <h1 className="section-title">Where to shoot in costume</h1>
-        <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>
-          Cafés, restaurants, malls, studios and parks around the capital region that welcome
-          cosplayers — each with a vibe and themes to match your shoot.
-        </p>
+        <span className="eyebrow">{t("eyebrow")}</span>
+        <h1 className="section-title">{t("title")}</h1>
+        <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>{t("intro")}</p>
         <div style={{ margin: "18px 0 6px" }}>
-          <SubmitSpotDialog className="btn" label="＋ Submit a spot" />
+          <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
         </div>
 
         <div className="grid spots-grid">
@@ -33,8 +33,8 @@ export default function SpotsPage() {
                 <div className="spot-top">
                   <h3>{p.name}</h3>
                   <div className="flex gap-sm" style={{ alignItems: "center" }}>
-                    <span className="spot-type">{placeTypeLabel[p.type]}</span>
-                    <Link className="icon-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} title="Show this location on the map">🗺️</Link>
+                    <span className="spot-type">{tType(p.type)}</span>
+                    <Link className="icon-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} title={tc("showOnMap")}>🗺️</Link>
                   </div>
                 </div>
                 <div className="spot-meta">📍 {p.address ?? p.city}</div>
@@ -49,7 +49,7 @@ export default function SpotsPage() {
           ))}
           {places.length === 0 && (
             <div className="card" style={{ padding: 30, textAlign: "center", color: "var(--text-2)" }}>
-              No spots yet.
+              {t("empty")}
             </div>
           )}
         </div>

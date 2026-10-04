@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+// Points next-intl at src/i18n/request.ts, which loads messages/<locale>.json.
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   // Off so dev doesn't double-mount components — that double-mount creates the
@@ -12,4 +16,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
