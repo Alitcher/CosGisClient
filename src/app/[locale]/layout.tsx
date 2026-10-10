@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import ThemeSync from "@/components/ThemeSync";
+import ThemeScript from "@/components/ThemeScript";
 import "../globals.css";
 
 type Props = {
@@ -35,6 +35,8 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
+        {/* Sets the theme before paint (no wrong-theme flash). See ThemeScript for why not next/script. */}
+        <ThemeScript code={themeInit} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -47,9 +49,6 @@ export default async function RootLayout({ children, params }: Props) {
         />
       </head>
       <body suppressHydrationWarning>
-        {/* beforeInteractive: runs before paint (no wrong-theme flash). next/script
-            instead of a raw <script>, which React warns about on client renders. */}
-        <Script id="theme-init" strategy="beforeInteractive">{themeInit}</Script>
         {/* Hands this language's messages to the client components ("use client"). */}
         <NextIntlClientProvider>
           <ThemeSync />
