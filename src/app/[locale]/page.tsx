@@ -21,23 +21,23 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       <section className="hero shell">
         <div className="hero-grid">
-          <div>
+          {/* Grid areas (globals.css): desktop = text + stats on the left, map on the
+              right; tablet/phone = text, map, then stats. */}
+          <div className="hero-text">
             <h1>
               {t.rich("title", { grad: (chunks) => <span className="grad">{chunks}</span> })}
             </h1>
             <p className="lead">{t("lead")}</p>
           </div>
 
-          {/* Interactive map, with the stats under it */}
-          <div>
-            <div className="hero-visual">
-              <HeroMap title={t("mapTitle")} />
-            </div>
-            <div className="hero-stats">
-              <div className="stat"><div className="n">12</div><div className="l">{t("statConventions")}</div></div>
-              <div className="stat"><div className="n">7</div><div className="l">{t("statVenues")}</div></div>
-              <div className="stat"><div className="n">3</div><div className="l">{t("statCities")}</div></div>
-            </div>
+          <div className="hero-visual">
+            <HeroMap title={t("mapTitle")} />
+          </div>
+
+          <div className="hero-stats">
+            <div className="stat"><div className="n">12</div><div className="l">{t("statConventions")}</div></div>
+            <div className="stat"><div className="n">7</div><div className="l">{t("statVenues")}</div></div>
+            <div className="stat"><div className="n">3</div><div className="l">{t("statCities")}</div></div>
           </div>
         </div>
       </section>

@@ -22,12 +22,12 @@
     "madeWith": "Made with 💜 for the cosplay community"
   },
   "Common": {
-    "submitEvent": "＋ Submit an event",
-    "submitSpot": "＋ Submit a spot",
+    "submitEvent": "Submit an event",
+    "submitSpot": "Submit a spot",
     "showOnMap": "Show this location on the map",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "submitPracticeSpot": "＋ Suggest a practice place"
+    "submitPracticeSpot": "Submit a place"
   },
   "PlaceTypes": {
     "cafe": "Café",
@@ -39,16 +39,16 @@
     "practice-space": "Practice space"
   },
   "Home": {
-    "title": "Anime cons + <grad>cosplay spots</grad> in Nordic & Baltic 🎌",
-    "lead": "Find every con near you — plus the cafés, malls and photo spots that welcome cosplayers, with pics and themes so you know exactly where to shoot. 💜",
+    "title": "<grad>Ani</grad>me & <grad>cos</grad>play spots in Nordic & Baltic",
+    "lead": "Find every event near you — plus the cafés, malls and photo spots that welcome cosplayers, with pics and themes so you know exactly where to shoot. 💜",
     "statConventions": "Conventions",
     "statVenues": "Venues",
     "statCities": "Cities",
     "mapTitle": "Map of cosplay venues",
     "upcomingTitle": "Upcoming conventions",
-    "seeAllEvents": "See all events →",
+    "seeAllEvents": "See all",
     "hotSpotsTitle": "Cosplay hot spots",
-    "seeAllSpots": "See all spots →"
+    "seeAllSpots": "See all"
   },
   "About": {
     "title": "A <grad>zero-budget</grad> cosplay map for the Helsinki region.",

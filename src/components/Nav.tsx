@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -30,7 +31,7 @@ export default function Nav() {
     <nav className="nav">
       <div className="nav-inner">
         <Link className="brand" href="/">
-          <span className="brand-logo">⛩️</span>
+          <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
           <span className="brand-text">
             CosoraAtlas
             <small>{t("tagline")}</small>
