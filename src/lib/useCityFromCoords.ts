@@ -1,34 +1,40 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { detectCity } from "@/lib/cities";
-import type { City } from "@/types";
+import { detectLocation } from "@/lib/cities";
+import type { City, Country } from "@/types";
 
 export type CityDetect = "idle" | "detecting" | "found" | "unsupported" | "unknown";
 
 /**
- * Fills a form's City from its longitude/latitude fields. Runs shortly after the
- * coordinates stop changing (typing, or picking an address suggestion) and calls
- * `onCity` with the detected city. The admin can still pick another city by hand
- * afterwards; it's only re-detected when the coordinates change again.
+ * Fills a form's Country and City from its longitude/latitude fields. Runs
+ * shortly after the coordinates stop changing (typing, or picking an address
+ * suggestion) and calls `onPlace` with what it found (city is missing when the
+ * geocoder names no town). The user can still change both by hand afterwards;
+ * they're only re-detected when the coordinates change again.
  */
-export function useCityFromCoords(lng: string, lat: string, onCity: (c: City) => void): CityDetect {
+export function useCityFromCoords(
+  lng: string,
+  lat: string,
+  onPlace: (p: { country: Country; city?: City }) => void,
+): CityDetect {
   const [state, setState] = useState<CityDetect>("idle");
-  const cb = useRef(onCity);
-  useEffect(() => { cb.current = onCity; });
+  const cb = useRef(onPlace);
+  useEffect(() => { cb.current = onPlace; });
 
   useEffect(() => {
     const x = Number(lng), y = Number(lat);
-    const valid = lng.trim() !== "" && lat.trim() !== "" && Number.isFinite(x) && Number.isFinite(y);
+    // 0,0 is the placeholder saved for "no location yet", not a real place.
+    const valid = lng.trim() !== "" && lat.trim() !== "" && Number.isFinite(x) && Number.isFinite(y) && !(x === 0 && y === 0);
     const ctrl = new AbortController();
     const timer = setTimeout(async () => {
       if (!valid) { setState("idle"); return; }
       setState("detecting");
       try {
-        const guess = await detectCity(x, y, ctrl.signal);
+        const guess = await detectLocation(x, y, ctrl.signal);
         if (guess === "unsupported" || guess === "unknown") { setState(guess); return; }
         cb.current(guess);
-        setState("found");
+        setState(guess.city ? "found" : "unknown");
       } catch {
         /* aborted by a newer coordinate change */
       }

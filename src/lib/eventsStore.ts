@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useSyncExternalStore } from "react";
 import type { Event } from "@/types";
-import { events as seed } from "./data";
 import {
   apiListEvents,
   apiCreateEvent,
@@ -11,11 +10,12 @@ import {
 } from "./api";
 
 /**
- * Events store backed by the events-service REST API. Seeds from local sample
- * data so the UI renders immediately and still works if the server is offline;
- * fetches live data on mount; admin writes go through the API then refetch.
+ * Events store backed by the events-service REST API. Starts empty (never shows
+ * sample data, even if the server is offline); fetches live data on mount;
+ * admin writes go through the API then refetch.
  */
-let cache: Event[] = seed;
+const EMPTY: Event[] = [];
+let cache: Event[] = EMPTY;
 let started = false;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
@@ -31,7 +31,7 @@ export async function refreshEvents() {
     cache = await apiListEvents();
     emit();
   } catch {
-    // server not reachable — keep current cache (sample data) so the app still works
+    // server not reachable - keep the current (possibly empty) list
   }
 }
 
@@ -39,7 +39,7 @@ export function useEventStore() {
   const events = useSyncExternalStore(
     subscribe,
     () => cache,
-    () => seed,
+    () => EMPTY,
   );
   useEffect(() => {
     if (!started) {

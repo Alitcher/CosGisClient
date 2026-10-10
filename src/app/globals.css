@@ -168,14 +168,10 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 :root[data-theme="dark"] .chip.vantaa { color: var(--gold); }
 .chip.espoo { color: #0d9488; border-color: var(--cyan); background: color-mix(in srgb, var(--cyan) 16%, transparent); }
 :root[data-theme="dark"] .chip.espoo { color: var(--cyan); }
-/* Cities outside the capital region: one rule, colour via --c (same as CITY_COLOR in lib/cities). */
-.chip.tampere, .ev.tampere { --c: #f97316; }
-.chip.turku, .ev.turku { --c: #3b82f6; }
-.chip.lahti, .ev.lahti { --c: #22c55e; }
-.chip.oulu, .ev.oulu { --c: #a16207; }
-.chip.jyvaskyla, .ev.jyvaskyla { --c: #ef4444; }
-.chip.kuopio, .ev.kuopio { --c: #64748b; }
-.chip:is(.tampere, .turku, .lahti, .oulu, .jyvaskyla, .kuopio) { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+/* Cities outside the capital region: one rule, colour set inline as --c (cityChip in lib/cities). */
+.chip.city { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+/* Country flag (CountryFlag): thin outline so white flags (Finland) show on light backgrounds. */
+.flag { display: inline-block; flex: none; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18); vertical-align: middle; }
 
 /* event thumbnail / logo (EventThumb) */
 .ev-thumb { display: inline-grid; place-items: center; flex: none; border-radius: 12px; overflow: hidden; border: 2px solid var(--border); background: color-mix(in srgb, var(--purple) 14%, transparent); line-height: 1; }
@@ -345,7 +341,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .ev.helsinki { background: linear-gradient(90deg, rgba(255,74,141,0.85), rgba(255,74,141,0.5)); }
 .ev.vantaa { background: linear-gradient(90deg, rgba(251,191,36,0.85), rgba(251,191,36,0.45)); color: #1a1340; }
 .ev.espoo { background: linear-gradient(90deg, rgba(34,211,238,0.8), rgba(34,211,238,0.45)); color: #07223a; }
-.ev:is(.tampere, .turku, .lahti, .oulu, .jyvaskyla, .kuopio) { background: linear-gradient(90deg, color-mix(in srgb, var(--c) 88%, transparent), color-mix(in srgb, var(--c) 50%, transparent)); }
+.ev.city { background: linear-gradient(90deg, color-mix(in srgb, var(--c) 88%, transparent), color-mix(in srgb, var(--c) 50%, transparent)); }
 .ev .dot { display:inline-block; width:6px;height:6px;border-radius:50%;background:#fff;margin-right:5px;vertical-align:middle; }
 .ev-more { margin-top: 4px; font-size: 11px; color: var(--text-2); font-weight: 600; padding-left: 4px; }
 .cal-foot { display: flex; gap: 18px; margin-top: 18px; flex-wrap: wrap; align-items: center; }

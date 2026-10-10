@@ -4,8 +4,11 @@
  * type a venue, address or postal code and pick from a suggestion list instead
  * of entering raw coordinates.
  *
- * Results are biased toward the Helsinki capital region and limited to Finland.
+ * Results are biased toward the Helsinki capital region and limited to the
+ * countries we cover (COUNTRIES in lib/cities).
  */
+import { COUNTRIES } from "./cities";
+
 const PHOTON = "https://photon.komoot.io/api/";
 
 export type GeoResult = {
@@ -26,6 +29,7 @@ type PhotonProps = {
   village?: string;
   district?: string;
   state?: string;
+  country?: string;
   countrycode?: string;
 };
 type PhotonFeature = {
@@ -40,10 +44,12 @@ function formatLabel(p: PhotonProps): string {
   const tail = [p.postcode, place].filter(Boolean).join(" ");
   const parts = [head];
   if (tail && tail !== head) parts.push(tail);
+  // Most entries are Finnish; name the country for the rest so "Storgatan 1" is unambiguous.
+  if (p.country && p.countrycode?.toUpperCase() !== "FI") parts.push(p.country);
   return parts.filter(Boolean).join(", ");
 }
 
-/** Query the geocoder. Returns up to ~8 Finnish suggestions, or [] on error. */
+/** Query the geocoder. Returns up to ~8 suggestions in covered countries, or [] on error. */
 export async function geocode(query: string, signal?: AbortSignal): Promise<GeoResult[]> {
   const q = query.trim();
   if (q.length < 2) return [];
@@ -59,7 +65,8 @@ export async function geocode(query: string, signal?: AbortSignal): Promise<GeoR
   const out: GeoResult[] = [];
   for (const f of data.features ?? []) {
     const p = f.properties ?? {};
-    if (p.countrycode && p.countrycode !== "FI") continue; // Finland only
+    const cc = p.countrycode?.toUpperCase();
+    if (cc && !(COUNTRIES as string[]).includes(cc)) continue; // Nordics + Baltics only
     const c = f.geometry?.coordinates;
     if (!c || c.length < 2) continue;
     out.push({

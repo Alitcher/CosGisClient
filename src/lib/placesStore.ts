@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useSyncExternalStore } from "react";
 import type { Place } from "@/types";
-import { places as seed } from "./data";
 import {
   apiListPlaces,
   apiCreatePlace,
@@ -12,9 +11,10 @@ import {
 
 /**
  * Places store backed by the places-service REST API (own database).
- * Same pattern as the events store.
+ * Same pattern as the events store: starts empty, never shows sample data.
  */
-let cache: Place[] = seed;
+const EMPTY: Place[] = [];
+let cache: Place[] = EMPTY;
 let started = false;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
@@ -30,7 +30,7 @@ export async function refreshPlaces() {
     cache = await apiListPlaces();
     emit();
   } catch {
-    // server offline — keep sample data
+    // server offline - keep the current (possibly empty) list
   }
 }
 
@@ -38,7 +38,7 @@ export function usePlaceStore() {
   const places = useSyncExternalStore(
     subscribe,
     () => cache,
-    () => seed,
+    () => EMPTY,
   );
   useEffect(() => {
     if (!started) {

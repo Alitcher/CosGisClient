@@ -54,7 +54,8 @@
 <div id="map"></div>
 <script src="/maplibre/maplibre-gl.js"></script>
 <script>
-  // Same colours as CITY_COLOR in src/lib/cities.ts.
+  // Same colours as KNOWN_COLOR in src/lib/cities.ts. The app also sends `color`
+  // on each event (cityColor), which wins; this table only covers the demo data.
   var CITY_COLOR = {
     Helsinki: '#ff4f96', Vantaa: '#ffc93c', Espoo: '#2dd4bf',
     Tampere: '#f97316', Turku: '#3b82f6', Lahti: '#22c55e',
@@ -135,7 +136,7 @@
       (link ? '<a class="ev-link" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">🔗 Book / more info ↗</a>' : '');
   }
   function eventCard(e) {
-    var color = CITY_COLOR[e.city] || '#ff4f96';
+    var color = e.color || CITY_COLOR[e.city] || '#ff4f96';
     var desc = e.description || e.desc || '';
     var city = cityLabel(e.city);
     // A dead image link just disappears instead of showing a broken icon.
@@ -229,7 +230,7 @@
       if (e.kind === 'con') { e.marker.remove(); return false; }
       return true;
     });
-    list.forEach(function (e) { addMarker('con', e, CITY_COLOR[e.city] || '#ff4f96', eventCard(e)); });
+    list.forEach(function (e) { addMarker('con', e, e.color || CITY_COLOR[e.city] || '#ff4f96', eventCard(e)); });
     updateCards();
   }
   function buildPlaces(list) {

@@ -6,7 +6,8 @@ import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
-import { citiesIn, cityLabel } from "@/lib/cities";
+import { cityChip, citiesIn, cityLabel, countryOf } from "@/lib/cities";
+import CountryFlag from "@/components/CountryFlag";
 import { useEventStore } from "@/lib/eventsStore";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import EventThumb from "@/components/EventThumb";
@@ -92,7 +93,7 @@ export default function EventsPage() {
                     <h3>{e.name}</h3>
                     <div className="meta">
                       <span>📍 <b>{e.venue}</b></span>
-                      <span className={`chip ${e.city.toLowerCase()}`}>{cityLabel(e.city)}</span>
+                      <span className={`chip ${cityChip(e.city).className}`} style={cityChip(e.city).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
                       {e.endDate && e.endDate > e.date && <span>🗓️ {fmtRange(e.date, e.endDate)}</span>}
                       {times && <span>🕐 {times}</span>}
                     </div>

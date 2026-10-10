@@ -1,6 +1,6 @@
 import type { City, Event, EventCategory, Place } from "@/types";
 import { isPracticeType } from "@/types";
-import { CITY_COUNTRY, type Country } from "./cities";
+import { countryOf, type Country } from "./cities";
 import { eventEndsOn } from "./data";
 
 /**
@@ -67,8 +67,8 @@ export function dateWindow(f: MapFilters, today: string): { from: string; to: st
   }
 }
 
-function inPlace(item: { city: City }, f: MapFilters): boolean {
-  if (f.countries.length && !f.countries.includes(CITY_COUNTRY[item.city])) return false;
+function inPlace(item: { city: City; country?: Country }, f: MapFilters): boolean {
+  if (f.countries.length && !f.countries.includes(countryOf(item))) return false;
   if (f.cities.length && !f.cities.includes(item.city)) return false;
   return true;
 }
