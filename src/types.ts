@@ -7,11 +7,11 @@
  * the server's `@anime-con/shared` schemas.
  */
 
-// Matches the server's CityEnum. Values are ASCII ('Jyvaskyla'); show them with
-// cityLabel() from lib/cities for the accented spelling.
-export type City =
-  | 'Helsinki' | 'Vantaa' | 'Espoo'
-  | 'Tampere' | 'Turku' | 'Lahti' | 'Oulu' | 'Jyvaskyla' | 'Kuopio';
+// City / town name, free text (the server's CityName). Older Finnish rows are
+// ASCII ('Jyvaskyla'); show any city with cityLabel() from lib/cities.
+export type City = string;
+/** ISO 3166-1 alpha-2 (the server's CountryEnum): Nordics, Baltics, Aland, Faroe Islands, Greenland. */
+export type Country = 'FI' | 'SE' | 'NO' | 'DK' | 'IS' | 'EE' | 'LV' | 'LT' | 'AX' | 'FO' | 'GL';
 export type Status = 'live' | 'draft' | 'pending';
 /** What kind of event: a cosplay con/meetup, or a K-pop/J-pop dance cover event. */
 export type EventCategory = 'cosplay' | 'cover';
@@ -35,6 +35,7 @@ export interface Event {
   name: string;
   venue: string;
   city: City;
+  country?: Country; // missing = 'FI' (see countryOf in lib/cities)
   category?: EventCategory; // client-only for now; missing = 'cosplay' (see eventCategory in lib/mapFilters)
   date: string; // start date, ISO 'YYYY-MM-DD'
   endDate?: string; // last day for multi-day events (>= date)
@@ -61,6 +62,7 @@ export interface Place {
   name: string;
   type: PlaceType;
   city: City;
+  country?: Country; // missing = 'FI' (see countryOf in lib/cities)
   address?: string;
   lng: number;
   lat: number;
