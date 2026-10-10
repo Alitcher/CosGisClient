@@ -11,6 +11,13 @@
   .mk { width: 18px; height: 18px; border-radius: 50%; border: 3px solid #fff; cursor: pointer;
         box-shadow: 0 3px 8px rgba(0,0,0,.4); }
   .mk.spot { border-radius: 6px; }
+  /* Thumbnail markers (?mode=thumbs, the home page map): a 50x50 frame; the image
+     is cropped to fill it (object-fit: cover), never squeezed. */
+  .mk-thumb { width: 50px; height: 50px; box-sizing: border-box; border: 1.5px solid #fff; border-radius: 10px;
+              overflow: hidden; background: #fff; cursor: pointer; box-shadow: 0 3px 8px rgba(0,0,0,.35); }
+  .mk-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mk-thumb .ini { width: 100%; height: 100%; display: grid; place-items: center;
+                   color: #fff; font: 700 18px Inter, sans-serif; }
   .maplibregl-popup-content { padding: 0; border-radius: 14px; overflow: hidden;
         box-shadow: 0 10px 28px rgba(0,0,0,.28); border: 2px solid rgba(124,58,173,.25); }
   /* Close (×) button: solid red circle so it stands out over card photos. */
@@ -90,22 +97,9 @@
   function fmtCoord(lat, lng) { return (typeof lat === 'number' && typeof lng === 'number') ? lat.toFixed(4) + ', ' + lng.toFixed(4) : ''; }
   function row(icon, text) { return text ? '<div class="meta">' + icon + ' ' + esc(text) + '</div>' : ''; }
 
-  // cosplay-friendly places (static)
-  var places = [
-    { id:'p1', name:'Café Sakura', type:'cafe', city:'Helsinki', address:'Iso Roobertinkatu 12, Helsinki', lng:24.9402, lat:60.1641, themes:['pastel','japanese garden','kawaii'], desc:'Cosy pastel café that welcomes cosplayers for photos.', photo:'https://picsum.photos/seed/sakura/600/400' },
-    { id:'p2', name:'Neon Ramen Bar', type:'restaurant', city:'Helsinki', address:'Kaisaniemenkatu 4, Helsinki', lng:24.9465, lat:60.1718, themes:['cyberpunk','neon','night city'], desc:'Neon-lit ramen spot with a cyberpunk vibe.', photo:'https://picsum.photos/seed/ramen/600/400' },
-    { id:'p3', name:'Kamppi Center', type:'mall', city:'Helsinki', address:'Urho Kekkosen katu 1, Helsinki', lng:24.9316, lat:60.1686, themes:['modern','indoor backdrops'], desc:'Spacious indoor mall with bright atriums.', photo:'https://picsum.photos/seed/kamppi/600/400' },
-    { id:'p4', name:'Studio Hikari', type:'studio', city:'Vantaa', address:'Tikkurila, Vantaa', lng:25.0432, lat:60.2925, themes:['chroma key','fantasy sets','studio lighting'], desc:'Bookable photo studio with cosplay-friendly sets.', photo:'https://picsum.photos/seed/hikari/600/400' },
-    { id:'p5', name:'Töölönlahti Park', type:'outdoor', city:'Helsinki', address:'Töölönlahti, Helsinki', lng:24.9356, lat:60.1798, themes:['nature','lakeside','spring blossoms'], desc:'Scenic lakeside park popular for outdoor shoots.', photo:'https://picsum.photos/seed/toolo/600/400' },
-    { id:'p6', name:'Maid Café Mochi', type:'cafe', city:'Espoo', address:'Leppävaara, Espoo', lng:24.8138, lat:60.2192, themes:['maid cafe','kawaii','tea party'], desc:'Themed maid café that loves hosting cosplayers.', photo:'https://picsum.photos/seed/mochi/600/400' }
-  ];
-  // default conventions (replaced by setEvents from the app/admin store)
-  var defaultEvents = [
-    { id:'e1', name:'Tracon Hel', venue:'Messukeskus', city:'Helsinki', lng:24.9354, lat:60.2012, date:'2026-07-11' },
-    { id:'e2', name:'Yukicon Summer', venue:'Vantaa Energia Areena', city:'Vantaa', lng:25.0116, lat:60.2931, date:'2026-08-23' },
-    { id:'e3', name:'Tsukicon Mini', venue:'Kaapelitehdas', city:'Helsinki', lng:24.9043, lat:60.1640, date:'2026-09-14' },
-    { id:'e4', name:'Cosvision', venue:'Dipoli', city:'Espoo', lng:24.8270, lat:60.1849, date:'2026-10-04' }
-  ];
+  // Filled by the app (setPlaces / setEvents messages) from the real database. No demo data.
+  var places = [];
+  var defaultEvents = [];
 
   function spotCard(p) {
     var photo = p.photo || (p.photos && p.photos[0] && p.photos[0].url) || '';
@@ -202,7 +196,39 @@
   var entries = [];          // { kind, city, marker, popup, el, visible }
   var currentCity = 'all';
 
+  // ?mode=thumbs: no cards, each item is a 50x50 thumbnail (its image, or its
+  // first letter on its colour when it has none). Clicking zooms in on it.
+  var THUMBS = /[?&]mode=thumbs\b/.test(location.search);
+
+  function thumbUrl(item) {
+    return item.image || item.photo || (item.photos && item.photos[0] && item.photos[0].url) || '';
+  }
+
+  function addThumb(kind, item, color) {
+    var el = document.createElement('div');
+    el.className = 'mk-thumb';
+    el.title = item.name || '';
+    var url = thumbUrl(item);
+    var initial = function () {
+      el.innerHTML = '<div class="ini" style="background:' + color + '">' + esc((item.name || '?').charAt(0).toUpperCase()) + '</div>';
+    };
+    if (url) {
+      var img = document.createElement('img');
+      img.alt = '';
+      img.src = url;
+      img.onerror = initial; // broken link: fall back to the letter
+      el.appendChild(img);
+    } else initial();
+    var marker = new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).addTo(map);
+    el.addEventListener('click', function () { map.flyTo({ center: [item.lng, item.lat], zoom: Math.max(map.getZoom(), 14), speed: 1.2 }); });
+    var entry = { kind: kind, city: item.city, marker: marker, popup: null, el: el, visible: true };
+    applyVisibility(entry);
+    entries.push(entry);
+    return entry;
+  }
+
   function addMarker(kind, item, color, html) {
+    if (THUMBS) return addThumb(kind, item, color);
     var el = document.createElement('div');
     el.className = 'mk' + (kind === 'spot' ? ' spot' : '');
     el.style.background = color;
@@ -218,7 +244,7 @@
   function applyVisibility(e) {
     e.visible = (currentCity === 'all' || e.city === currentCity);
     e.el.style.display = e.visible ? '' : 'none';
-    if (!e.visible && e.popup.isOpen()) e.marker.togglePopup();
+    if (!e.visible && e.popup && e.popup.isOpen()) e.marker.togglePopup();
   }
 
   function buildEvents(list) {
@@ -246,6 +272,7 @@
     var z = map.getZoom();
     var bounds = map.getBounds();
     entries.forEach(function (e) {
+      if (!e.popup) return; // thumbnail markers have no card
       var open = e.popup.isOpen();
       var shouldOpen = e.visible && z >= CARD_ZOOM && bounds.contains(e.marker.getLngLat());
       if (shouldOpen && !open) e.marker.togglePopup();
