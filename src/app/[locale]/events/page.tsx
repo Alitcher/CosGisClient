@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
 import { cityChip, citiesIn, cityLabel, countryOf } from "@/lib/cities";
 import CountryFlag from "@/components/CountryFlag";
+import SearchBox from "@/components/SearchBox";
 import { useEventStore } from "@/lib/eventsStore";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import EventThumb from "@/components/EventThumb";
@@ -50,16 +51,18 @@ export default function EventsPage() {
             <h1>{t("title")}</h1>
             <p>{t("count", { count: list.length })}</p>
           </div>
+        </div>
+
+        {/* Buttons, a line, the filters, then the search (same order on Spots / Practice) */}
+        <div className="page-actions">
           <div className="flex gap-sm">
             <SubmitEventDialog className="btn ghost" label={tc("submitEvent")} />
             <Link className="btn ghost" href="/calendar">{t("calendarView")}</Link>
           </div>
         </div>
+        <hr className="divider" />
 
         <div className="toolbar">
-          <div className="search">
-            🔍 <input type="text" placeholder={t("search")} value={q} onChange={(e) => setQ(e.target.value)} />
-          </div>
           <div className="seg">
             {cityOptions.map((c) => (
               <button key={c} className={city === c ? "on" : ""} type="button" onClick={() => setCity(c)}>
@@ -74,6 +77,9 @@ export default function EventsPage() {
               </button>
             ))}
           </div>
+        </div>
+        <div className="search-row">
+          <SearchBox value={q} onChange={setQ} placeholder={t("search")} />
         </div>
 
         <div className="ev-rows">

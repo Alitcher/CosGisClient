@@ -39,25 +39,20 @@
     "practice-space": "Harjutusruum"
   },
   "Home": {
-    "eyebrow": "✨ sinu cosplay-kaart",
     "title": "Animeüritused + <grad>cosplay-kohad</grad> Põhjamaades ja Baltikumis 🎌",
     "lead": "Leia kõik lähedal toimuvad conid — ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud. Pildid ja teemad näitavad kohe, kus pildistada. 💜",
     "statConventions": "Üritused",
     "statVenues": "Toimumiskohad",
     "statCities": "Linnad",
     "mapTitle": "Cosplay-kohtade kaart",
-    "upcomingEyebrow": "Järgmisena kavas",
     "upcomingTitle": "Tulevased üritused",
     "seeAllEvents": "Kõik üritused →",
-    "hotSpotsEyebrow": "📸 kus pildistada",
     "hotSpotsTitle": "Cosplay kuumad kohad",
     "seeAllSpots": "Kõik kohad →"
   },
   "About": {
-    "eyebrow": "Projektist",
     "title": "<grad>Nulleelarvega</grad> cosplay-kaart Helsingi piirkonnale.",
     "intro": "Kaart näitab Helsingis, Vantaas ja Espoos kahte asja: animeüritusi ning cosplay-sõbralikke kohvikuid, restorane, kaubanduskeskusi ja pildistamiskohti, kus kostüümis inimesed on oodatud — igaühel pildid ja teema. See kasutab Helsingi linna avatud ruumiandmeid ja ürituste nimekirju, kuvab need kiirel vektorkaardil ning seob kõik kalendri ja ürituste nimekirjaga — kõik 0 €/kuus.",
-    "stackEyebrow": "Ehitatud kasutades",
     "stackTitle": "Tehnoloogiad",
     "techNext": "App Routeri kasutajaliides",
     "techMapLibre": "Avatud vektorkaardi mootor",
@@ -65,7 +60,6 @@
     "techGis": "Avatud kohtade geomeetria",
     "techLinkedEvents": "Helsingi ürituste nimekirjad",
     "attribution": "Ürituste andmed: <api>Helsingi linna Linked Events API</api>, litsents <license>CC BY 4.0</license>. Ürituste nimekirjad imporditakse automaatselt ja meeskond kontrollib need enne avaldamist.",
-    "howEyebrow": "Kuidas see töötab",
     "howTitle": "Avaandmetest interaktiivse kaardini",
     "step1Title": "Päring ja proksi",
     "step1Text": "Cloudflare Worker pärib Helsingi GIS-teenusest andmeid, möödub CORS-piirangutest ja salvestab GeoJSONi servas vahemällu.",
@@ -83,7 +77,6 @@
     "intro": "See on tasuta ja reklaamivaba hobiprojekt Soome cosplay-kogukonnale. Kui leidsid selle abil oma järgmise coni või pildistamiskoha, hoiab kohv andmed värsked ja serverid töös!",
     "button": "Osta mulle kohvi",
     "buttonNote": "Turvaline makse Buy Me a Coffee kaudu · kontot pole vaja",
-    "tiersEyebrow": "vali oma tass",
     "tiersTitle": "Iga lonks aitab 🌸",
     "mostLoved": "⭐ populaarseim",
     "espresso": "Espresso",
@@ -111,7 +104,7 @@
     "title": "Kõik üritused",
     "count": "{count, plural, one {# üritus} other {# üritust}} · kuupäeva järgi",
     "calendarView": "📅 Kalendrivaade",
-    "search": "Otsi üritusi, kohti…",
+    "search": "Otsi üritusi, kohti...",
     "allCities": "Kõik linnad",
     "upcoming": "Tulevased",
     "past": "🗄️ Möödunud",
@@ -119,10 +112,11 @@
     "noMatches": "Filtritele vastavaid üritusi ei leitud."
   },
   "Spots": {
-    "eyebrow": "📸 cosplay-sõbralik",
     "title": "Kus kostüümis pildistada",
     "intro": "Pealinnapiirkonna kohvikud, restoranid, kaubanduskeskused, stuudiod ja pargid, kus cosplay'jad on oodatud — igaühel oma meeleolu ja teemad sinu pildistamiseks.",
-    "empty": "Kohti veel pole."
+    "empty": "Kohti veel pole.",
+    "search": "Otsi kohti, teemasid, piirkondi...",
+    "noMatches": "Otsingule vastavaid kohti ei leitud."
   },
   "Map": {
     "loading": "Kaardi laadimine…",
@@ -240,7 +234,6 @@
     "needCoords": "Lisa koha pikkus- ja laiuskraad."
   },
   "Practice": {
-    "eyebrow": "💃 harjutame koos",
     "title": "Harjutuskohad",
     "intro": "J-popile ja K-popile avatud tantsustuudiod ning spordisaalid, noortekeskused ja muud ruumid, kus saad harjutada cover-tantse ja cosplay-etteasteid.",
     "empty": "Harjutuskohti veel pole. Tead mõnda? Soovita seda!",
@@ -254,7 +247,9 @@
     "changing-room": "Riietusruum",
     "big-floor": "Suur põrand",
     "youthFriendly": "Alla 18-aastased oodatud",
-    "bookingLink": "Broneeri / lisainfo ↗"
+    "bookingLink": "Broneeri / lisainfo ↗",
+    "search": "Otsi stuudioid, ruume, piirkondi...",
+    "noMatches": "Otsingule vastavaid kohti ei leitud."
   },
   "SubmitPractice": {
     "title": "Soovita harjutuskohta",

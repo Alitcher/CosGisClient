@@ -26,7 +26,6 @@ export default async function DonatePage({ params }: { params: Promise<{ locale:
 
       <section className="tiers">
         <div style={{ textAlign: "center" }}>
-          <span className="eyebrow">{t("tiersEyebrow")}</span>
           <h2 className="section-title">{t("tiersTitle")}</h2>
         </div>
         <div className="grid tiers-grid">

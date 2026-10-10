@@ -39,25 +39,20 @@
     "practice-space": "Harjoitustila"
   },
   "Home": {
-    "eyebrow": "✨ sinun cosplay-karttasi",
     "title": "Animetapahtumat + <grad>cosplay-paikat</grad> Pohjoismaissa ja Baltiassa 🎌",
     "lead": "Löydä kaikki lähelläsi olevat conit — sekä kahvilat, ostoskeskukset ja kuvauspaikat, joihin cosplayaajat ovat tervetulleita. Kuvat ja teemat kertovat heti, missä kannattaa kuvata. 💜",
     "statConventions": "Tapahtumat",
     "statVenues": "Tapahtumapaikat",
     "statCities": "Kaupungit",
     "mapTitle": "Cosplay-paikkojen kartta",
-    "upcomingEyebrow": "Seuraavaksi ohjelmassa",
     "upcomingTitle": "Tulevat tapahtumat",
     "seeAllEvents": "Kaikki tapahtumat →",
-    "hotSpotsEyebrow": "📸 missä kuvata",
     "hotSpotsTitle": "Cosplay-kuumat paikat",
     "seeAllSpots": "Kaikki paikat →"
   },
   "About": {
-    "eyebrow": "Tietoa projektista",
     "title": "<grad>Nollabudjetin</grad> cosplay-kartta pääkaupunkiseudulle.",
     "intro": "Kartta näyttää kaksi asiaa Helsingissä, Vantaalla ja Espoossa: animetapahtumat sekä cosplay-ystävälliset kahvilat, ravintolat, ostoskeskukset ja kuvauspaikat, joihin pukeutuneet ovat tervetulleita — jokaisella kuvat ja teema. Se hakee avointa paikkatietoa ja tapahtumalistauksia Helsingin kaupungilta, piirtää ne nopealle vektorikartalle ja yhdistää kaiken kalenteriin ja tapahtumalistaan — kaikki 0 €/kk.",
-    "stackEyebrow": "Rakennettu näillä",
     "stackTitle": "Teknologiat",
     "techNext": "App Router -käyttöliittymä",
     "techMapLibre": "Avoin vektorikarttamoottori",
@@ -65,7 +60,6 @@
     "techGis": "Avoin paikkojen geometria",
     "techLinkedEvents": "Helsingin tapahtumalistaukset",
     "attribution": "Tapahtumatiedot: <api>Helsingin kaupungin Linked Events API</api>, lisenssi <license>CC BY 4.0</license>. Tapahtumalistaukset tuodaan automaattisesti, ja tiimi tarkistaa ne ennen julkaisua.",
-    "howEyebrow": "Näin se toimii",
     "howTitle": "Avoimesta datasta interaktiiviseksi kartaksi",
     "step1Title": "Haku ja välityspalvelin",
     "step1Text": "Cloudflare Worker kutsuu Helsingin paikkatietopalvelua, kiertää CORS-rajoitukset ja tallentaa GeoJSONin välimuistiin reunapalvelimille.",
@@ -83,7 +77,6 @@
     "intro": "Tämä on ilmainen ja mainokseton harrastusprojekti suomalaiselle cosplay-yhteisölle. Jos löysit tämän avulla seuraavan conisi tai kuvauspaikkasi, kahvi pitää datan tuoreena ja palvelimet käynnissä!",
     "button": "Tarjoa minulle kahvi",
     "buttonNote": "Turvallinen maksu Buy Me a Coffeen kautta · tiliä ei tarvita",
-    "tiersEyebrow": "valitse kuppisi",
     "tiersTitle": "Jokainen siemaus auttaa 🌸",
     "mostLoved": "⭐ suosituin",
     "espresso": "Espresso",
@@ -111,7 +104,7 @@
     "title": "Kaikki tapahtumat",
     "count": "{count, plural, one {# tapahtuma} other {# tapahtumaa}} · päivämäärän mukaan",
     "calendarView": "📅 Kalenterinäkymä",
-    "search": "Hae tapahtumia, paikkoja…",
+    "search": "Hae tapahtumia, paikkoja...",
     "allCities": "Kaikki kaupungit",
     "upcoming": "Tulevat",
     "past": "🗄️ Menneet",
@@ -119,10 +112,11 @@
     "noMatches": "Suodattimia vastaavia tapahtumia ei löytynyt."
   },
   "Spots": {
-    "eyebrow": "📸 cosplay-ystävällinen",
     "title": "Missä kuvata cosplayssa",
     "intro": "Pääkaupunkiseudun kahvilat, ravintolat, ostoskeskukset, studiot ja puistot, joihin cosplayaajat ovat tervetulleita — jokaisella oma tunnelma ja teemat kuvauksiisi.",
-    "empty": "Ei vielä paikkoja."
+    "empty": "Ei vielä paikkoja.",
+    "search": "Hae paikkoja, teemoja, alueita...",
+    "noMatches": "Hakuasi vastaavia paikkoja ei löytynyt."
   },
   "Map": {
     "loading": "Ladataan karttaa…",
@@ -240,7 +234,6 @@
     "needCoords": "Lisää paikan pituus- ja leveysaste."
   },
   "Practice": {
-    "eyebrow": "💃 treenataan yhdessä",
     "title": "Treenipaikat",
     "intro": "J-pop- ja K-pop-tanssille avoimet tanssistudiot sekä urheiluhallit, nuorisotalot ja muut tilat, joissa voit harjoitella cover-tansseja ja cosplay-esityksiä.",
     "empty": "Ei vielä treenipaikkoja. Tiedätkö jonkin? Ehdota sitä!",
@@ -254,7 +247,9 @@
     "changing-room": "Pukuhuone",
     "big-floor": "Iso lattia",
     "youthFriendly": "Alle 18-vuotiaat tervetulleita",
-    "bookingLink": "Varaa / lisätietoa ↗"
+    "bookingLink": "Varaa / lisätietoa ↗",
+    "search": "Hae studioita, tiloja, alueita...",
+    "noMatches": "Hakuasi vastaavia paikkoja ei löytynyt."
   },
   "SubmitPractice": {
     "title": "Ehdota treenipaikkaa",

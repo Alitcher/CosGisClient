@@ -14,7 +14,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <Nav />
 
       <section className="about-hero shell">
-        <span className="eyebrow">{t("eyebrow")}</span>
         <h1>
           {t.rich("title", { grad: (chunks) => <span className="grad">{chunks}</span> })}
         </h1>
@@ -22,7 +21,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       <section className="stack shell">
-        <span className="eyebrow">{t("stackEyebrow")}</span>
         <h2 className="section-title">{t("stackTitle")}</h2>
         <div className="grid stack-grid" style={{ marginTop: 24 }}>
           <div className="card tech"><div className="ic">▲</div><h4>Next.js + TS</h4><p>{t("techNext")}</p></div>
@@ -45,7 +43,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </section>
 
       <section className="how shell">
-        <span className="eyebrow">{t("howEyebrow")}</span>
         <h2 className="section-title">{t("howTitle")}</h2>
         <div className="grid steps">
           <div className="card step">

@@ -22,7 +22,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="hero shell">
         <div className="hero-grid">
           <div>
-            <span className="eyebrow">{t("eyebrow")}</span>
             <h1>
               {t.rich("title", { grad: (chunks) => <span className="grad">{chunks}</span> })}
             </h1>
@@ -46,7 +45,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="upcoming shell">
         <div className="up-head">
           <div>
-            <span className="eyebrow">{t("upcomingEyebrow")}</span>
             <h2 className="section-title">{t("upcomingTitle")}</h2>
           </div>
           <div className="flex gap-sm">
@@ -60,7 +58,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="upcoming hot-spots shell">
         <div className="up-head">
           <div>
-            <span className="eyebrow">{t("hotSpotsEyebrow")}</span>
             <h2 className="section-title">{t("hotSpotsTitle")}</h2>
           </div>
           <div className="flex gap-sm">
