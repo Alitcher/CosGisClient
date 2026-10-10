@@ -7,7 +7,7 @@ import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { splitDate, eventEndsOn } from "@/lib/data";
-import { CITY_COLOR, citiesIn, cityLabel, countriesIn } from "@/lib/cities";
+import { cityColor, cityCountries, citiesIn, cityLabel, countriesIn } from "@/lib/cities";
 import { DEFAULT_FILTERS, filterEvents, filterPlaces, todayISO, type MapFilters as Filters } from "@/lib/mapFilters";
 import EventThumb from "./EventThumb";
 import MapFilters from "./MapFilters";
@@ -43,7 +43,8 @@ export default function MapView() {
 
   // push the filtered (possibly admin-edited) events + places into the map
   useEffect(() => {
-    if (ready) post({ type: "setEvents", events: list });
+    // The embed has no colour table for cities outside the old Finnish list, so send each one's colour.
+    if (ready) post({ type: "setEvents", events: list.map((e) => ({ ...e, color: cityColor(e.city) })) });
   }, [ready, list]);
   useEffect(() => {
     if (ready) post({ type: "setPlaces", places: shownPlaces });
@@ -120,6 +121,7 @@ export default function MapView() {
           onChange={setFilters}
           countries={countriesIn(optionItems)}
           cities={citiesIn(optionItems)}
+          cityCountry={cityCountries(optionItems)}
           resultCount={list.length}
         />
         <div className="map-legend">
@@ -130,7 +132,7 @@ export default function MapView() {
             <div className="legend-row"><span className="sw" style={{ background: "#0ea5e9", borderRadius: 3 }} /> {t("legendPractice")}</div>
           )}
           {legendCities.map((c) => (
-            <div className="legend-row" key={c}><span className="sw" style={{ background: CITY_COLOR[c] }} /> {t("legendCity", { city: cityLabel(c) })}</div>
+            <div className="legend-row" key={c}><span className="sw" style={{ background: cityColor(c) }} /> {t("legendCity", { city: cityLabel(c) })}</div>
           ))}
         </div>
         <MiniCalendar />

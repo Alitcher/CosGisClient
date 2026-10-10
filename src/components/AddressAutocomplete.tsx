@@ -6,26 +6,34 @@ import { geocode, type GeoResult } from "@/lib/geocode";
 /**
  * Type-ahead address / place / postcode search with a clickable suggestion list,
  * like the Google Maps search box. Debounced; calls onSelect with coordinates
- * when the user picks a suggestion.
+ * when the user picks a suggestion. Only searches after the user types, so a
+ * prefilled value (editing a saved item) doesn't pop the list open.
+ *
+ * `keepText`: picking a suggestion only sets the coordinates and leaves the
+ * typed text as is (for a venue name like "Kultuurikatel").
  */
 export default function AddressAutocomplete({
   value,
   onChange,
   onSelect,
   placeholder,
+  keepText = false,
 }: {
   value: string;
   onChange: (text: string) => void;
   onSelect: (result: GeoResult) => void;
   placeholder?: string;
+  keepText?: boolean;
 }) {
   const [items, setItems] = useState<GeoResult[]>([]);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [active, setActive] = useState(-1);
   const skipNext = useRef(false); // don't re-search the text we just filled in
+  const typed = useRef(false); // the user has typed since mount
 
   useEffect(() => {
+    if (!typed.current) return;
     if (skipNext.current) { skipNext.current = false; return; }
     const q = value.trim();
     if (q.length < 2) { setItems([]); setOpen(false); return; }
@@ -42,9 +50,8 @@ export default function AddressAutocomplete({
   }, [value]);
 
   function choose(r: GeoResult) {
-    skipNext.current = true;
     onSelect(r);
-    onChange(r.label);
+    if (!keepText) { skipNext.current = true; onChange(r.label); }
     setOpen(false);
     setItems([]);
   }
@@ -61,7 +68,7 @@ export default function AddressAutocomplete({
     <div style={{ position: "relative" }}>
       <input
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => { typed.current = true; onChange(e.target.value); }}
         onKeyDown={onKeyDown}
         onFocus={() => { if (items.length > 0) setOpen(true); }}
         onBlur={() => setTimeout(() => setOpen(false), 150)}

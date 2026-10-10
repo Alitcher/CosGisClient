@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useEventStore } from "@/lib/eventsStore";
-import { CITY_COLOR, citiesIn, cityLabel } from "@/lib/cities";
+import { cityChip, cityColor, citiesIn, cityLabel } from "@/lib/cities";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
 const pad = (n: number) => String(n).padStart(2, "0");
-const cityClass = (c: string) => c.toLowerCase();
 
 export default function MonthCalendar() {
   const t = useTranslations("Calendar");
@@ -85,7 +84,7 @@ export default function MonthCalendar() {
               <div key={`d${d}`} className={`cell${weekend ? " weekend" : ""}${isToday(d) ? " today" : ""}`}>
                 <div className="num">{d}</div>
                 {list.slice(0, 2).map((e) => (
-                  <span key={e.id} className={`ev ${cityClass(e.city)}`}>
+                  <span key={e.id} className={`ev ${cityChip(e.city).className}`} style={cityChip(e.city).style}>
                     <span className="dot" />
                     {e.name}
                   </span>
@@ -103,7 +102,7 @@ export default function MonthCalendar() {
 
       <div className="cal-foot">
         {citiesIn(events).map((c) => (
-          <div className="lg" key={c}><span className="sw" style={{ background: CITY_COLOR[c] }} /> {cityLabel(c)}</div>
+          <div className="lg" key={c}><span className="sw" style={{ background: cityColor(c) }} /> {cityLabel(c)}</div>
         ))}
         <div className="lg" style={{ marginLeft: "auto", color: "var(--text-2)" }}>
           {t("browseHint")}

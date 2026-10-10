@@ -6,7 +6,7 @@ import { apiSubmitPlace } from "@/lib/api";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
-import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type PlaceType, type Booking, type Price, type Facility } from "@/types";
+import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type Country, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
 /**
  * A "Submit spot" button + slide-in form for the public. Submissions land in the
@@ -18,12 +18,12 @@ import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type PlaceType, typ
  * place is set by an admin, never by submitters.)
  */
 type Form = {
-  name: string; type: PlaceType; city: City; address: string;
+  name: string; type: PlaceType; country: Country; city: City; address: string;
   lng: string; lat: string; themes: string; photo: string;
   description: string; openingHours: string; submittedBy: string;
   booking: Booking | ""; price: Price | ""; priceNote: string; facilities: Facility[]; bookingUrl: string;
 };
-const EMPTY: Form = { name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", submittedBy: "", booking: "", price: "", priceNote: "", facilities: [], bookingUrl: "" };
+const EMPTY: Form = { name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", submittedBy: "", booking: "", price: "", priceNote: "", facilities: [], bookingUrl: "" };
 
 export default function SubmitSpotDialog({ className = "btn", label, purpose = "photo" }: { className?: string; label?: string; purpose?: "photo" | "practice" }) {
   const practice = purpose === "practice";
@@ -41,7 +41,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((s) => ({ ...s, [k]: v }));
   const toggleFacility = (x: Facility) =>
     set("facilities", f.facilities.includes(x) ? f.facilities.filter((y) => y !== x) : [...f.facilities, x]);
-  const cityDetect = useCityFromCoords(f.lng, f.lat, (c) => set("city", c));
+  const cityDetect = useCityFromCoords(f.lng, f.lat, (p) => setF((s) => ({ ...s, country: p.country, city: p.city ?? "" })));
 
   function close() { setOpen(false); }
   function start() { setF({ ...EMPTY, type: types[0] }); setSent(false); setOpen(true); }
@@ -51,10 +51,11 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
     const lng = Number(f.lng), lat = Number(f.lat);
     if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
       return alert(`${t("needCoords")}\n${tf("needCoordsTip")}`);
+    if (!f.city.trim()) return alert(tf("needCity"));
     setBusy(true);
     try {
       await apiSubmitPlace({
-        name: f.name.trim(), type: f.type, city: f.city,
+        name: f.name.trim(), type: f.type, country: f.country, city: f.city.trim(),
         address: f.address.trim() || undefined,
         lng, lat,
         themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),
@@ -122,7 +123,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
                 <div className="field"><label>{tf("latitude")}</label><input value={f.lat} onChange={(e) => set("lat", e.target.value)} placeholder="60.1641" /></div>
               </div>
               <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
-              <CitySelect value={f.city} onChange={(c) => set("city", c)} detect={cityDetect} />
+              <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{practice ? tp("genres") : t("themes")}</label><input value={f.themes} onChange={(e) => set("themes", e.target.value)} placeholder={practice ? tp("genresPlaceholder") : t("themesPlaceholder")} /></div>
               {practice && (
                 <>

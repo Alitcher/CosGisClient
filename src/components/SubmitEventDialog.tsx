@@ -7,7 +7,7 @@ import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
 import EventThumb from "./EventThumb";
-import type { City } from "@/types";
+import type { City, Country } from "@/types";
 
 /**
  * A "Submit event" button + slide-in form for the public. Submissions land in the
@@ -15,11 +15,11 @@ import type { City } from "@/types";
  * approves them in the admin dashboard's Pending tab.
  */
 type Form = {
-  name: string; venue: string; city: City; date: string; endDate: string;
+  name: string; venue: string; country: Country; city: City; date: string; endDate: string;
   startTime: string; endTime: string;
   lng: string; lat: string; description: string; image: string; submittedBy: string;
 };
-const EMPTY: Form = { name: "", venue: "", city: "Helsinki", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", image: "", submittedBy: "" };
+const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", image: "", submittedBy: "" };
 
 export default function SubmitEventDialog({ className = "btn", label }: { className?: string; label?: string }) {
   const t = useTranslations("SubmitEvent");
@@ -31,7 +31,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
   const [f, setF] = useState<Form>(EMPTY);
   const [locQuery, setLocQuery] = useState("");
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((s) => ({ ...s, [k]: v }));
-  const cityDetect = useCityFromCoords(f.lng, f.lat, (c) => set("city", c));
+  const cityDetect = useCityFromCoords(f.lng, f.lat, (p) => setF((s) => ({ ...s, country: p.country, city: p.city ?? "" })));
 
   function close() { setOpen(false); }
   function start() { setF(EMPTY); setLocQuery(""); setSent(false); setOpen(true); }
@@ -43,10 +43,11 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
     const lng = Number(f.lng), lat = Number(f.lat);
     if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
       return alert(`${t("needCoords")}\n${tf("needCoordsTip")}`);
+    if (!f.city.trim()) return alert(tf("needCity"));
     setBusy(true);
     try {
       await apiSubmitEvent({
-        name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date,
+        name: f.name.trim(), venue: f.venue.trim(), country: f.country, city: f.city.trim(), date: f.date,
         endDate: f.endDate || undefined,
         startTime: f.startTime || undefined,
         endTime: f.endTime || undefined,
@@ -114,7 +115,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
                 <div className="field"><label>{tf("latitude")}</label><input value={f.lat} onChange={(e) => set("lat", e.target.value)} placeholder="60.2012" /></div>
               </div>
               <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
-              <CitySelect value={f.city} onChange={(c) => set("city", c)} detect={cityDetect} />
+              <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{tf("description")}</label><textarea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder={t("descriptionPlaceholder")} /></div>
               <div className="field">
                 <label>{t("image")}</label>

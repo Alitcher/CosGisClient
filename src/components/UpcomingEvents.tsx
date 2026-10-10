@@ -1,9 +1,10 @@
 "use client";
 
 import { splitDate, eventEndsOn, fmtTimes } from "@/lib/data";
-import { cityLabel } from "@/lib/cities";
+import { cityChip, cityLabel, countryOf } from "@/lib/cities";
 import { useEventStore } from "@/lib/eventsStore";
 import EventThumb from "./EventThumb";
+import CountryFlag from "./CountryFlag";
 
 export default function UpcomingEvents() {
   const { events } = useEventStore();
@@ -27,7 +28,7 @@ export default function UpcomingEvents() {
               <EventThumb event={e} size={56} />
             </div>
             <h4>{e.name}</h4>
-            <div className="ev-meta">📍 {e.venue} <span className={`chip ${e.city.toLowerCase()}`}>{cityLabel(e.city)}</span></div>
+            <div className="ev-meta">📍 {e.venue} <span className={`chip ${cityChip(e.city).className}`} style={cityChip(e.city).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span></div>
             {times && <div className="ev-meta">🕐 {times}</div>}
             {e.description && <p className="muted" style={{ fontSize: 13 }}>{e.description}</p>}
           </div>

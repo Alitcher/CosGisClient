@@ -6,9 +6,10 @@ import ThemeToggle from "./ThemeToggle";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { fmtRange, placeTypeLabel } from "@/lib/data";
-import { cityLabel } from "@/lib/cities";
+import { cityLabel, countryOf } from "@/lib/cities";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import CitySelect from "./CitySelect";
+import AddressAutocomplete from "./AddressAutocomplete";
 import EventThumb from "./EventThumb";
 import {
   apiListPendingEvents,
@@ -19,7 +20,7 @@ import {
   apiDeletePlace,
   apiSyncLinkedEvents,
 } from "@/lib/api";
-import { isPracticeType, FACILITIES, type Event, type Place, type City, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
+import { isPracticeType, FACILITIES, type Event, type Place, type City, type Country, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
 type Tab = "events" | "spots" | "pending";
 
@@ -32,13 +33,13 @@ type PendingItem = { id: string; name: string; meta: string; lng: number; lat: n
 
 type EventForm = {
   id: string | null;
-  name: string; venue: string; city: City; date: string; endDate: string;
+  name: string; venue: string; country: Country; city: City; date: string; endDate: string;
   startTime: string; endTime: string;
   lng: string; lat: string; description: string; url: string; image: string; status: Status;
 };
 type PlaceForm = {
   id: string | null;
-  name: string; type: PlaceType; city: City; address: string;
+  name: string; type: PlaceType; country: Country; city: City; address: string;
   lng: string; lat: string; themes: string; photo: string;
   description: string; openingHours: string; status: Status;
   // practice places only
@@ -46,8 +47,8 @@ type PlaceForm = {
   youthFriendly: "" | "yes" | "no"; bookingUrl: string;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", city: "Helsinki", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live" };
-const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", city: "Helsinki", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "" };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live" };
+const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "" };
 
 function fail(action: string, err: unknown) {
   alert(`Couldn't ${action}.\nIs the API server running? (:8787)\n\n${(err as Error).message}`);
@@ -164,12 +165,12 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status });
     setDrawerKind("events");
     setOpen(true);
   }
   function editPlace(p: Place) {
-    setPlaceForm({ id: p.id, name: p.name, type: p.type, city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status,
+    setPlaceForm({ id: p.id, name: p.name, type: p.type, country: countryOf(p), city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status,
       booking: p.booking ?? "", price: p.price ?? "", priceNote: p.priceNote ?? "", facilities: p.facilities ?? [],
       youthFriendly: p.youthFriendly == null ? "" : p.youthFriendly ? "yes" : "no", bookingUrl: p.bookingUrl ?? "" });
     setDrawerKind("spots");
@@ -186,8 +187,9 @@ export default function AdminDashboard() {
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and start date are required.");
     if (f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
     if (!f.endDate && f.startTime && f.endTime && f.endTime < f.startTime) return alert("End time can't be before the start time on a one-day event.");
+    if (!f.city.trim()) return alert("City is required.");
     const data = {
-      name: f.name.trim(), venue: f.venue.trim(), city: f.city, date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
+      name: f.name.trim(), venue: f.venue.trim(), country: f.country, city: f.city.trim(), date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
       ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
       ...(f.url.trim() ? { url: f.url.trim() } : {}), ...(f.image.trim() ? { image: f.image.trim() } : {}),
     };
@@ -201,8 +203,9 @@ export default function AdminDashboard() {
   async function savePlace() {
     const f = placeForm;
     if (!f.name.trim()) return alert("Name is required.");
+    if (!f.city.trim()) return alert("City is required.");
     const data = {
-      name: f.name.trim(), type: f.type, city: f.city, address: f.address.trim(),
+      name: f.name.trim(), type: f.type, country: f.country, city: f.city.trim(), address: f.address.trim(),
       lng: Number(f.lng) || 0, lat: Number(f.lat) || 0,
       themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),
       photos: f.photo.trim() ? [{ url: f.photo.trim() }] : [],
@@ -236,9 +239,10 @@ export default function AdminDashboard() {
 
   const setE = <K extends keyof EventForm>(k: K, v: EventForm[K]) => setEventForm((f) => ({ ...f, [k]: v }));
   const setP = <K extends keyof PlaceForm>(k: K, v: PlaceForm[K]) => setPlaceForm((f) => ({ ...f, [k]: v }));
-  // City follows the coordinates (see useCityFromCoords); still editable by hand.
-  const eventCityDetect = useCityFromCoords(eventForm.lng, eventForm.lat, (c) => setE("city", c));
-  const placeCityDetect = useCityFromCoords(placeForm.lng, placeForm.lat, (c) => setP("city", c));
+  // Country + city follow the coordinates (see useCityFromCoords); still editable by hand.
+  // No town found keeps the city already typed.
+  const eventCityDetect = useCityFromCoords(eventForm.lng, eventForm.lat, (p) => setEventForm((f) => ({ ...f, country: p.country, city: p.city ?? f.city })));
+  const placeCityDetect = useCityFromCoords(placeForm.lng, placeForm.lat, (p) => setPlaceForm((f) => ({ ...f, country: p.country, city: p.city ?? f.city })));
 
   const danger = { color: "#e5484d" } as const;
   const allChecked = pendingItems.length > 0 && selected.size === pendingItems.length;
@@ -409,7 +413,17 @@ export default function AdminDashboard() {
           <>
             <div className="drawer-body">
               <div className="field"><label>Event name</label><input value={eventForm.name} onChange={(e) => setE("name", e.target.value)} placeholder="e.g. Tracon Hel" /></div>
-              <div className="field"><label>Venue</label><input value={eventForm.venue} onChange={(e) => setE("venue", e.target.value)} placeholder="e.g. Messukeskus" /></div>
+              <div className="field">
+                <label>Venue</label>
+                {/* Typing searches places; picking one fills the coordinates (country + city follow). */}
+                <AddressAutocomplete
+                  keepText
+                  value={eventForm.venue}
+                  onChange={(v) => setE("venue", v)}
+                  onSelect={(r) => setEventForm((f) => ({ ...f, lng: String(r.lng), lat: String(r.lat) }))}
+                  placeholder="e.g. Messukeskus, Kultuurikatel"
+                />
+              </div>
               <div className="field-row">
                 <div className="field"><label>Start date</label><input type="date" value={eventForm.date} onChange={(e) => setE("date", e.target.value)} /></div>
                 <div className="field"><label>End date (optional)</label><input type="date" value={eventForm.endDate} min={eventForm.date || undefined} onChange={(e) => setE("endDate", e.target.value)} /></div>
@@ -422,7 +436,7 @@ export default function AdminDashboard() {
                 <div className="field"><label>Longitude</label><input value={eventForm.lng} onChange={(e) => setE("lng", e.target.value)} placeholder="24.9354" /></div>
                 <div className="field"><label>Latitude</label><input value={eventForm.lat} onChange={(e) => setE("lat", e.target.value)} placeholder="60.2012" /></div>
               </div>
-              <CitySelect value={eventForm.city} onChange={(c) => setE("city", c)} detect={eventCityDetect} />
+              <CitySelect country={eventForm.country} city={eventForm.city} onCountry={(c) => setE("country", c)} onCity={(c) => setE("city", c)} detect={eventCityDetect} />
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
               <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://… event page" /></div>
               <div className="field">
@@ -446,12 +460,20 @@ export default function AdminDashboard() {
             <div className="drawer-body">
               <div className="field"><label>Spot name</label><input value={placeForm.name} onChange={(e) => setP("name", e.target.value)} placeholder="e.g. Café Sakura" /></div>
               <div className="field"><label>Type</label><select value={placeForm.type} onChange={(e) => setP("type", e.target.value as PlaceType)}><optgroup label="Photo spots (Spots tab)"><option value="cafe">Café</option><option value="restaurant">Restaurant</option><option value="mall">Mall</option><option value="studio">Photo studio</option><option value="outdoor">Outdoor / Park</option></optgroup><optgroup label="Practice places (Practice tab)"><option value="dance-studio">Dance studio</option><option value="practice-space">Practice space (hall, youth centre)</option></optgroup></select></div>
-              <div className="field"><label>Address</label><input value={placeForm.address} onChange={(e) => setP("address", e.target.value)} placeholder="Street, City" /></div>
+              <div className="field">
+                <label>Address</label>
+                <AddressAutocomplete
+                  value={placeForm.address}
+                  onChange={(v) => setP("address", v)}
+                  onSelect={(r) => setPlaceForm((f) => ({ ...f, lng: String(r.lng), lat: String(r.lat) }))}
+                  placeholder="Street, City"
+                />
+              </div>
               <div className="field-row">
                 <div className="field"><label>Longitude</label><input value={placeForm.lng} onChange={(e) => setP("lng", e.target.value)} placeholder="24.9402" /></div>
                 <div className="field"><label>Latitude</label><input value={placeForm.lat} onChange={(e) => setP("lat", e.target.value)} placeholder="60.1641" /></div>
               </div>
-              <CitySelect value={placeForm.city} onChange={(c) => setP("city", c)} detect={placeCityDetect} />
+              <CitySelect country={placeForm.country} city={placeForm.city} onCountry={(c) => setP("country", c)} onCity={(c) => setP("city", c)} detect={placeCityDetect} />
               <div className="field"><label>Themes (comma-separated)</label><input value={placeForm.themes} onChange={(e) => setP("themes", e.target.value)} placeholder="pastel, kawaii, neon" /></div>
               <div className="field"><label>Photo URL</label><input value={placeForm.photo} onChange={(e) => setP("photo", e.target.value)} placeholder="https://…" /></div>
               <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00–20:00" /></div>

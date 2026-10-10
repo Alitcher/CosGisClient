@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { EVENT_CATEGORIES, type City } from "@/types";
-import { CITY_COUNTRY, cityLabel, countryLabel, type Country } from "@/lib/cities";
+import { cityLabel, countryLabel, type Country } from "@/lib/cities";
 import { DEFAULT_FILTERS, activeFilterCount, type DatePreset, type MapFilters as Filters } from "@/lib/mapFilters";
 
 const PRESETS: DatePreset[] = ["any", "7d", "30d", "3m", "custom"];
@@ -18,11 +18,12 @@ interface Props {
   onChange: (f: Filters) => void;
   countries: Country[]; // countries that have something on the map
   cities: City[]; // cities that have something on the map
+  cityCountry: Map<City, Country>; // which country each of those cities is in
   resultCount: number;
 }
 
 /** Collapsible filter panel at the top of the map sidebar. */
-export default function MapFilters({ value: f, onChange, countries, cities, resultCount }: Props) {
+export default function MapFilters({ value: f, onChange, countries, cities, cityCountry, resultCount }: Props) {
   const t = useTranslations("MapFilters");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
@@ -30,12 +31,13 @@ export default function MapFilters({ value: f, onChange, countries, cities, resu
   const set = (patch: Partial<Filters>) => onChange({ ...f, ...patch });
 
   // Only offer cities inside the chosen countries.
-  const cityOptions = f.countries.length ? cities.filter((c) => f.countries.includes(CITY_COUNTRY[c])) : cities;
+  const inCountries = (city: City, list: Country[]) => list.includes(cityCountry.get(city) ?? "FI");
+  const cityOptions = f.countries.length ? cities.filter((c) => inCountries(c, f.countries)) : cities;
 
   function toggleCountry(c: Country) {
     const next = toggle(f.countries, c);
     // Drop picked cities that are no longer in any chosen country.
-    const keep = next.length ? f.cities.filter((city) => next.includes(CITY_COUNTRY[city])) : f.cities;
+    const keep = next.length ? f.cities.filter((city) => inCountries(city, next)) : f.cities;
     set({ countries: next, cities: keep });
   }
 
