@@ -97,7 +97,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
   transition: all 0.16s ease;
 }
 .nav-links a:hover { color: var(--text-0); background: var(--surface-2); transform: translateY(-1px); }
-.nav-links a.active { color: #fff; background: linear-gradient(135deg, var(--pink), var(--purple)); box-shadow: 0 3px 0 var(--hard); }
+.nav-links a.active { color: #fff; background: linear-gradient(135deg, var(--pink), var(--purple)); }
 
 /* language switcher */
 .lang-switch { position: relative; margin-left: 6px; }
@@ -150,14 +150,14 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .btn.ghost { background: var(--surface); color: var(--text-0); border: 2px solid var(--border-strong); }
 
 /* ---------- Cards ---------- */
-.card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: 0 4px 0 var(--hard); }
+.card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius); }
 
 /* ---------- Headings / chips ---------- */
 .eyebrow {
   display: inline-flex; align-items: center; gap: 6px; font-family: var(--font); font-size: 12px; font-weight: 800;
   letter-spacing: 0.1em; text-transform: uppercase; color: #fff; margin-bottom: 12px;
   background: linear-gradient(135deg, var(--cyan), var(--blue)); padding: 5px 12px; border-radius: 999px;
-  box-shadow: 0 3px 0 var(--hard); transform: rotate(-1.5deg);
+  transform: rotate(-1.5deg);
 }
 .section-title { font-size: clamp(26px, 4vw, 42px); font-weight: 700; letter-spacing: -0.01em; }
 .muted { color: var(--text-2); }
@@ -198,20 +198,9 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* hero map box (the real OpenStreetMap, draggable) */
 .hero-visual {
   position: relative; height: 420px; border-radius: 22px; overflow: hidden;
-  border: 2px solid var(--border-strong); box-shadow: 0 6px 0 var(--hard); background: var(--surface);
+  border: 2px solid var(--border); background: var(--surface);
 }
 .hero-map { position: absolute; inset: 0; }
-/* "Explore the map" button overlaid inside the map box → links to /map */
-.map-cta {
-  position: absolute; z-index: 10; left: 50%; bottom: 16px; transform: translateX(-50%);
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 22px; border-radius: 999px; border: 2px solid var(--border-strong);
-  font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--text-0);
-  background: var(--surface);
-  box-shadow: 0 4px 0 var(--hard); transition: transform .14s ease, box-shadow .14s ease;
-}
-.map-cta:hover { transform: translateX(-50%) translateY(-2px); box-shadow: 0 6px 0 var(--hard); }
-.map-cta:active { transform: translateX(-50%) translateY(2px); box-shadow: 0 2px 0 var(--hard); }
 .hero-pin {
   display: inline-flex; align-items: center; gap: 6px; font-family: var(--font); font-size: 11.5px; font-weight: 800;
   color: var(--text-0); background: color-mix(in srgb, var(--surface) 94%, transparent);
@@ -281,12 +270,12 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .mini-cal {
   position: absolute; right: 18px; bottom: 18px; z-index: 5; width: 290px; padding: 16px;
   background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px);
-  border: 2px solid var(--border-strong); border-radius: var(--radius); box-shadow: 0 6px 0 var(--hard);
+  border: 2px solid var(--border); border-radius: var(--radius);
 }
 .mini-cal .mc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .mini-cal .mc-head .mc-title { font-size: 14px; font-weight: 800; }
 .mc-nav { display: flex; gap: 6px; }
-.mc-nav button { width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text-1); font-size: 13px; }
+.mc-nav button { width: 26px; height: 26px; display: grid; place-items: center; cursor: pointer; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text-1); font-size: 13px; }
 .mc-nav button:hover { background: color-mix(in srgb, var(--purple) 20%, transparent); }
 .mc-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
 .mc-grid .dow { font-size: 10px; font-weight: 700; color: var(--text-2); text-align: center; padding-bottom: 4px; text-transform: uppercase; }
@@ -302,7 +291,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .map-legend {
   position: absolute; left: 18px; bottom: 18px; z-index: 5; /* bottom-left: the filters own the top-left */
   background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(12px);
-  border: 2px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 4px 0 var(--hard);
+  border: 2px solid var(--border); border-radius: var(--radius-sm);
   padding: 11px 14px; font-size: 12px; font-weight: 600; display: flex; flex-direction: column; gap: 7px;
 }
 .legend-row { display: flex; align-items: center; gap: 8px; }

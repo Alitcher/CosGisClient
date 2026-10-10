@@ -34,10 +34,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </div>
           </div>
 
-          {/* Interactive map with the "Explore the map" button overlaid inside it */}
+          {/* Interactive map */}
           <div className="hero-visual">
             <HeroMap title={t("mapTitle")} />
-            <Link className="map-cta" href="/map">{t("exploreMap")}</Link>
           </div>
         </div>
       </section>
