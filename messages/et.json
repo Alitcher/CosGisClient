@@ -4,6 +4,7 @@
     "description": "Leia kõik lähedal toimuvad animeüritused ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud — Helsingis, Vantaas ja Espoos."
   },
   "Nav": {
+    "menu": "Menüü",
     "home": "Avaleht",
     "map": "Kaart",
     "calendar": "Kalender",

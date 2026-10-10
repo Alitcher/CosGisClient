@@ -14,10 +14,10 @@ export default function UpcomingEvents() {
     .filter((e) => eventEndsOn(e) >= todayISO)
     .slice()
     .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(0, 3);
+    .slice(0, 4); // 4th one only shows on tablets (2x2 grid), see .home-4 in globals.css
 
   return (
-    <div className="grid up-grid">
+    <div className="grid up-grid home-4">
       {upcoming.map((e) => {
         const { day, mon } = splitDate(e.date);
         const times = fmtTimes(e.startTime, e.endTime);

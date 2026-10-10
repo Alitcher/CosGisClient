@@ -27,16 +27,18 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               {t.rich("title", { grad: (chunks) => <span className="grad">{chunks}</span> })}
             </h1>
             <p className="lead">{t("lead")}</p>
+          </div>
+
+          {/* Interactive map, with the stats under it */}
+          <div>
+            <div className="hero-visual">
+              <HeroMap title={t("mapTitle")} />
+            </div>
             <div className="hero-stats">
               <div className="stat"><div className="n">12</div><div className="l">{t("statConventions")}</div></div>
               <div className="stat"><div className="n">7</div><div className="l">{t("statVenues")}</div></div>
               <div className="stat"><div className="n">3</div><div className="l">{t("statCities")}</div></div>
             </div>
-          </div>
-
-          {/* Interactive map */}
-          <div className="hero-visual">
-            <HeroMap title={t("mapTitle")} />
           </div>
         </div>
       </section>

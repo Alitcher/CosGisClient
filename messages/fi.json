@@ -4,6 +4,7 @@
     "description": "Löydä kaikki lähelläsi olevat animetapahtumat sekä kahvilat, ostoskeskukset ja kuvauspaikat, joihin cosplayaajat ovat tervetulleita — Helsingissä, Vantaalla ja Espoossa."
   },
   "Nav": {
+    "menu": "Valikko",
     "home": "Etusivu",
     "map": "Kartta",
     "calendar": "Kalenteri",

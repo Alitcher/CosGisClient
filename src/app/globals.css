@@ -59,6 +59,7 @@ body {
     radial-gradient(760px 700px at 50% 118%, rgba(139, 92, 246, 0.16), transparent 60%),
     var(--bg-0);
   min-height: 100vh; line-height: 1.55;
+  overflow-x: clip; /* safety net: nothing may widen the page sideways on phones */
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
@@ -70,6 +71,8 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* ---------- Layout ---------- */
 .shell { max-width: 1240px; margin: 0 auto; padding: 0 22px; }
 .grid { display: grid; gap: 20px; }
+/* Grid children may shrink below their content width (long words, images), so columns never overflow. */
+.grid > *, .hero-grid > * { min-width: 0; }
 .flex { display: flex; }
 .gap-sm { gap: 10px; }
 .center { align-items: center; }
@@ -92,6 +95,12 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .brand-text small { display: block; font-family: var(--font); font-size: 10.5px; font-weight: 700; color: var(--text-2); letter-spacing: 0.06em; text-transform: uppercase; }
 
 .nav-links { display: flex; gap: 4px; margin-left: auto; align-items: center; }
+.nav-pages { display: flex; gap: 4px; align-items: center; }
+/* Hamburger: only on tablets and phones (see Responsive). */
+.nav-menu-btn {
+  display: none; place-items: center; width: 42px; height: 42px; border-radius: 13px;
+  border: 2px solid var(--border); background: var(--surface); color: var(--text-0);
+}
 .nav-links a {
   padding: 8px 15px; border-radius: 999px; font-size: 14.5px; font-weight: 600; color: var(--text-1);
   transition: all 0.16s ease;
@@ -123,6 +132,14 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 }
 .lang-menu button:hover { background: var(--surface-2); color: var(--text-0); }
 .lang-menu button.on { color: #fff; background: linear-gradient(135deg, var(--pink), var(--purple)); }
+/* Languages as a button row inside the phone/tablet menu (hidden on desktop). */
+.nav-lang { display: none; }
+.lang-inline { display: flex; flex-wrap: wrap; gap: 6px; }
+.lang-inline button {
+  padding: 8px 14px; border-radius: 999px; border: 2px solid var(--border); background: var(--surface);
+  font-family: var(--font); font-size: 14px; font-weight: 600; color: var(--text-1);
+}
+.lang-inline button.on { color: #fff; border-color: transparent; background: linear-gradient(135deg, var(--pink), var(--purple)); }
 
 /* theme toggle */
 .theme-toggle {
@@ -185,13 +202,13 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* ===========================================================
    HOME
    =========================================================== */
-.hero { position: relative; padding: 70px 0 40px; }
+.hero { position: relative; padding-top: 70px; padding-bottom: 40px; } /* top/bottom only: the side padding comes from .shell */
 .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
 .hero h1 { font-size: clamp(36px, 6vw, 62px); font-weight: 900; letter-spacing: -0.04em; line-height: 1.02; }
 .hero h1 .grad { background: linear-gradient(120deg, var(--pink), var(--purple) 55%, var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero p.lead { margin-top: 20px; font-size: 17px; color: var(--text-1); max-width: 520px; }
 .hero-cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; }
-.hero-stats { margin-top: 38px; display: flex; gap: 30px; flex-wrap: wrap; }
+.hero-stats { margin-top: 22px; display: flex; gap: 30px; flex-wrap: wrap; } /* under the hero map */
 .stat .n { font-size: 28px; font-weight: 900; letter-spacing: -0.02em; background: linear-gradient(120deg, var(--pink), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .stat .l { font-size: 12.5px; color: var(--text-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
@@ -210,10 +227,12 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .hero-pin .d { width: 11px; height: 11px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); }
 
 /* upcoming */
-.upcoming { padding: 40px 0 10px; }
+.upcoming { padding-top: 40px; padding-bottom: 10px; }
 .hot-spots { padding-bottom: 50px; } /* last section before the footer */
 .up-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
 .up-grid { grid-template-columns: repeat(3, 1fr); }
+/* Home page grids load 4 items; the 4th only shows on tablets, where the grid is 2x2. */
+.home-4 > :nth-child(4) { display: none; }
 .ev-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: transform .18s ease; }
 .ev-card:hover { transform: translateY(-4px); }
 .ev-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
@@ -390,18 +409,18 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* ===========================================================
    ABOUT
    =========================================================== */
-.about-hero { padding: 56px 0 30px; max-width: 760px; }
+.about-hero { padding-top: 56px; padding-bottom: 30px; max-width: 760px; }
 .about-hero h1 { font-size: clamp(30px, 5vw, 48px); font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; }
 .about-hero h1 .grad { background: linear-gradient(120deg, var(--pink), var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .about-hero p { margin-top: 18px; font-size: 17px; color: var(--text-1); }
-.stack { padding: 24px 0 10px; }
+.stack { padding-top: 24px; padding-bottom: 10px; }
 .stack-grid { grid-template-columns: repeat(4, 1fr); }
 .tech { padding: 20px; text-align: center; transition: transform .16s ease; }
 .tech:hover { transform: translateY(-4px); }
 .tech .ic { font-size: 28px; margin-bottom: 10px; }
 .tech h4 { font-size: 15px; }
 .tech p { font-size: 12px; color: var(--text-2); margin-top: 3px; }
-.how { padding: 40px 0; }
+.how { padding-top: 40px; padding-bottom: 40px; }
 .steps { grid-template-columns: repeat(3, 1fr); margin-top: 26px; }
 .step { padding: 24px; position: relative; }
 .step .n { font-size: 13px; font-weight: 900; color: #fff; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: linear-gradient(135deg, var(--pink), var(--purple)); margin-bottom: 14px; }
@@ -511,23 +530,138 @@ tbody tr:hover { background: var(--surface-2); }
 .drawer-foot .btn { flex: 1; justify-content: center; }
 .close-x { width: 34px; height: 34px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); font-size: 16px; color: var(--text-0); }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 980px) {
-  .hero-grid, .up-grid, .spots-grid, .stack-grid, .steps, .tiers-grid { grid-template-columns: 1fr; }
-  .hero-visual { height: 320px; }
-}
-@media (max-width: 820px) {
-  .map-layout { grid-template-columns: 1fr; }
-  .side { display: none; }
-  .mini-cal { width: 240px; right: 10px; bottom: 10px; }
-  /* Phones: the mini calendar takes the bottom, so the legend tucks under the filter button. */
-  .mf { left: 10px; top: 10px; max-width: calc(100% - 20px); }
-  .map-legend { left: 10px; top: 66px; bottom: auto; }
-  .nav-links a:not(.active) { display: none; }
+/* ---------- Responsive ----------
+   Desktop: above 1024px. Tablet: 701px - 1024px. Phone: 375px - 700px. */
+
+/* Tablet and phone */
+@media (max-width: 1024px) {
+  /* Page links move into the hamburger menu, shown as a panel under the bar. */
+  .nav-menu-btn { display: grid; }
+  .nav-pages {
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 2px; padding: 10px 22px 16px;
+    background: var(--bg-1); border-bottom: 2px solid var(--border);
+  }
+  .nav-pages.open { display: flex; }
+  .nav-pages a { padding: 12px 16px; font-size: 16px; border-radius: 0; }
+  .nav-pages a:hover { transform: none; }
+  /* Current page in the menu: light lavender, bold purple text (not the pink pill). */
+  .nav-pages a.active { background: color-mix(in srgb, var(--purple) 14%, transparent); color: var(--purple); font-weight: 800; }
+  :root[data-theme="dark"] .nav-pages a.active { color: #c4b5fd; }
+  .nav-links > .lang-switch { display: none; } /* the bar's dropdown; the menu has the button row */
+  .nav-lang { display: block; margin-top: 10px; padding: 14px 16px 0; border-top: 2px solid var(--border); }
+
+  .hero { padding-top: 48px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .hero-visual { height: 380px; }
+  .up-grid, .spots-grid, .stack-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps, .tiers-grid { grid-template-columns: 1fr; }
+  .tiers-grid { max-width: 520px; margin-left: auto; margin-right: auto; }
+
+  /* Map: narrower list; the legend sits under the filter button so it can't
+     collide with the mini calendar at the bottom. */
+  .map-layout { grid-template-columns: 280px 1fr; }
+  .mini-cal { width: 240px; right: 12px; bottom: 12px; }
+  .mf { left: 12px; top: 12px; max-width: calc(100% - 24px); }
+  .map-legend { left: 12px; top: 66px; bottom: auto; }
+
   .stats { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 760px) {
-  .row { grid-template-columns: 60px 1fr; }
-  .r-cta { grid-column: 1 / -1; justify-content: flex-end; }
+
+/* Tablet only */
+@media (min-width: 701px) and (max-width: 1024px) {
+  .home-4 > :nth-child(4) { display: flex; }
 }
-@media (max-width: 680px) { .hide-sm { display: none; } }
+
+/* Phone */
+@media (max-width: 700px) {
+  /* 20px side spacing everywhere */
+  .shell, .nav-inner, .cal-shell, .ev-shell, .spots-shell, .admin-shell,
+  .d-hero, .tiers, .why, .other { padding-left: 20px; padding-right: 20px; }
+
+  /* Compact top bar: logo + name, language, theme, menu */
+  .nav-inner { gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+  .brand { min-width: 0; gap: 9px; }
+  .brand-logo { width: 38px; height: 38px; font-size: 19px; flex: none; }
+  .brand-text { font-size: 16px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-links { gap: 6px; flex: none; }
+  .lang-switch, .theme-toggle { margin-left: 0; }
+  .lang-btn { padding: 8px 24px 8px 10px; background-position: right 8px center; }
+  .theme-toggle, .nav-menu-btn { width: 38px; height: 38px; }
+  .nav-pages { padding: 8px 20px 14px; }
+  .admin-badge { display: none; }
+  .admin-right { gap: 8px; }
+  .view-site { padding: 7px 11px; }
+
+  .btn { padding: 11px 18px; font-size: 14px; }
+  .section-title { font-size: 26px; }
+
+  /* Home */
+  .hero { padding-top: 32px; padding-bottom: 24px; }
+  .hero h1 { font-size: 34px; overflow-wrap: break-word; }
+  .hero p.lead { font-size: 16px; }
+  .hero-stats { gap: 24px; margin-top: 18px; }
+  .hero-visual { height: 300px; border-radius: 18px; }
+  .upcoming { padding-top: 28px; }
+  .up-grid, .spots-grid, .tiers-grid { grid-template-columns: 1fr; }
+  .up-head { margin-bottom: 16px; }
+  /* Section buttons: full row, shared evenly */
+  .up-head > .flex, .ev-top > .flex { width: 100%; flex-wrap: wrap; }
+  .up-head > .flex > .btn, .ev-top > .flex > .btn { flex: 1 1 auto; justify-content: center; }
+  .ev-card { padding: 18px; }
+  .ev-card:hover, .spot:hover, .row:hover, .tech:hover, .tier:hover { transform: none; }
+
+  /* Events list */
+  .ev-shell, .spots-shell { padding-top: 22px; }
+  .ev-top h1 { font-size: 26px; }
+  .search { min-width: 0; flex-basis: 100%; }
+  .row { grid-template-columns: 56px 1fr; gap: 12px; padding: 14px; }
+  .r-cta { grid-column: 1 / -1; justify-content: flex-end; }
+  .r-date { padding-right: 10px; }
+  .r-with-thumb { align-items: flex-start; }
+  .r-main h3 { font-size: 16px; }
+
+  /* Calendar: 7 narrow columns */
+  .cal-shell { padding-top: 18px; }
+  .cal-toolbar { gap: 10px; }
+  .cal-toolbar h1 { font-size: 20px; }
+  .view-switch { margin-left: 0; max-width: 100%; flex-wrap: wrap; }
+  .cal-dow div { padding: 8px 2px; text-align: center; font-size: 10.5px; }
+  .cal-body { grid-auto-rows: minmax(64px, auto); }
+  .cell { padding: 4px; }
+  .num { width: 22px; height: 22px; font-size: 12px; }
+  .ev { font-size: 9.5px; padding: 2px 4px; margin-top: 3px; border-left-width: 2px; }
+  .ev .dot { display: none; }
+
+  /* Map: full width, list hidden (filters + map markers instead) */
+  .map-layout { grid-template-columns: 1fr; height: calc(100dvh - 60px); }
+  .side { display: none; }
+  .mini-cal { width: 230px; padding: 12px; }
+
+  /* About / Donate */
+  .about-hero { padding-top: 32px; }
+  .about-hero p, .d-hero p { font-size: 16px; }
+  .cta-band { padding: 36px 20px; }
+  .cta-band h2 { font-size: 24px; }
+  .d-hero { padding-top: 36px; }
+  .bmc { font-size: 17px; padding: 14px 22px; }
+  .why-card { padding: 24px 20px; }
+  .tier, .step { padding: 22px; }
+
+  /* Admin */
+  .admin-shell { padding-top: 20px; }
+  .admin-head h1 { font-size: 24px; }
+  .stats { gap: 12px; }
+  .stat-card { padding: 14px; }
+  .stat-card .n { font-size: 24px; }
+  .table-card { overflow-x: auto; }
+  thead th, tbody td { padding: 12px; }
+
+  /* Side drawers (submit + admin forms) take the whole screen */
+  .drawer { width: 100%; max-width: 100%; border-left: 0; }
+  .drawer-head, .drawer-body, .drawer-foot { padding-left: 20px; padding-right: 20px; }
+  /* 16px stops iPhones from zooming into the field on tap */
+  .field input, .field select, .field textarea { font-size: 16px; }
+
+  .hide-sm { display: none; }
+}

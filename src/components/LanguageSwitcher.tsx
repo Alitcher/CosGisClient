@@ -18,7 +18,8 @@ const labels: Record<Locale, string> = {
 
 // A custom menu instead of a native <select>: the browser draws a <select>'s
 // open list itself, which can't be themed and looked out of place.
-export default function LanguageSwitcher() {
+// `inline`: all languages as a row of buttons (inside the phone/tablet menu).
+export default function LanguageSwitcher({ inline = false }: { inline?: boolean }) {
   const t = useTranslations("Nav");
   const locale = useLocale() as Locale;
   const router = useRouter();
@@ -50,6 +51,26 @@ export default function LanguageSwitcher() {
     // Keep the query string (e.g. Events filters) when switching.
     const href = pathname + window.location.search;
     startTransition(() => router.replace(href, { locale: next }));
+  }
+
+  if (inline) {
+    return (
+      <div className="lang-inline" role="group" aria-label={t("language")}>
+        {routing.locales.map((l) => (
+          <button
+            key={l}
+            type="button"
+            lang={l}
+            aria-pressed={l === locale}
+            className={l === locale ? "on" : ""}
+            disabled={pending}
+            onClick={() => change(l)}
+          >
+            {labels[l]}
+          </button>
+        ))}
+      </div>
+    );
   }
 
   return (
