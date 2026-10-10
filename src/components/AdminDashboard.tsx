@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
@@ -252,7 +253,7 @@ export default function AdminDashboard() {
       <nav className="nav">
         <div className="nav-inner admin-bar">
           <Link className="brand" href="/">
-            <span className="brand-logo">⛩️</span>
+            <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
             <span className="brand-text">CosoraAtlas<small>Admin panel</small></span>
           </Link>
           <span className="admin-badge">🔒 ADMIN</span>

@@ -85,10 +85,10 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 }
 .nav-inner { max-width: 1240px; margin: 0 auto; padding: 13px 22px; display: flex; align-items: center; gap: 22px; }
 .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; }
+/* Mascot logo image (public/logo.svg, transparent background). */
 .brand-logo {
-  width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; font-size: 21px;
-  background: linear-gradient(135deg, var(--pink), var(--purple));
-  box-shadow: 0 4px 0 var(--hard); transform: rotate(-6deg); transition: transform .2s ease;
+  width: 42px; height: 42px; border-radius: 12px; display: block; flex: none;
+  transform: rotate(-6deg); transition: transform .2s ease;
 }
 .brand:hover .brand-logo { transform: rotate(6deg) scale(1.05); }
 .brand-text { font-size: 18px; line-height: 1.05; font-weight: 600; }
@@ -197,12 +197,16 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
    HOME
    =========================================================== */
 .hero { position: relative; padding-top: 70px; padding-bottom: 40px; } /* top/bottom only: the side padding comes from .shell */
-.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+/* Desktop: text with the stats under it on the left, map on the right (spans both rows). */
+.hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; grid-template-areas: "text map" "stats map"; column-gap: 48px; align-items: center; }
+.hero-text { grid-area: text; align-self: end; }
+.hero-visual { grid-area: map; }
+.hero-stats { grid-area: stats; align-self: start; }
 .hero h1 { font-size: clamp(36px, 6vw, 62px); font-weight: 900; letter-spacing: -0.04em; line-height: 1.02; }
 .hero h1 .grad { background: linear-gradient(120deg, var(--pink), var(--purple) 55%, var(--cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .hero p.lead { margin-top: 20px; font-size: 17px; color: var(--text-1); max-width: 520px; }
 .hero-cta { margin-top: 30px; display: flex; gap: 14px; flex-wrap: wrap; }
-.hero-stats { margin-top: 22px; display: flex; gap: 30px; flex-wrap: wrap; } /* under the hero map */
+.hero-stats { margin-top: 38px; display: flex; gap: 30px; flex-wrap: wrap; }
 .stat .n { font-size: 28px; font-weight: 900; letter-spacing: -0.02em; color: var(--pink); }
 .stat .l { font-size: 12.5px; color: var(--text-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
@@ -555,7 +559,10 @@ tbody tr:hover { background: var(--surface-2); }
   .nav-lang { display: block; margin-top: 10px; padding: 14px 16px 0; border-top: 2px solid var(--border); }
 
   .hero { padding-top: 48px; }
-  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  /* One column: text, map, then the stats under the map. */
+  .hero-grid { grid-template-columns: 1fr; grid-template-areas: "text" "map" "stats"; }
+  .hero-visual { margin-top: 32px; }
+  .hero-stats { margin-top: 22px; }
   .hero p.lead { max-width: none; } /* one column: the intro uses the full width */
   .hero-visual { height: 380px; }
   .up-grid, .spots-grid, .stack-grid { grid-template-columns: repeat(2, 1fr); }
@@ -586,7 +593,7 @@ tbody tr:hover { background: var(--surface-2); }
   /* Compact top bar: logo + name, language, theme, menu */
   .nav-inner { gap: 8px; padding-top: 10px; padding-bottom: 10px; }
   .brand { min-width: 0; gap: 9px; }
-  .brand-logo { width: 38px; height: 38px; font-size: 19px; flex: none; }
+  .brand-logo { width: 38px; height: 38px; }
   .brand-text { font-size: 16px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nav-links { gap: 6px; flex: none; }
   .lang-switch, .theme-toggle { margin-left: 0; }
