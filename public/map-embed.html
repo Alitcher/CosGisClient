@@ -235,7 +235,13 @@
     var popup = new maplibregl.Popup({ offset: 16, closeButton: true, closeOnClick: false, maxWidth: '280px' }).setHTML(html);
     var marker = new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).setPopup(popup).addTo(map);
     var entry = { kind: kind, city: item.city, marker: marker, popup: popup, el: el, visible: true };
-    el.addEventListener('click', function () { marker.togglePopup(); });
+    // Click = zoom in on it (its card opens on its own once zoomed past CARD_ZOOM).
+    // Already zoomed in: toggle the card instead.
+    el.addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      if (map.getZoom() < CARD_ZOOM) map.flyTo({ center: [item.lng, item.lat], zoom: 15.5, speed: 1.2 });
+      else marker.togglePopup();
+    });
     applyVisibility(entry);
     entries.push(entry);
     return entry;

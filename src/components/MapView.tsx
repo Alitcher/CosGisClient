@@ -21,6 +21,7 @@ export default function MapView() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [ready, setReady] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null); // event clicked in the list
 
   function post(msg: unknown) {
     iframeRef.current?.contentWindow?.postMessage(msg, "*");
@@ -85,8 +86,9 @@ export default function MapView() {
             return (
               <div
                 key={e.id}
-                className="list-item"
-                onClick={() => post({ type: "focus", lng: e.lng, lat: e.lat })}
+                className={`list-item${e.id === selectedId ? " active" : ""}`}
+                aria-current={e.id === selectedId || undefined}
+                onClick={() => { setSelectedId(e.id); post({ type: "focus", lng: e.lng, lat: e.lat }); }}
               >
                 <div className="li-date"><div className="d">{day}</div><div className="m">{mon}</div></div>
                 <EventThumb event={e} size={36} />
