@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import ThemeSync from "@/components/ThemeSync";
 import ThemeScript from "@/components/ThemeScript";
+import { SITE_URL } from "@/lib/serverData";
 import "../globals.css";
 
 type Props = {
@@ -21,7 +22,13 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};
   const t = await getTranslations({ locale, namespace: "Metadata" });
-  return { title: t("title"), description: t("description") };
+  return {
+    // Absolute base for share-preview links and images (Facebook needs full URLs).
+    metadataBase: new URL(SITE_URL),
+    title: t("title"),
+    description: t("description"),
+    openGraph: { siteName: t("title"), title: t("title"), description: t("description"), type: "website" },
+  };
 }
 
 // Runs before paint to set the theme and avoid a flash of the wrong mode.
