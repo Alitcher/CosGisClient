@@ -96,7 +96,7 @@ export const places: Place[] = [
     themes: ["pastel", "japanese garden", "kawaii"],
     photos: [{ url: "https://picsum.photos/seed/sakura/600/400", caption: "Pastel interior" }],
     description: "Cosy pastel café that happily welcomes cosplayers for photos.",
-    openingHours: "10:00–20:00",
+    openingHours: "10:00-20:00",
     status: "live",
   },
   {
@@ -109,8 +109,8 @@ export const places: Place[] = [
     lat: 60.1718,
     themes: ["cyberpunk", "neon", "night city"],
     photos: [{ url: "https://picsum.photos/seed/ramen/600/400", caption: "Neon counter" }],
-    description: "Neon-lit ramen spot with a cyberpunk vibe — great for night shoots.",
-    openingHours: "16:00–23:00",
+    description: "Neon-lit ramen spot with a cyberpunk vibe - great for night shoots.",
+    openingHours: "16:00-23:00",
     status: "live",
   },
   {
@@ -124,7 +124,7 @@ export const places: Place[] = [
     themes: ["modern", "indoor backdrops"],
     photos: [{ url: "https://picsum.photos/seed/kamppi/600/400", caption: "Atrium" }],
     description: "Spacious indoor mall with bright atriums and friendly staff.",
-    openingHours: "08:00–22:00",
+    openingHours: "08:00-22:00",
     status: "live",
   },
   {
@@ -166,7 +166,7 @@ export const places: Place[] = [
     themes: ["maid cafe", "kawaii", "tea party"],
     photos: [{ url: "https://picsum.photos/seed/mochi/600/400", caption: "Maid café" }],
     description: "Themed maid café that loves hosting cosplayers and events.",
-    openingHours: "12:00–19:00",
+    openingHours: "12:00-19:00",
     status: "live",
   },
 ];
@@ -182,27 +182,27 @@ export function splitDate(iso: string) {
 }
 
 /**
- * Human date range. Single day → "11 Jul 2026". Multi-day, collapsed sensibly:
- * same month → "11–13 Jul 2026", same year → "30 Aug – 1 Sep 2026",
- * else → "30 Dec 2026 – 2 Jan 2027".
+ * Human date range. Single day -> "11 Jul 2026". Multi-day, collapsed sensibly:
+ * same month -> "11-13 Jul 2026", same year -> "30 Aug - 1 Sep 2026",
+ * else -> "30 Dec 2026 - 2 Jan 2027".
  */
 export function fmtRange(start: string, end?: string): string {
   const s = splitDate(start);
   if (!end || end <= start) return `${s.day} ${s.mon} ${s.year}`;
   const e = splitDate(end);
-  if (s.year === e.year && s.mon === e.mon) return `${s.day}–${e.day} ${s.mon} ${s.year}`;
-  if (s.year === e.year) return `${s.day} ${s.mon} – ${e.day} ${e.mon} ${s.year}`;
-  return `${s.day} ${s.mon} ${s.year} – ${e.day} ${e.mon} ${e.year}`;
+  if (s.year === e.year && s.mon === e.mon) return `${s.day}-${e.day} ${s.mon} ${s.year}`;
+  if (s.year === e.year) return `${s.day} ${s.mon} - ${e.day} ${e.mon} ${s.year}`;
+  return `${s.day} ${s.mon} ${s.year} - ${e.day} ${e.mon} ${e.year}`;
 }
 
 /**
- * Opening hours line: "10:00–18:00", "10:00–" (start only), "–18:00" (end
+ * Opening hours line: "10:00-18:00", "10:00-" (start only), "-18:00" (end
  * only), or "" when no times are known. For multi-day events the start is on
  * the first day and the end on the last.
  */
 export function fmtTimes(start?: string, end?: string): string {
   if (!start && !end) return "";
-  return `${start ?? ""}–${end ?? ""}`;
+  return `${start ?? ""}-${end ?? ""}`;
 }
 
 /** The day an event is considered "over" for upcoming/past filtering. */
