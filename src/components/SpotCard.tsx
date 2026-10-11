@@ -7,6 +7,7 @@ import TransitBadges from "./TransitBadges";
 import { Link } from "@/i18n/navigation";
 import Icon from "./Icon";
 import { isPracticeType, type Place } from "@/types";
+import TicketIcon from "@/components/TicketIcon";
 
 /** Booking / price / facilities rows for practice places (Practice tab). */
 function PracticeDetails({ place: p }: { place: Place }) {
@@ -62,7 +63,7 @@ export default function SpotCard({ place: p }: { place: Place }) {
           ))}
         </div>
         {/* Entry, bottom-left: "Paid" only when marked paid, otherwise free (the default). */}
-        <div className="card-foot"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}>{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
+        <div className="card-foot"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}><TicketIcon />{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
       </div>
     </div>
   );

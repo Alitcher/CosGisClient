@@ -1,9 +1,16 @@
+import type { ReactNode } from "react";
 import type { Locale } from "next-intl";
 import { pageMetadata } from "@/lib/seo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import TicketIcon from "@/components/TicketIcon";
+
+/** Link for the "CC BY 4.0" text in the credits. */
+const license = (chunks: ReactNode) => (
+  <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">{chunks}</a>
+);
 
 /** Search-engine title, description and language links (lib/seo.ts). */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -35,17 +42,6 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <div className="card tech"><h4>hel.kartta.fi</h4><p>{t("techGis")}</p></div>
           <div className="card tech"><h4>Linked Events</h4><p>{t("techLinkedEvents")}</p></div>
         </div>
-
-        <p className="muted" style={{ marginTop: 18, fontSize: ".9rem" }}>
-          {t.rich("attribution", {
-            api: (chunks) => (
-              <a href="https://api.hel.fi/linkedevents/v1/" target="_blank" rel="noopener noreferrer">{chunks}</a>
-            ),
-            license: (chunks) => (
-              <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">{chunks}</a>
-            ),
-          })}
-        </p>
       </section>
 
       <section className="how shell">
@@ -65,6 +61,39 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <div className="n">3</div>
             <h3>{t("step3Title")}</h3>
             <p>{t("step3Text")}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="credits shell">
+        <h2 className="section-title">{t("creditsTitle")}</h2>
+        <p className="credits-lead">{t("creditsLead")}</p>
+        <div className="grid credits-grid">
+          <div className="card credit">
+            <TicketIcon size={44} />
+            <div>
+              <h3>{t("creditIconTitle")}</h3>
+              <p>{t("creditIconUse")}</p>
+              <p className="credit-by">
+                {t.rich("creditIconBy", {
+                  author: (chunks) => <a href="https://icon-icons.com/authors/1444-icon-factory" target="_blank" rel="noopener noreferrer">{chunks}</a>,
+                  site: (chunks) => <a href="https://icon-icons.com/" target="_blank" rel="noopener noreferrer">{chunks}</a>,
+                })}
+              </p>
+              <p className="credit-license">{t.rich("creditLicense", { license })} | {t("creditUnchanged")}</p>
+            </div>
+          </div>
+          <div className="card credit">
+            <div>
+              <h3>{t("creditDataTitle")}</h3>
+              <p>{t("creditDataUse")}</p>
+              <p className="credit-by">
+                {t.rich("creditDataBy", {
+                  api: (chunks) => <a href="https://api.hel.fi/linkedevents/v1/" target="_blank" rel="noopener noreferrer">{chunks}</a>,
+                })}
+              </p>
+              <p className="credit-license">{t.rich("creditLicense", { license })}</p>
+            </div>
           </div>
         </div>
       </section>
