@@ -78,10 +78,10 @@ export const events: Event[] = [
 
 /** Distinct venues for the map markers. */
 export const venues = [
-  { name: "Messukeskus", city: "Helsinki", color: "#ff4f96", lng: 24.9354, lat: 60.2012 },
-  { name: "Vantaa Energia Areena", city: "Vantaa", color: "#ffc93c", lng: 25.0116, lat: 60.2931 },
-  { name: "Kaapelitehdas", city: "Helsinki", color: "#ff4f96", lng: 24.9043, lat: 60.164 },
-  { name: "Dipoli", city: "Espoo", color: "#2dd4bf", lng: 24.827, lat: 60.1849 },
+  { name: "Messukeskus", city: "Helsinki", color: "#0057b8", lng: 24.9354, lat: 60.2012 },
+  { name: "Vantaa Energia Areena", city: "Vantaa", color: "#fecc02", lng: 25.0116, lat: 60.2931 },
+  { name: "Kaapelitehdas", city: "Helsinki", color: "#0057b8", lng: 24.9043, lat: 60.164 },
+  { name: "Dipoli", city: "Espoo", color: "#00875a", lng: 24.827, lat: 60.1849 },
 ] as const;
 
 export const places: Place[] = [

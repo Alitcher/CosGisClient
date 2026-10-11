@@ -69,16 +69,23 @@ export const cityLabel = (c: City): string => (c === "Jyvaskyla" ? "Jyväskylä"
 
 /** Fixed marker / legend colours for the known cities. */
 const KNOWN_COLOR: Record<string, string> = {
-  Helsinki: "#ff4f96", Vantaa: "#ffc93c", Espoo: "#2dd4bf",
-  Tampere: "#f97316", Turku: "#3b82f6", Lahti: "#22c55e",
-  Oulu: "#a16207", Jyvaskyla: "#ef4444", Kuopio: "#64748b",
+  Helsinki: "#0057b8", Vantaa: "#fecc02", Espoo: "#00875a",
+  Tampere: "#f97316", Turku: "#c8102e", Lahti: "#22c55e",
+  Oulu: "#a16207", Jyvaskyla: "#9e3039", Kuopio: "#64748b",
 };
 
 /** Colours for every other city, picked by a hash of the name so a city keeps its colour. */
-const PALETTE = ["#e11d48", "#7c3aed", "#0891b2", "#65a30d", "#d97706", "#db2777", "#4f46e5", "#0d9488", "#b45309", "#9333ea"];
+const PALETTE = ["#c8102e", "#02529c", "#0891b2", "#65a30d", "#d97706", "#9e3039", "#4f46e5", "#0d9488", "#b45309", "#9333ea"];
 
-/** Marker / legend / chip colour of a city. */
-export function cityColor(c: City): string {
+/** Countries whose cities all share one colour (their flag's main colour). */
+const COUNTRY_COLOR: Partial<Record<Country, string>> = {
+  EE: "#0072CE", // Estonian blue
+};
+
+/** Marker / legend / chip colour of a city. Pass the country so country colours apply. */
+export function cityColor(c: City, country?: Country): string {
+  const byCountry = country && COUNTRY_COLOR[country];
+  if (byCountry) return byCountry;
   const known = KNOWN_COLOR[c];
   if (known) return known;
   let h = 0;
@@ -93,9 +100,9 @@ const STYLED = new Set(["Helsinki", "Vantaa", "Espoo"]);
  * className + style for a city chip (`.chip`) or calendar pill (`.ev`). Every
  * other city uses the generic `.city` rule, coloured through `--c`.
  */
-export function cityChip(c: City): { className: string; style?: CSSProperties } {
-  if (STYLED.has(c)) return { className: c.toLowerCase() };
-  return { className: "city", style: { "--c": cityColor(c) } as CSSProperties };
+export function cityChip(c: City, country?: Country): { className: string; style?: CSSProperties } {
+  if (STYLED.has(c) && (!country || country === "FI")) return { className: c.toLowerCase() };
+  return { className: "city", style: { "--c": cityColor(c, country) } as CSSProperties };
 }
 
 /** Cities that actually appear in a list: the known ones in order, then the rest A-Z. */

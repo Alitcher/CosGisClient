@@ -6,7 +6,7 @@
 <title>Map</title>
 <link href="/maplibre/maplibre-gl.css" rel="stylesheet" />
 <style>
-  html, body { margin: 0; height: 100%; background: #e8e6f0; font-family: Inter, sans-serif; }
+  html, body { margin: 0; height: 100%; background: #e6eef9; font-family: Inter, sans-serif; }
   #map { position: absolute; inset: 0; }
   .mk { width: 18px; height: 18px; border-radius: 50%; border: 3px solid #fff; cursor: pointer;
         box-shadow: 0 3px 8px rgba(0,0,0,.4); }
@@ -19,41 +19,41 @@
   .mk-thumb .ini { width: 100%; height: 100%; display: grid; place-items: center;
                    color: #fff; font: 700 18px Inter, sans-serif; }
   .maplibregl-popup-content { padding: 0; border-radius: 14px; overflow: hidden;
-        box-shadow: 0 10px 28px rgba(0,0,0,.28); border: 2px solid rgba(124,58,173,.25); }
+        box-shadow: 0 10px 28px rgba(0,0,0,.28); border: 2px solid rgba(0,53,128,.25); }
   /* Close (×) button: solid red circle so it stands out over card photos. */
   .maplibregl-popup-close-button { top: 6px; right: 6px; width: 24px; height: 24px; padding: 0;
         border-radius: 50%; background: #ef4444; color: #fff; font-size: 18px; font-weight: 700;
         line-height: 22px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); z-index: 2; }
   .maplibregl-popup-close-button:hover { background: #dc2626; }
-  .maplibregl-popup-close-button:focus-visible { outline: 2px solid #8b5cf6; outline-offset: 2px; }
-  .card { width: 250px; font-family: Inter, sans-serif; color: #2a1840; background: #fff; }
+  .maplibregl-popup-close-button:focus-visible { outline: 2px solid #0072ce; outline-offset: 2px; }
+  .card { width: 250px; font-family: Inter, sans-serif; color: #0b1f3f; background: #fff; }
   .card .meta + .meta { margin-top: 2px; }
   .card img { width: 100%; height: 110px; object-fit: cover; display: block; background: #eee; }
   .card .body { padding: 10px 12px 12px; }
   .card .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .card h3 { margin: 0; font-size: 15px; font-weight: 700; }
   .card .tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em;
-        color: #7c3aad; background: #f0e7fb; border: 1.5px solid #d9c4f5; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
-  .card .meta { font-size: 12px; color: #6b5b86; margin-top: 4px; }
-  .card p { margin: 6px 0 0; font-size: 12px; color: #6b5b86; }
+        color: #003580; background: #e8f0fb; border: 1.5px solid #b9cff0; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .card .meta { font-size: 12px; color: #4d6080; margin-top: 4px; }
+  .card p { margin: 6px 0 0; font-size: 12px; color: #4d6080; }
   .card .themes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-  .card .themes span { font-size: 10px; font-weight: 700; color: #5b4779; background: #f3eefb;
-        border: 1.5px solid #e3d6f6; padding: 2px 7px; border-radius: 999px; }
-  .card .date { font-size: 12px; font-weight: 700; color: #be185d; }
+  .card .themes span { font-size: 10px; font-weight: 700; color: #3d5275; background: #eef4fc;
+        border: 1.5px solid #d3e1f5; padding: 2px 7px; border-radius: 999px; }
+  .card .date { font-size: 12px; font-weight: 700; color: #c8102e; }
   .card .ev-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700;
-        color: #7c3aad; text-decoration: none; border-bottom: 1.5px solid #d9c4f5; }
-  .card .ev-link:hover { border-bottom-color: #7c3aad; }
+        color: #003580; text-decoration: none; border-bottom: 1.5px solid #b9cff0; }
+  .card .ev-link:hover { border-bottom-color: #003580; }
   /* event logo: own line above the title, natural shape, whole picture (never cropped) */
   .card img.logo { width: auto; height: 48px; max-width: 100%; object-fit: contain; background: none; border-radius: 6px; margin-bottom: 8px; }
   /* custom rotation compass */
   .compass { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .compass .rose { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #d9c4f5;
+  .compass .rose { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #b9cff0;
         background: #fff; cursor: pointer; padding: 0; display: grid; place-items: center;
         box-shadow: 0 3px 8px rgba(0,0,0,.22); transition: opacity .15s, box-shadow .15s; }
-  .compass .rose:hover { box-shadow: 0 4px 12px rgba(124,58,173,.35); }
+  .compass .rose:hover { box-shadow: 0 4px 12px rgba(0,53,128,.35); }
   .compass .needle { transform-origin: 50% 50%; transition: transform .12s ease-out; }
-  .compass .deg { font: 800 11px Inter, sans-serif; color: #5b4779; background: #fff;
-        border: 1.5px solid #e3d6f6; border-radius: 999px; padding: 1px 8px; min-width: 26px;
+  .compass .deg { font: 800 11px Inter, sans-serif; color: #3d5275; background: #fff;
+        border: 1.5px solid #d3e1f5; border-radius: 999px; padding: 1px 8px; min-width: 26px;
         text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.16); }
 </style>
 </head>
@@ -64,9 +64,9 @@
   // Same colours as KNOWN_COLOR in src/lib/cities.ts. The app also sends `color`
   // on each event (cityColor), which wins; this table only covers the demo data.
   var CITY_COLOR = {
-    Helsinki: '#ff4f96', Vantaa: '#ffc93c', Espoo: '#2dd4bf',
-    Tampere: '#f97316', Turku: '#3b82f6', Lahti: '#22c55e',
-    Oulu: '#a16207', Jyvaskyla: '#ef4444', Kuopio: '#64748b'
+    Helsinki: '#0057b8', Vantaa: '#fecc02', Espoo: '#00875a',
+    Tampere: '#f97316', Turku: '#c8102e', Lahti: '#22c55e',
+    Oulu: '#a16207', Jyvaskyla: '#9e3039', Kuopio: '#64748b'
   };
   function cityLabel(c) { return c === 'Jyvaskyla' ? 'Jyväskylä' : (c || ''); }
   // "10:00–18:00", "10:00–", "–18:00" or "" (matches fmtTimes in src/lib/data.ts).
@@ -76,7 +76,7 @@
   var ACCESS_LABEL = { 'drop-in': 'Drop-in', 'booking-required': 'Booking needed', 'classes-only': 'Classes only' };
   var PRICE_LABEL = { free: 'Free', paid: 'Paid' };
   var FACILITY_LABEL = { mirrors: 'Mirrors', 'sound-system': 'Sound system', 'changing-room': 'Changing room', 'big-floor': 'Big floor' };
-  var SPOT_COLOR = '#8b5cf6', PRACTICE_COLOR = '#0ea5e9'; // keep in sync with the legend in MapView.tsx
+  var SPOT_COLOR = '#9e3039', PRACTICE_COLOR = '#0ea5e9'; // keep in sync with the legend in MapView.tsx
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   function fmtDate(iso) { var p = (iso || '').split('-'); if (p.length < 3) return iso || ''; return p[2] + ' ' + (MON[(+p[1]) - 1] || '') + ' ' + p[0]; }
   // Local 'YYYY-MM-DD' for today; events on/after this stay on the map, past ones drop.
@@ -130,7 +130,7 @@
       (link ? '<a class="ev-link" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">🔗 Book / more info ↗</a>' : '');
   }
   function eventCard(e) {
-    var color = e.color || CITY_COLOR[e.city] || '#ff4f96';
+    var color = e.color || CITY_COLOR[e.city] || '#0057b8';
     var desc = e.description || e.desc || '';
     var city = cityLabel(e.city);
     // A dead image link just disappears instead of showing a broken icon.
@@ -262,7 +262,7 @@
       if (e.kind === 'con') { e.marker.remove(); return false; }
       return true;
     });
-    list.forEach(function (e) { addMarker('con', e, e.color || CITY_COLOR[e.city] || '#ff4f96', eventCard(e)); });
+    list.forEach(function (e) { addMarker('con', e, e.color || CITY_COLOR[e.city] || '#0057b8', eventCard(e)); });
     updateCards();
   }
   function buildPlaces(list) {

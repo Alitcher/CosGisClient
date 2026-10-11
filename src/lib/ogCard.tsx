@@ -30,7 +30,7 @@ export async function ogCard(o: { kicker?: string; title: string; sub?: string; 
   const img = await inlineImage(o.image);
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", background: "linear-gradient(135deg, #ff4f96, #8b5cf6)", color: "#ffffff" }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", background: "linear-gradient(135deg, #003580, #0072ce)", color: "#ffffff" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 64, width: img ? "60%" : "100%" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             {o.kicker && <div style={{ fontSize: 30, fontWeight: 600, opacity: 0.9 }}>{o.kicker}</div>}
