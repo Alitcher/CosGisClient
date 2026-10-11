@@ -461,7 +461,7 @@ export default function AdminDashboard() {
               <CitySelect country={eventForm.country} city={eventForm.city} onCountry={(c) => setE("country", c)} onCity={(c) => setE("city", c)} detect={eventCityDetect} />
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
               <TransitEditor value={eventForm.transit} onChange={(v) => setE("transit", v)} lat={eventForm.lat} lng={eventForm.lng} />
-              <TranslationsEditor lang={eventForm.lang} i18n={eventForm.i18n} onLang={(l) => setE("lang", l)} onI18n={(v) => setE("i18n", v)} />
+              <TranslationsEditor lang={eventForm.lang} i18n={eventForm.i18n} name={eventForm.name} nameLabel="Event name" onLang={(l) => setE("lang", l)} onI18n={(v) => setE("i18n", v)} />
               <PriceFields value={eventForm.price} onChange={(p) => setE("price", { ...eventForm.price, ...p })} />
               <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://... event page" /></div>
               <div className="field">
@@ -504,7 +504,7 @@ export default function AdminDashboard() {
               <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00-20:00" /></div>
               <div className="field"><label>Description</label><textarea rows={3} value={placeForm.description} onChange={(e) => setP("description", e.target.value)} /></div>
               <TransitEditor value={placeForm.transit} onChange={(v) => setP("transit", v)} lat={placeForm.lat} lng={placeForm.lng} />
-              <TranslationsEditor lang={placeForm.lang} i18n={placeForm.i18n} onLang={(l) => setP("lang", l)} onI18n={(v) => setP("i18n", v)} />
+              <TranslationsEditor lang={placeForm.lang} i18n={placeForm.i18n} name={placeForm.name} nameLabel="Spot name" onLang={(l) => setP("lang", l)} onI18n={(v) => setP("i18n", v)} />
               {isPracticeType(placeForm.type) && (
                 <>
                   <div className="field-row">
