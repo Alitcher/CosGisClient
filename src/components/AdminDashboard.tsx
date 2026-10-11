@@ -13,6 +13,8 @@ import CitySelect from "./CitySelect";
 import AddressAutocomplete from "./AddressAutocomplete";
 import TranslationsEditor from "./TranslationsEditor";
 import TransitEditor from "./TransitEditor";
+import PriceFields from "./PriceFields";
+import { EMPTY_PRICE, priceFields, priceForm, priceError, type PriceForm } from "@/lib/price";
 import Icon from "./Icon";
 import EventThumb from "./EventThumb";
 import {
@@ -42,6 +44,7 @@ type EventForm = {
   lng: string; lat: string; description: string; url: string; image: string; status: Status;
   lang: Lang | ""; i18n: I18n; // original language + translations (TranslationsEditor)
   transit: TransitStop[] | null; // null = never checked (TransitEditor)
+  price: PriceForm; // entry + price range (PriceFields)
 };
 type PlaceForm = {
   id: string | null;
@@ -55,7 +58,7 @@ type PlaceForm = {
   youthFriendly: "" | "yes" | "no"; bookingUrl: string;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null, price: EMPTY_PRICE };
 const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "", lang: "", i18n: {}, transit: null };
 
 /** Transit to save: rows without a name are dropped; never checked (null) sends nothing. */
@@ -179,7 +182,7 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null, price: priceForm(e) });
     setDrawerKind("events");
     setOpen(true);
   }
@@ -202,11 +205,14 @@ export default function AdminDashboard() {
     if (f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
     if (!f.endDate && f.startTime && f.endTime && f.endTime < f.startTime) return alert("End time can't be before the start time on a one-day event.");
     if (!f.city.trim()) return alert("City is required.");
+    const pe = priceError(f.price);
+    if (pe) return alert(pe === "badRange" ? "The 'to' price can't be lower than the 'from' price." : "Prices must be numbers, e.g. 15 or 12.5.");
     const data = {
       name: f.name.trim(), venue: f.venue.trim(), ...(f.lang ? { lang: f.lang } : {}), i18n: f.i18n, country: f.country, city: f.city.trim(), date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
       ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
       ...(f.url.trim() ? { url: f.url.trim() } : {}), ...(f.image.trim() ? { image: f.image.trim() } : {}),
       ...transitField(f.transit),
+      ...priceFields(f.price),
     };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
@@ -456,6 +462,7 @@ export default function AdminDashboard() {
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
               <TransitEditor value={eventForm.transit} onChange={(v) => setE("transit", v)} lat={eventForm.lat} lng={eventForm.lng} />
               <TranslationsEditor lang={eventForm.lang} i18n={eventForm.i18n} onLang={(l) => setE("lang", l)} onI18n={(v) => setE("i18n", v)} />
+              <PriceFields value={eventForm.price} onChange={(p) => setE("price", { ...eventForm.price, ...p })} />
               <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://... event page" /></div>
               <div className="field">
                 <label>Thumbnail / logo URL (optional)</label>

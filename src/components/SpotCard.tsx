@@ -36,6 +36,7 @@ function PracticeDetails({ place: p }: { place: Place }) {
 export default function SpotCard({ place: p }: { place: Place }) {
   const tc = useTranslations("Common");
   const tType = useTranslations("PlaceTypes");
+  const tp = useTranslations("Price");
   const photo = p.photos[0]?.url;
   const txt = localText(p, useLocale());
   return (
@@ -60,6 +61,8 @@ export default function SpotCard({ place: p }: { place: Place }) {
             <span className="theme-tag" key={t}>#{t}</span>
           ))}
         </div>
+        {/* Entry, bottom-left: "Paid" only when marked paid, otherwise free (the default). */}
+        <div className="card-foot"><span className="price-tag">{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
       </div>
     </div>
   );

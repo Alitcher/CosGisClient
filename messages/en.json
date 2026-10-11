@@ -292,5 +292,19 @@
     "train": "Train",
     "tram": "Tram",
     "bus": "Bus"
+  },
+  "Price": {
+    "admission": "Entry",
+    "unknown": "Not sure",
+    "free": "Free",
+    "paid": "Paid",
+    "mixed": "Free entry, paid extras",
+    "mixedLong": "Free entry, some things cost money",
+    "from": "Price from (EUR)",
+    "to": "Price to (EUR, optional)",
+    "note": "Price details (optional)",
+    "notePlaceholder": "e.g. Day ticket 15, weekend 25, under 7 free",
+    "badNumber": "Prices must be numbers, e.g. 15 or 12.5.",
+    "badRange": "The 'to' price can't be lower than the 'from' price."
   }
 }

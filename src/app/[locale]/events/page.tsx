@@ -16,6 +16,7 @@ import SubmitEventDialog from "@/components/SubmitEventDialog";
 import EventThumb from "@/components/EventThumb";
 import TransitBadges from "@/components/TransitBadges";
 import Icon from "@/components/Icon";
+import { priceLabel } from "@/lib/price";
 import type { City } from "@/types";
 
 const WHENS = ["Upcoming", "Past", "All"] as const;
@@ -25,6 +26,7 @@ export default function EventsPage() {
   const t = useTranslations("Events");
   const locale = useLocale();
   const tc = useTranslations("Common");
+  const tp = useTranslations("Price");
   const { events } = useEventStore();
   const [city, setCity] = useState<City | "All cities">("All cities");
   // Only offer cities that actually have events, so nine empty chips don't pile up.
@@ -97,6 +99,7 @@ export default function EventsPage() {
                   <div className="d">{day}</div>
                   <div className="m">{mon}</div>
                   <div className="y">{year}</div>
+                  {times && <div className="t">{times}</div>}
                 </div>
                 <div className="r-main r-with-thumb">
                   <EventThumb event={e} size={52} />
@@ -106,9 +109,9 @@ export default function EventsPage() {
                       <span><b>{e.venue}</b></span>
                       <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
                       {e.endDate && e.endDate > e.date && <span>{fmtRange(e.date, e.endDate)}</span>}
-                      {times && <span>{times}</span>}
                     </div>
                     <TransitBadges transit={e.transit} />
+                    <div className="card-foot"><span className="price-tag">{priceLabel(e, tp)}</span></div>
                   </div>
                 </div>
                 <div className="r-cta">

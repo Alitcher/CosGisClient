@@ -9,6 +9,7 @@ import EventThumb from "@/components/EventThumb";
 import CountryFlag from "@/components/CountryFlag";
 import ShareButton from "@/components/ShareButton";
 import TransitBadges from "@/components/TransitBadges";
+import { priceLabel } from "@/lib/price";
 import { getEvent } from "@/lib/serverData";
 import { localText } from "@/lib/localText";
 import { cityChip, cityLabel, countryOf } from "@/lib/cities";
@@ -44,6 +45,8 @@ export default async function EventPage({ params }: Props) {
   const t = await getTranslations("Detail");
   const txt = localText(e, locale);
   const times = fmtTimes(e.startTime, e.endTime);
+  const tp = await getTranslations("Price");
+  const price = priceLabel(e, tp);
   const chip = cityChip(e.city, countryOf(e));
 
   return (
@@ -65,6 +68,7 @@ export default async function EventPage({ params }: Props) {
           </div>
           <TransitBadges transit={e.transit} />
           {txt.description && <p className="detail-text">{txt.description}</p>}
+          <p className="detail-price"><span className="price-tag">{price}</span>{e.priceNote && <span className="muted">{e.priceNote}</span>}</p>
           <div className="detail-actions">
             <Link className="btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`}>{t("showOnMap")}</Link>
             {e.url && <a className="btn ghost" href={e.url} target="_blank" rel="noopener noreferrer">{t("website")}</a>}

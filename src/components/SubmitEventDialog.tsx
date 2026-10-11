@@ -8,6 +8,8 @@ import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
 import EventThumb from "./EventThumb";
 import Icon from "./Icon";
+import PriceFields from "./PriceFields";
+import { EMPTY_PRICE, priceFields, priceError, type PriceForm } from "@/lib/price";
 import type { City, Country, Lang } from "@/types";
 
 /**
@@ -18,13 +20,14 @@ import type { City, Country, Lang } from "@/types";
 type Form = {
   name: string; venue: string; country: Country; city: City; date: string; endDate: string;
   startTime: string; endTime: string;
-  lng: string; lat: string; description: string; url: string; image: string; submittedBy: string;
+  lng: string; lat: string; description: string; url: string; image: string; submittedBy: string; price: PriceForm;
 };
-const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", submittedBy: "" };
+const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", submittedBy: "", price: EMPTY_PRICE };
 
 export default function SubmitEventDialog({ className = "btn", label }: { className?: string; label?: string }) {
   const t = useTranslations("SubmitEvent");
   const tf = useTranslations("SubmitForm");
+  const tp = useTranslations("Price");
   const tc = useTranslations("Common");
   const locale = useLocale() as Lang; // the text is written in the UI language (used for auto-translation)
   const [open, setOpen] = useState(false);
@@ -46,6 +49,8 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
     if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
       return alert(`${t("needCoords")}\n${tf("needCoordsTip")}`);
     if (!f.city.trim()) return alert(tf("needCity"));
+    const pe = priceError(f.price);
+    if (pe) return alert(tp(pe));
     setBusy(true);
     try {
       await apiSubmitEvent({
@@ -56,6 +61,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
         lng, lat,
         description: f.description.trim() || undefined,
         url: f.url.trim() || undefined,
+        ...priceFields(f.price),
         image: f.image.trim() || undefined,
         submittedBy: f.submittedBy.trim() || undefined,
       });
@@ -120,6 +126,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
               <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
               <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{tf("description")}</label><textarea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder={t("descriptionPlaceholder")} /></div>
+              <PriceFields value={f.price} onChange={(p) => set("price", { ...f.price, ...p })} />
               <div className="field"><label>{t("link")}</label><input type="url" value={f.url} onChange={(e) => set("url", e.target.value)} placeholder={t("linkPlaceholder")} /></div>
               <div className="field">
                 <label>{t("image")}</label>

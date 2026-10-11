@@ -292,5 +292,19 @@
     "train": "Rong",
     "tram": "Tramm",
     "bus": "Buss"
+  },
+  "Price": {
+    "admission": "Sissepääs",
+    "unknown": "Ei tea",
+    "free": "Tasuta",
+    "paid": "Tasuline",
+    "mixed": "Tasuta sissepääs, osa tasuline",
+    "mixedLong": "Tasuta sissepääs, mõned asjad maksavad",
+    "from": "Hind alates (EUR)",
+    "to": "Hind kuni (EUR, valikuline)",
+    "note": "Hinna info (valikuline)",
+    "notePlaceholder": "nt päevapilet 15, nädalavahetus 25, alla 7 tasuta",
+    "badNumber": "Hinnad peavad olema numbrid, nt 15 või 12,5.",
+    "badRange": "Kuni-hind ei saa olla väiksem kui alates-hind."
   }
 }

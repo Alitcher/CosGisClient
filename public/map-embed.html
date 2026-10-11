@@ -99,6 +99,17 @@
   // Precise location line - events have no street address, only a venue + coordinates.
   function fmtCoord(lat, lng) { return (typeof lat === 'number' && typeof lng === 'number') ? lat.toFixed(4) + ', ' + lng.toFixed(4) : ''; }
   function row(text) { return text ? '<div class="meta">' + esc(text) + '</div>' : ''; }
+  // Event price, same rules as priceLabel in src/lib/price.ts.
+  function eur(n) { return (n % 1 === 0 ? n : n.toFixed(2)) + ' EUR'; }
+  function priceText(e) {
+    var min = e.priceMin, max = e.priceMax;
+    var range = (min != null && max != null && max !== min) ? (min % 1 === 0 ? min : min.toFixed(2)) + '-' + eur(max)
+      : min != null ? eur(min) : max != null ? eur(max) : '';
+    if (e.admission === 'free') return 'Free';
+    if (e.admission === 'paid') return range || 'Paid';
+    if (e.admission === 'mixed') return max != null ? 'Free - ' + eur(max) : 'Free entry, paid extras';
+    return range || 'Free';
+  }
   // Nearby public transport, e.g. "Metro Kamppi 220 m" (set by an admin, see TransitEditor.tsx).
   var TRANSIT_LABEL = { metro: 'Metro', train: 'Train', tram: 'Tram', bus: 'Bus' };
   function transitRow(list) {
@@ -123,6 +134,7 @@
       '<div class="top"><h3>' + esc(p.name) + '</h3><span class="tag">' + esc(TYPE_LABEL[p.type] || p.type) + '</span></div>' +
       row(loc) +
       row(hours) +
+      row(p.price === 'paid' ? 'Paid' : 'Free') +
       transitRow(p.transit) +
       row(fmtCoord(p.lat, p.lng)) +
       (isPractice(p) ? practiceRows(p) : '') +
@@ -151,6 +163,7 @@
       logo + '<div class="top"><h3>' + esc(e.name) + '</h3><span class="tag" style="color:' + color + ';border-color:' + color + '">' + esc(city) + '</span></div>' +
       '<div class="date" style="margin-top:6px;">' + esc(fmtRange(e.date, e.endDate)) + '</div>' +
       row(fmtTimes(e.startTime, e.endTime)) +
+      row(priceText(e)) +
       row(e.venue ? (e.venue + (city ? ', ' + city : '')) : '') +
       transitRow(e.transit) +
       row(fmtCoord(e.lat, e.lng)) +

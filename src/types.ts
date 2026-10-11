@@ -28,6 +28,8 @@ export type PlaceType =
 export type Booking = 'drop-in' | 'booking-required' | 'classes-only';
 export type Price = 'free' | 'paid';
 export type Facility = 'mirrors' | 'sound-system' | 'changing-room' | 'big-floor';
+/** Event entry (server AdmissionEnum): free, paid, or free entry with paid extras. */
+export type Admission = 'free' | 'paid' | 'mixed';
 /** Kind of public transport stop (server TransitKindEnum). */
 export type TransitKind = 'metro' | 'train' | 'tram' | 'bus';
 export const TRANSIT_KINDS: readonly TransitKind[] = ['metro', 'train', 'tram', 'bus'];
@@ -57,6 +59,10 @@ export interface Event {
   description?: string;
   url?: string; // link to the event's info page (organizer / Linked Events)
   image?: string; // thumbnail / logo URL
+  admission?: Admission; // missing = not known
+  priceMin?: number; // EUR; one price = priceMin only
+  priceMax?: number; // EUR
+  priceNote?: string; // e.g. "Day ticket 15, weekend 25"
   startTime?: string; // local 'HH:MM' on `date`
   endTime?: string; // local 'HH:MM' on `endDate` (or `date`)
   transit?: TransitStop[]; // nearby stops, set by an admin (missing = never checked, [] = none close)

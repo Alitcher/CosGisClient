@@ -292,5 +292,19 @@
     "train": "Juna",
     "tram": "Raitiovaunu",
     "bus": "Bussi"
+  },
+  "Price": {
+    "admission": "Sisäänpääsy",
+    "unknown": "En tiedä",
+    "free": "Ilmainen",
+    "paid": "Maksullinen",
+    "mixed": "Ilmainen sisäänpääsy, maksullista ohjelmaa",
+    "mixedLong": "Ilmainen sisäänpääsy, osa maksullista",
+    "from": "Hinta alkaen (EUR)",
+    "to": "Hinta enintään (EUR, valinnainen)",
+    "note": "Hintatiedot (valinnainen)",
+    "notePlaceholder": "esim. päivälippu 15, viikonloppu 25, alle 7 v. ilmaiseksi",
+    "badNumber": "Hintojen pitää olla numeroita, esim. 15 tai 12,5.",
+    "badRange": "Enimmäishinta ei voi olla pienempi kuin alkaen-hinta."
   }
 }
