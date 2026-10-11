@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { apiSubmitPlace } from "@/lib/api";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
-import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type Country, type PlaceType, type Booking, type Price, type Facility } from "@/types";
+import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type Country, type Lang, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
 /**
  * A "Submit spot" button + slide-in form for the public. Submissions land in the
@@ -28,6 +28,7 @@ const EMPTY: Form = { name: "", type: "cafe", country: "FI", city: "", address: 
 export default function SubmitSpotDialog({ className = "btn", label, purpose = "photo" }: { className?: string; label?: string; purpose?: "photo" | "practice" }) {
   const practice = purpose === "practice";
   const t = useTranslations("SubmitSpot");
+  const locale = useLocale() as Lang; // the text is written in the UI language (used for auto-translation)
   const tp = useTranslations("SubmitPractice");
   const tPr = useTranslations("Practice");
   const tf = useTranslations("SubmitForm");
@@ -55,7 +56,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
     setBusy(true);
     try {
       await apiSubmitPlace({
-        name: f.name.trim(), type: f.type, country: f.country, city: f.city.trim(),
+        name: f.name.trim(), lang: locale, type: f.type, country: f.country, city: f.city.trim(),
         address: f.address.trim() || undefined,
         lng, lat,
         themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),

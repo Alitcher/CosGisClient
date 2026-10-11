@@ -266,5 +266,18 @@
     "bookingUrl": "Varaus- / infolinkki",
     "descriptionPlaceholder": "Millainen paikka on treenaamiseen? Lattian koko, säännöt…",
     "notSet": "— en tiedä —"
+  },
+  "Share": {
+    "share": "Jaa",
+    "copyLink": "Kopioi linkki",
+    "copied": "Linkki kopioitu",
+    "pasteIn": "Linkki kopioitu - liitä se sovellukseen {app}"
+  },
+  "Detail": {
+    "showOnMap": "Näytä kartalla",
+    "website": "Tapahtuman sivu",
+    "allEvents": "Kaikki tapahtumat",
+    "allSpots": "Kaikki paikat",
+    "openingHours": "Aukioloajat"
   }
 }

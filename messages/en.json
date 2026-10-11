@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "title": "CosoraAtlas — Nordic & Baltic",
+    "title": "CosOverHere - Nordic & Baltic",
     "description": "Find every anime con near you, plus the cafés, malls and photo spots that welcome cosplayers — across Helsinki, Vantaa & Espoo."
   },
   "Nav": {
@@ -266,5 +266,18 @@
     "bookingUrl": "Booking / info link",
     "descriptionPlaceholder": "What's it like for rehearsing? Floor size, rules…",
     "notSet": "— not sure —"
+  },
+  "Share": {
+    "share": "Share",
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "pasteIn": "Link copied - paste it in {app}"
+  },
+  "Detail": {
+    "showOnMap": "Show on map",
+    "website": "Event website",
+    "allEvents": "All events",
+    "allSpots": "All spots",
+    "openingHours": "Opening hours"
   }
 }

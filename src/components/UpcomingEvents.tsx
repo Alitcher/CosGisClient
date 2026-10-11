@@ -1,13 +1,18 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { splitDate, eventEndsOn, fmtTimes } from "@/lib/data";
+import { localText } from "@/lib/localText";
 import { cityChip, cityLabel, countryOf } from "@/lib/cities";
 import { useEventStore } from "@/lib/eventsStore";
 import EventThumb from "./EventThumb";
+import ShareButton from "./ShareButton";
+import { Link } from "@/i18n/navigation";
 import CountryFlag from "./CountryFlag";
 
 export default function UpcomingEvents() {
   const { events } = useEventStore();
+  const locale = useLocale();
   const now = new Date();
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const upcoming = events
@@ -21,16 +26,18 @@ export default function UpcomingEvents() {
       {upcoming.map((e) => {
         const { day, mon } = splitDate(e.date);
         const times = fmtTimes(e.startTime, e.endTime);
+        const txt = localText(e, locale);
         return (
           <div className="card ev-card" key={e.id}>
             <div className="ev-card-head">
               <div className="ev-date"><span className="d">{day}</span><span className="m">{mon}</span></div>
               <EventThumb event={e} size={56} />
             </div>
-            <h4>{e.name}</h4>
+            <h4><Link className="title-link" href={`/events/${e.id}`}>{txt.name}</Link></h4>
             <div className="ev-meta">📍 {e.venue} <span className={`chip ${cityChip(e.city).className}`} style={cityChip(e.city).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span></div>
             {times && <div className="ev-meta">🕐 {times}</div>}
-            {e.description && <p className="muted" style={{ fontSize: 13 }}>{e.description}</p>}
+            {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
+            <div className="ev-actions"><ShareButton title={txt.name} path={`/events/${e.id}`} /></div>
           </div>
         );
       })}

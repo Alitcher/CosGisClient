@@ -1,6 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localText } from "@/lib/localText";
+import ShareButton from "./ShareButton";
 import { Link } from "@/i18n/navigation";
 import { isPracticeType, type Place } from "@/types";
 
@@ -33,20 +35,22 @@ export default function SpotCard({ place: p }: { place: Place }) {
   const tc = useTranslations("Common");
   const tType = useTranslations("PlaceTypes");
   const photo = p.photos[0]?.url;
+  const txt = localText(p, useLocale());
   return (
     <div className="card spot">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      {photo && <img className="spot-photo" src={photo} alt={p.name} />}
+      {photo && <img className="spot-photo" src={photo} alt={txt.name} />}
       <div className="spot-body">
         <div className="spot-top">
-          <h3>{p.name}</h3>
+          <h3><Link className="title-link" href={`/spots/${p.id}`}>{txt.name}</Link></h3>
           <div className="flex gap-sm" style={{ alignItems: "center" }}>
             <span className="spot-type">{tType(p.type)}</span>
             <Link className="icon-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} title={tc("showOnMap")}>🗺️</Link>
+            <ShareButton title={txt.name} path={`/spots/${p.id}`} />
           </div>
         </div>
         <div className="spot-meta">📍 {p.address ?? p.city}</div>
-        {p.description && <p className="muted" style={{ fontSize: 13 }}>{p.description}</p>}
+        {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
         {isPracticeType(p.type) && <PracticeDetails place={p} />}
         <div className="spot-themes">
           {p.themes.map((t) => (

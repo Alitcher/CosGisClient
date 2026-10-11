@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
+import { useLocale } from "next-intl";
 import { cityColor } from "@/lib/cities";
+import { localized } from "@/lib/localText";
 
 // The React/MapLibre integration kept rendering blank, while the standalone page
 // at /map-embed.html renders the 3D map perfectly. So we embed that working page
@@ -12,6 +14,7 @@ import { cityColor } from "@/lib/cities";
 export default function HeroMap({ title }: { title: string }) {
   const { events } = useEventStore();
   const { places } = usePlaceStore();
+  const locale = useLocale();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [ready, setReady] = useState(false);
 
@@ -27,9 +30,9 @@ export default function HeroMap({ title }: { title: string }) {
     const win = iframeRef.current?.contentWindow;
     if (!ready || !win) return;
     // The embed hides past events itself.
-    win.postMessage({ type: "setEvents", events: events.map((e) => ({ ...e, color: cityColor(e.city) })) }, "*");
-    win.postMessage({ type: "setPlaces", places }, "*");
-  }, [ready, events, places]);
+    win.postMessage({ type: "setEvents", events: events.map((e) => ({ ...localized(e, locale), color: cityColor(e.city) })) }, "*");
+    win.postMessage({ type: "setPlaces", places: places.map((p) => localized(p, locale)) }, "*");
+  }, [ready, events, places, locale]);
 
   return (
     <iframe

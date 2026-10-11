@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localized, localText } from "@/lib/localText";
 import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
@@ -15,6 +16,7 @@ import { isPracticeType } from "@/types";
 
 export default function MapView() {
   const t = useTranslations("Map");
+  const locale = useLocale();
   const { events } = useEventStore();
   const { places } = usePlaceStore();
   const params = useSearchParams();
@@ -45,11 +47,11 @@ export default function MapView() {
   // push the filtered (possibly admin-edited) events + places into the map
   useEffect(() => {
     // The embed has no colour table for cities outside the old Finnish list, so send each one's colour.
-    if (ready) post({ type: "setEvents", events: list.map((e) => ({ ...e, color: cityColor(e.city) })) });
-  }, [ready, list]);
+    if (ready) post({ type: "setEvents", events: list.map((e) => ({ ...localized(e, locale), color: cityColor(e.city) })) });
+  }, [ready, list, locale]);
   useEffect(() => {
-    if (ready) post({ type: "setPlaces", places: shownPlaces });
-  }, [ready, shownPlaces]);
+    if (ready) post({ type: "setPlaces", places: shownPlaces.map((p) => localized(p, locale)) });
+  }, [ready, shownPlaces, locale]);
 
   // When arrived here via a "show on map" button (/map?lng=..&lat=..), fly to that
   // node. Small delay lets setEvents/setPlaces build the markers first, so the
@@ -93,7 +95,7 @@ export default function MapView() {
                 <div className="li-date"><div className="d">{day}</div><div className="m">{mon}</div></div>
                 <EventThumb event={e} size={36} />
                 <div className="li-body">
-                  <h4>{e.name}</h4>
+                  <h4>{localText(e, locale).name}</h4>
                   <div className="meta">{e.venue} · {cityLabel(e.city)}</div>
                 </div>
               </div>

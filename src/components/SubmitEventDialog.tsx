@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { apiSubmitEvent } from "@/lib/api";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
 import EventThumb from "./EventThumb";
-import type { City, Country } from "@/types";
+import type { City, Country, Lang } from "@/types";
 
 /**
  * A "Submit event" button + slide-in form for the public. Submissions land in the
@@ -25,6 +25,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
   const t = useTranslations("SubmitEvent");
   const tf = useTranslations("SubmitForm");
   const tc = useTranslations("Common");
+  const locale = useLocale() as Lang; // the text is written in the UI language (used for auto-translation)
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -47,7 +48,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
     setBusy(true);
     try {
       await apiSubmitEvent({
-        name: f.name.trim(), venue: f.venue.trim(), country: f.country, city: f.city.trim(), date: f.date,
+        name: f.name.trim(), venue: f.venue.trim(), lang: locale, country: f.country, city: f.city.trim(), date: f.date,
         endDate: f.endDate || undefined,
         startTime: f.startTime || undefined,
         endTime: f.endTime || undefined,

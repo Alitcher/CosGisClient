@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localText } from "@/lib/localText";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -9,6 +10,7 @@ import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
 import { cityChip, citiesIn, cityLabel, countryOf } from "@/lib/cities";
 import CountryFlag from "@/components/CountryFlag";
 import SearchBox from "@/components/SearchBox";
+import ShareButton from "@/components/ShareButton";
 import { useEventStore } from "@/lib/eventsStore";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import EventThumb from "@/components/EventThumb";
@@ -19,6 +21,7 @@ const WHEN_LABEL = { Upcoming: "upcoming", Past: "past", All: "all" } as const;
 
 export default function EventsPage() {
   const t = useTranslations("Events");
+  const locale = useLocale();
   const tc = useTranslations("Common");
   const { events } = useEventStore();
   const [city, setCity] = useState<City | "All cities">("All cities");
@@ -96,7 +99,7 @@ export default function EventsPage() {
                 <div className="r-main r-with-thumb">
                   <EventThumb event={e} size={52} />
                   <div>
-                    <h3>{e.name}</h3>
+                    <h3><Link className="title-link" href={`/events/${e.id}`}>{localText(e, locale).name}</Link></h3>
                     <div className="meta">
                       <span>📍 <b>{e.venue}</b></span>
                       <span className={`chip ${cityChip(e.city).className}`} style={cityChip(e.city).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
@@ -107,6 +110,7 @@ export default function EventsPage() {
                 </div>
                 <div className="r-cta">
                   <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}>🗺️</Link>
+                  <ShareButton title={localText(e, locale).name} path={`/events/${e.id}`} />
                 </div>
               </div>
             );

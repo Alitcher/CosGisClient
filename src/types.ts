@@ -13,6 +13,12 @@ export type City = string;
 /** ISO 3166-1 alpha-2 (the server's CountryEnum): Nordics, Baltics, Aland, Faroe Islands, Greenland. */
 export type Country = 'FI' | 'SE' | 'NO' | 'DK' | 'IS' | 'EE' | 'LV' | 'LT' | 'AX' | 'FO' | 'GL';
 export type Status = 'live' | 'draft' | 'pending';
+/** UI languages; event/place text is translated into all of them (server LangEnum). */
+export type Lang = 'en' | 'fi' | 'et' | 'th';
+export const LANGS: readonly Lang[] = ['en', 'fi', 'et', 'th'];
+/** One language's translated text. auto: false = written by an admin (never overwritten). */
+export type Translation = { name?: string; description?: string; auto?: boolean };
+export type I18n = Partial<Record<Lang, Translation>>;
 /** What kind of event: a cosplay con/meetup, or a K-pop/J-pop dance cover event. */
 export type EventCategory = 'cosplay' | 'cover';
 export const EVENT_CATEGORIES: readonly EventCategory[] = ['cosplay', 'cover'];
@@ -36,6 +42,8 @@ export interface Event {
   venue: string;
   city: City;
   country?: Country; // missing = 'FI' (see countryOf in lib/cities)
+  lang?: Lang; // language of name/description (missing = not known yet)
+  i18n?: I18n; // name/description in the other languages (see localText in lib/localText)
   category?: EventCategory; // client-only for now; missing = 'cosplay' (see eventCategory in lib/mapFilters)
   date: string; // start date, ISO 'YYYY-MM-DD'
   endDate?: string; // last day for multi-day events (>= date)
@@ -63,6 +71,8 @@ export interface Place {
   type: PlaceType;
   city: City;
   country?: Country; // missing = 'FI' (see countryOf in lib/cities)
+  lang?: Lang; // language of name/description (missing = not known yet)
+  i18n?: I18n; // name/description in the other languages (see localText in lib/localText)
   address?: string;
   lng: number;
   lat: number;

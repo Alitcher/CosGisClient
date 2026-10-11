@@ -266,5 +266,18 @@
     "bookingUrl": "Broneerimise / info link",
     "descriptionPlaceholder": "Milline on koht harjutamiseks? Põranda suurus, reeglid…",
     "notSet": "— ei tea —"
+  },
+  "Share": {
+    "share": "Jaga",
+    "copyLink": "Kopeeri link",
+    "copied": "Link kopeeritud",
+    "pasteIn": "Link kopeeritud - kleebi see rakendusse {app}"
+  },
+  "Detail": {
+    "showOnMap": "Näita kaardil",
+    "website": "Ürituse veebileht",
+    "allEvents": "Kõik üritused",
+    "allSpots": "Kõik kohad",
+    "openingHours": "Lahtiolekuajad"
   }
 }
