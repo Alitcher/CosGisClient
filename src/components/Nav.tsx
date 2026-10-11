@@ -71,7 +71,7 @@ export default function Nav() {
         <Link className="brand" href="/">
           <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
           <span className="brand-text">
-            CosoraAtlas
+            CosOverHere
             <small>{t("tagline")}</small>
           </span>
         </Link>
