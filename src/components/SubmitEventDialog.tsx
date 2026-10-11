@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { apiSubmitEvent } from "@/lib/api";
+import { apiSubmitEvent, ApiError } from "@/lib/api";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
 import EventThumb from "./EventThumb";
+import Icon from "./Icon";
 import type { City, Country, Lang } from "@/types";
 
 /**
@@ -17,9 +18,9 @@ import type { City, Country, Lang } from "@/types";
 type Form = {
   name: string; venue: string; country: Country; city: City; date: string; endDate: string;
   startTime: string; endTime: string;
-  lng: string; lat: string; description: string; image: string; submittedBy: string;
+  lng: string; lat: string; description: string; url: string; image: string; submittedBy: string;
 };
-const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", image: "", submittedBy: "" };
+const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", submittedBy: "" };
 
 export default function SubmitEventDialog({ className = "btn", label }: { className?: string; label?: string }) {
   const t = useTranslations("SubmitEvent");
@@ -54,12 +55,14 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
         endTime: f.endTime || undefined,
         lng, lat,
         description: f.description.trim() || undefined,
+        url: f.url.trim() || undefined,
         image: f.image.trim() || undefined,
         submittedBy: f.submittedBy.trim() || undefined,
       });
       setSent(true);
     } catch (err) {
-      alert(tf("submitFailed", { error: (err as Error).message }));
+      if (err instanceof ApiError && err.status === 409) alert(tf("duplicate"));
+      else alert(tf("submitFailed", { error: (err as Error).message }));
     } finally {
       setBusy(false);
     }
@@ -73,13 +76,12 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
       <aside className={`drawer${open ? " open" : ""}`}>
         <div className="drawer-head">
           <h3>{t("title")}</h3>
-          <button className="close-x" type="button" onClick={close}>✕</button>
+          <button className="close-x" type="button" onClick={close} aria-label="Close"><Icon name="close" size={16} /></button>
         </div>
 
         {sent ? (
           <div className="drawer-body">
-            <p style={{ fontSize: 40, margin: "10px 0" }}>🎉</p>
-            <h4 style={{ marginBottom: 6 }}>{tf("thanksTitle")}</h4>
+              <h4 style={{ marginBottom: 6 }}>{tf("thanksTitle")}</h4>
             <p className="muted">{t("thanksText")}</p>
             <div className="drawer-foot" style={{ paddingLeft: 0, paddingRight: 0 }}>
               <button className="btn" type="button" onClick={close}>{tf("done")}</button>
@@ -118,6 +120,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
               <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
               <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{tf("description")}</label><textarea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder={t("descriptionPlaceholder")} /></div>
+              <div className="field"><label>{t("link")}</label><input type="url" value={f.url} onChange={(e) => set("url", e.target.value)} placeholder={t("linkPlaceholder")} /></div>
               <div className="field">
                 <label>{t("image")}</label>
                 <div className="thumb-input">

@@ -11,6 +11,7 @@ import { splitDate, eventEndsOn } from "@/lib/data";
 import { cityColor, cityCountries, citiesIn, cityLabel, countriesIn, countryOf } from "@/lib/cities";
 import { DEFAULT_FILTERS, filterEvents, filterPlaces, todayISO, type MapFilters as Filters } from "@/lib/mapFilters";
 import EventThumb from "./EventThumb";
+import TransitBadges from "./TransitBadges";
 import MapFilters from "./MapFilters";
 import { isPracticeType } from "@/types";
 
@@ -97,7 +98,8 @@ export default function MapView() {
                 <EventThumb event={e} size={36} />
                 <div className="li-body">
                   <h4>{localText(e, locale).name}</h4>
-                  <div className="meta">{e.venue} · {cityLabel(e.city)}</div>
+                  <div className="meta">{e.venue} | {cityLabel(e.city)}</div>
+                  <TransitBadges transit={e.transit} compact />
                 </div>
               </div>
             );
@@ -119,7 +121,7 @@ export default function MapView() {
           style={{ border: 0, width: "100%", height: "100%" }}
         />
         {/* Floats over the map (top-left) rather than living in the sidebar, so the
-            event list keeps its height and phones — which hide the sidebar — still
+            event list keeps its height and phones - which hide the sidebar - still
             get filters. */}
         <MapFilters
           value={filters}

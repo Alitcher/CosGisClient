@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { apiSubmitPlace } from "@/lib/api";
+import { apiSubmitPlace, ApiError } from "@/lib/api";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
+import Icon from "./Icon";
 import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type Country, type Lang, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
 /**
@@ -74,7 +75,8 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
       });
       setSent(true);
     } catch (err) {
-      alert(tf("submitFailed", { error: (err as Error).message }));
+      if (err instanceof ApiError && err.status === 409) alert(tf("duplicate"));
+      else alert(tf("submitFailed", { error: (err as Error).message }));
     } finally {
       setBusy(false);
     }
@@ -88,13 +90,12 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
       <aside className={`drawer${open ? " open" : ""}`}>
         <div className="drawer-head">
           <h3>{practice ? tp("title") : t("title")}</h3>
-          <button className="close-x" type="button" onClick={close}>✕</button>
+          <button className="close-x" type="button" onClick={close} aria-label="Close"><Icon name="close" size={16} /></button>
         </div>
 
         {sent ? (
           <div className="drawer-body">
-            <p style={{ fontSize: 40, margin: "10px 0" }}>🎉</p>
-            <h4 style={{ marginBottom: 6 }}>{tf("thanksTitle")}</h4>
+              <h4 style={{ marginBottom: 6 }}>{tf("thanksTitle")}</h4>
             <p className="muted">{practice ? tp("thanksText") : t("thanksText")}</p>
             <div className="drawer-foot" style={{ paddingLeft: 0, paddingRight: 0 }}>
               <button className="btn" type="button" onClick={close}>{tf("done")}</button>
@@ -143,11 +144,11 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
                       ))}
                     </div>
                   </div>
-                  <div className="field"><label>{tp("bookingUrl")}</label><input value={f.bookingUrl} onChange={(e) => set("bookingUrl", e.target.value)} placeholder="https://…" /></div>
+                  <div className="field"><label>{tp("bookingUrl")}</label><input value={f.bookingUrl} onChange={(e) => set("bookingUrl", e.target.value)} placeholder="https://..." /></div>
                 </>
               )}
-              <div className="field"><label>{t("photo")}</label><input value={f.photo} onChange={(e) => set("photo", e.target.value)} placeholder="https://…" /></div>
-              <div className="field"><label>{t("openingHours")}</label><input value={f.openingHours} onChange={(e) => set("openingHours", e.target.value)} placeholder="10:00–20:00" /></div>
+              <div className="field"><label>{t("photo")}</label><input value={f.photo} onChange={(e) => set("photo", e.target.value)} placeholder="https://..." /></div>
+              <div className="field"><label>{t("openingHours")}</label><input value={f.openingHours} onChange={(e) => set("openingHours", e.target.value)} placeholder="10:00-20:00" /></div>
               <div className="field"><label>{tf("description")}</label><textarea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder={practice ? tp("descriptionPlaceholder") : t("descriptionPlaceholder")} /></div>
               <div className="field"><label>{tf("yourName")}</label><input value={f.submittedBy} onChange={(e) => set("submittedBy", e.target.value)} placeholder={tf("yourNamePlaceholder")} /></div>
             </div>

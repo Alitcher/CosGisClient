@@ -1,4 +1,4 @@
-import type { Event, Place } from "@/types";
+import type { Event, Place, TransitStop } from "@/types";
 import { getAdminToken } from "./adminAuth";
 
 /**
@@ -25,8 +25,15 @@ function adminHeaders(): HeadersInit {
   };
 }
 
+/** A failed API call; `status` is the HTTP status (409 = duplicate submission). */
+export class ApiError extends Error {
+  constructor(message: string, public status: number) {
+    super(message);
+  }
+}
+
 async function jsonOrThrow<T>(res: Response, what: string): Promise<T> {
-  if (!res.ok) throw new Error(`${what} -> ${res.status}`);
+  if (!res.ok) throw new ApiError(`${what} -> ${res.status}`, res.status);
   return (await res.json()) as T;
 }
 
@@ -68,7 +75,8 @@ export async function apiDeleteEvent(id: string): Promise<void> {
   if (!res.ok) throw new Error(`DELETE /v1/events/${id} -> ${res.status}`);
 }
 /** Public: suggest an event. Lands in the pending queue for admin approval. */
-export type EventSubmissionInput = NewEventInput & { submittedBy?: string };
+// `transit` is admin-only; the server drops it from submissions.
+export type EventSubmissionInput = Omit<NewEventInput, "transit"> & { submittedBy?: string };
 export async function apiSubmitEvent(input: EventSubmissionInput): Promise<{ ok: boolean; id: string }> {
   return jsonOrThrow(
     await fetch(`${API}/v1/events/submissions`, {
@@ -158,7 +166,7 @@ export async function apiDeletePlace(id: string): Promise<void> {
 }
 /** Public: suggest a spot. Lands in the pending queue for admin approval. */
 // `youthFriendly` is admin-only; the server drops it from submissions.
-export type PlaceSubmissionInput = Omit<NewPlaceInput, "youthFriendly"> & { submittedBy?: string };
+export type PlaceSubmissionInput = Omit<NewPlaceInput, "youthFriendly" | "transit"> & { submittedBy?: string };
 export async function apiSubmitPlace(input: PlaceSubmissionInput): Promise<{ ok: boolean; id: string }> {
   return jsonOrThrow(
     await fetch(`${API}/v1/places/submissions`, {
@@ -183,4 +191,16 @@ export async function apiApprovePlace(id: string): Promise<Place> {
     await fetch(`${API}/v1/places/submissions/${id}/approve`, { method: "POST", headers: adminHeaders() }),
     `POST /v1/places/submissions/${id}/approve`,
   );
+}
+
+/* ---------------- Transit (admin) ---------------- */
+
+/** Nearest metro/train/tram/bus stops around a point (Digitransit in Finland, else OpenStreetMap). Only a
+ *  suggestion: nothing is saved until the event/place itself is saved. */
+export async function apiLookupTransit(lat: number, lng: number): Promise<TransitStop[]> {
+  const r = await jsonOrThrow<{ transit: TransitStop[] }>(
+    await fetch(`${API}/v1/admin/transit/lookup`, { method: "POST", headers: adminHeaders(), body: JSON.stringify({ lat, lng }) }),
+    "POST /v1/admin/transit/lookup",
+  );
+  return r.transit;
 }
