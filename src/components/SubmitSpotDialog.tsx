@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { apiSubmitPlace, ApiError } from "@/lib/api";
+import { geocode } from "@/lib/geocode";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
@@ -50,14 +51,18 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
 
   async function submit() {
     if (!f.name.trim()) return alert(t("required"));
-    const lng = Number(f.lng), lat = Number(f.lat);
-    if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
-      return alert(`${t("needCoords")}\n${tf("needCoordsTip")}`);
-    if (!f.city.trim()) return alert(tf("needCity"));
+    let lng = Number(f.lng), lat = Number(f.lat), city = f.city.trim();
+    if (f.lng === "" || f.lat === "") {
+      const hit = (await geocode(f.address).catch(() => []))[0];
+      if (!hit) return alert(t("needCoords"));
+      lng = hit.lng; lat = hit.lat;
+      if (!city && hit.city) city = hit.city;
+    }
+    if (!city) return alert(tf("needCity"));
     setBusy(true);
     try {
       await apiSubmitPlace({
-        name: f.name.trim(), lang: locale, type: f.type, country: f.country, city: f.city.trim(),
+        name: f.name.trim(), lang: locale, type: f.type, country: f.country, city,
         address: f.address.trim() || undefined,
         lng, lat,
         themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),
@@ -111,7 +116,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
                 <label>{t("address")}</label>
                 <AddressAutocomplete
                   value={f.address}
-                  onChange={(v) => set("address", v)}
+                  onChange={(v) => setF((s) => ({ ...s, address: v, lng: "", lat: "" }))}
                   onSelect={(r) => {
                     set("address", r.label);
                     set("lng", String(r.lng));
@@ -120,11 +125,6 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
                   placeholder={t("addressPlaceholder")}
                 />
               </div>
-              <div className="field-row">
-                <div className="field"><label>{tf("longitude")}</label><input value={f.lng} onChange={(e) => set("lng", e.target.value)} placeholder="24.9402" /></div>
-                <div className="field"><label>{tf("latitude")}</label><input value={f.lat} onChange={(e) => set("lat", e.target.value)} placeholder="60.1641" /></div>
-              </div>
-              <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
               <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{practice ? tp("genres") : t("themes")}</label><input value={f.themes} onChange={(e) => set("themes", e.target.value)} placeholder={practice ? tp("genresPlaceholder") : t("themesPlaceholder")} /></div>
               {practice && (

@@ -1,6 +1,6 @@
 {
   "Metadata": {
-    "title": "CosoraAtlas - Põhjamaad & Baltikum",
+    "title": "CosOverHere - Põhjamaad & Baltikum",
     "description": "Leia kõik lähedal toimuvad animeüritused ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud - Helsingis, Vantaas ja Espoos."
   },
   "Nav": {
@@ -21,7 +21,7 @@
     "language": "Keel"
   },
   "Footer": {
-    "copyright": "2026 CosoraAtlas | Põhjamaad | Baltikum | Avaandmed: hel.kartta.fi",
+    "copyright": "2026 CosOverHere | Põhjamaad | Baltikum | Avaandmed: hel.kartta.fi",
     "madeWith": "Tehtud armastusega cosplay-kogukonnale"
   },
   "Common": {
@@ -187,13 +187,9 @@
     "cityDetected": "Määratud asukoha järgi, muuda, kui see on vale.",
     "cityUnsupported": "See asukoht on väljaspool Põhjamaid ja Baltikumi.",
     "cityUnknown": "Linna ei õnnestunud praegu tuvastada. Palun sisesta see ise.",
-    "longitude": "Pikkuskraad *",
-    "latitude": "Laiuskraad *",
-    "coordsHint": "Vali ülalolevast otsingunimekirjast ja need täidetakse automaatselt.",
     "description": "Kirjeldus",
     "yourName": "Sinu nimi (valikuline)",
     "yourNamePlaceholder": "Et saaksime sind mainida",
-    "needCoordsTip": "Vihje: paremklõpsa kohal Google Mapsis, et kopeerida selle koordinaadid.",
     "submitFailed": "Saatmine ebaõnnestus.\nKas API-server töötab? (:8787)\n\n{error}",
     "duplicate": "See on juba kaardil või ootab ülevaatust, seega seda uuesti ei saadetud."
   },
@@ -219,7 +215,7 @@
     "required": "Nimi, toimumiskoht ja alguskuupäev on kohustuslikud.",
     "endBeforeStart": "Lõppkuupäev ei saa olla enne alguskuupäeva.",
     "endTimeBeforeStart": "Ühepäevase ürituse lõpuaeg ei saa olla enne algusaega.",
-    "needCoords": "Lisa asukoha pikkus- ja laiuskraad."
+    "needCoords": "Seda aadressi ei leitud. Palun vali aadress soovituste nimekirjast."
   },
   "SubmitSpot": {
     "title": "Soovita kohta",
@@ -237,7 +233,7 @@
     "openingHours": "Lahtiolekuajad",
     "descriptionPlaceholder": "Miks see sobib cosplay-pildistamiseks?",
     "required": "Koha nimi on kohustuslik.",
-    "needCoords": "Lisa koha pikkus- ja laiuskraad."
+    "needCoords": "Seda aadressi ei leitud. Palun vali aadress soovituste nimekirjast."
   },
   "Practice": {
     "title": "Harjutuskohad",
@@ -306,5 +302,23 @@
     "notePlaceholder": "nt päevapilet 15, nädalavahetus 25, alla 7 tasuta",
     "badNumber": "Hinnad peavad olema numbrid, nt 15 või 12,5.",
     "badRange": "Kuni-hind ei saa olla väiksem kui alates-hind."
+  },
+  "Seo": {
+    "homeTitle": "CosOverHere - Animeüritused ja cosplay-üritused Soomes, Põhjamaades ja Baltikumis",
+    "homeDescription": "Leia animekonverentsid, cosplay-kohtumised ja cosplay-sõbralikud pildistamiskohad Tallinnas, Helsingis, Tamperes ja üle Põhjamaade ning Baltikumi. Kuupäevad, hinnad, kaardid ja lähimad ühistranspordi peatused.",
+    "mapTitle": "Cosplay- ja animeürituste kaart",
+    "mapDescription": "Kaart eesolevatest animekonverentsidest ja cosplay-üritustest Tallinnas, Helsingis ja Soomes: kohad, kuupäevad ning lähimad trammi-, bussi- ja metroopeatused.",
+    "calendarTitle": "Animekonverentside kalender",
+    "calendarDescription": "Kuude kaupa kalender animekonverentsidest, cosplay-kohtumistest ja mangaüritustest Soomes, Põhjamaades ja Baltikumis.",
+    "eventsTitle": "Cosplay-üritused ja animekonverentsid",
+    "eventsDescription": "Kõik eesolevad animekonverentsid, cosplay-kohvikud, töötoad ja mangaringid Tallinnas, Helsingis, Tamperes ja mujal - kuupäevad, hinnad ja kohad.",
+    "spotsTitle": "Cosplay pildistamiskohad",
+    "spotsDescription": "Cosplay-sõbralikud pildistamiskohad, kohvikud, kaubanduskeskused, stuudiod ja pargid Helsingis ja Soomes - pildid, teemad ja lähimad peatused.",
+    "practiceTitle": "Cosplay ja tantsukaverite harjutuskohad",
+    "practiceDescription": "Tantsustuudiod ja harjutusruumid K-pop ja J-pop tantsukaveriteks ja cosplay-etendusteks Helsingis ja Soomes - hinnad ja broneerimise info.",
+    "aboutTitle": "Projektist",
+    "aboutDescription": "Mis on CosOverHere: avatud kaart animekonverentsidest, cosplay-üritustest ja cosplay-sõbralikest kohtadest Soomes, Põhjamaades ja Baltikumis.",
+    "donateTitle": "Toeta kaarti",
+    "donateDescription": "Aita hoida CosOverHere tasuta ja reklaamivabana cosplay- ja animekogukonna jaoks."
   }
 }

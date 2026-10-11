@@ -16,7 +16,7 @@ import SubmitEventDialog from "@/components/SubmitEventDialog";
 import EventThumb from "@/components/EventThumb";
 import TransitBadges from "@/components/TransitBadges";
 import Icon from "@/components/Icon";
-import { priceLabel } from "@/lib/price";
+import { priceLabel, isFree } from "@/lib/price";
 import type { City } from "@/types";
 
 const WHENS = ["Upcoming", "Past", "All"] as const;
@@ -111,7 +111,7 @@ export default function EventsPage() {
                       {e.endDate && e.endDate > e.date && <span>{fmtRange(e.date, e.endDate)}</span>}
                     </div>
                     <TransitBadges transit={e.transit} />
-                    <div className="card-foot"><span className="price-tag">{priceLabel(e, tp)}</span></div>
+                    <div className="card-foot"><span className={`price-tag${isFree(e) ? " free" : ""}`}>{priceLabel(e, tp)}</span></div>
                   </div>
                 </div>
                 <div className="r-cta">

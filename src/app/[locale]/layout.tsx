@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
   return {
     // Absolute base for share-preview links and images (Facebook needs full URLs).
     metadataBase: new URL(SITE_URL),
-    title: t("title"),
+    title: { default: t("title"), template: "%s | CosOverHere" },
     description: t("description"),
     openGraph: { siteName: t("title"), title: t("title"), description: t("description"), type: "website" },
   };

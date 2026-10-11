@@ -187,13 +187,9 @@
     "cityDetected": "Set from the location, change it if it's wrong.",
     "cityUnsupported": "This location is outside the Nordic and Baltic countries we cover.",
     "cityUnknown": "Couldn't detect the city right now. Please type it.",
-    "longitude": "Longitude *",
-    "latitude": "Latitude *",
-    "coordsHint": "Pick from the search list above and these fill in automatically.",
     "description": "Description",
     "yourName": "Your name (optional)",
     "yourNamePlaceholder": "So we can credit you",
-    "needCoordsTip": "Tip: right-click a spot in Google Maps to copy its coordinates.",
     "submitFailed": "Couldn't submit.\nIs the API server running? (:8787)\n\n{error}",
     "duplicate": "This is already on the map or waiting for review, so it was not sent again."
   },
@@ -219,7 +215,7 @@
     "required": "Name, venue and start date are required.",
     "endBeforeStart": "End date can't be before the start date.",
     "endTimeBeforeStart": "End time can't be before the start time on a one-day event.",
-    "needCoords": "Please add the location's longitude and latitude."
+    "needCoords": "We couldn't find that address. Please pick one from the suggestion list."
   },
   "SubmitSpot": {
     "title": "Suggest a spot",
@@ -237,7 +233,7 @@
     "openingHours": "Opening hours",
     "descriptionPlaceholder": "Why is it good for cosplay shoots?",
     "required": "Spot name is required.",
-    "needCoords": "Please add the spot's longitude and latitude."
+    "needCoords": "We couldn't find that address. Please pick one from the suggestion list."
   },
   "Practice": {
     "title": "Rehearsal places",
@@ -306,5 +302,23 @@
     "notePlaceholder": "e.g. Day ticket 15, weekend 25, under 7 free",
     "badNumber": "Prices must be numbers, e.g. 15 or 12.5.",
     "badRange": "The 'to' price can't be lower than the 'from' price."
+  },
+  "Seo": {
+    "homeTitle": "CosOverHere - Anime conventions & cosplay events in Finland, the Nordics and Baltics",
+    "homeDescription": "Find anime conventions, cosplay meetups and cosplay-friendly photo spots in Helsinki, Tampere, Tallinn and across the Nordics and Baltics. Dates, prices, maps and nearby public transport.",
+    "mapTitle": "Cosplay & anime event map",
+    "mapDescription": "Interactive map of upcoming anime conventions and cosplay events in Helsinki, Finland and the Baltics, with venues, dates and nearby metro, tram and bus stops.",
+    "calendarTitle": "Anime convention calendar",
+    "calendarDescription": "Month-by-month calendar of anime conventions, cosplay meetups and manga events in Finland, the Nordics and the Baltics.",
+    "eventsTitle": "Cosplay events & anime conventions",
+    "eventsDescription": "All upcoming anime conventions, cosplay cafes, workshops and manga clubs in Helsinki, Tampere, Tallinn and beyond, with dates, prices and venues.",
+    "spotsTitle": "Cosplay photo spots",
+    "spotsDescription": "Cosplay-friendly photo spots, cafes, malls, studios and parks in Helsinki and Finland, with photos, themes and nearby public transport.",
+    "practiceTitle": "Cosplay & dance cover practice places",
+    "practiceDescription": "Dance studios and practice spaces for K-pop and J-pop dance covers and cosplay performances in Helsinki and Finland, with prices and booking info.",
+    "aboutTitle": "About",
+    "aboutDescription": "What CosOverHere is: an open map of anime conventions, cosplay events and cosplay-friendly places in Finland, the Nordics and the Baltics.",
+    "donateTitle": "Support the map",
+    "donateDescription": "Help keep CosOverHere free and ad-free for the cosplay and anime community."
   }
 }

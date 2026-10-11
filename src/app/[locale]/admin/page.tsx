@@ -5,7 +5,7 @@ import AdminGate from "@/components/AdminGate";
 
 // Admin text stays English on purpose (only the site owner uses it), so it isn't in messages/.
 export const metadata = {
-  title: "Admin - CosoraAtlas",
+  title: "Admin - CosOverHere",
   // Keep the admin page out of Google etc. so users never discover it.
   robots: { index: false, follow: false },
 };

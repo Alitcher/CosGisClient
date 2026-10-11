@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { apiSubmitEvent, ApiError } from "@/lib/api";
+import { geocode } from "@/lib/geocode";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
@@ -45,16 +46,20 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert(t("required"));
     if (f.endDate && f.endDate < f.date) return alert(t("endBeforeStart"));
     if ((!f.endDate || f.endDate === f.date) && f.startTime && f.endTime && f.endTime < f.startTime) return alert(t("endTimeBeforeStart"));
-    const lng = Number(f.lng), lat = Number(f.lat);
-    if (!Number.isFinite(lng) || !Number.isFinite(lat) || f.lng === "" || f.lat === "")
-      return alert(`${t("needCoords")}\n${tf("needCoordsTip")}`);
-    if (!f.city.trim()) return alert(tf("needCity"));
+    let lng = Number(f.lng), lat = Number(f.lat), city = f.city.trim();
+    if (f.lng === "" || f.lat === "") {
+      const hit = (await geocode(locQuery).catch(() => []))[0];
+      if (!hit) return alert(t("needCoords"));
+      lng = hit.lng; lat = hit.lat;
+      if (!city && hit.city) city = hit.city;
+    }
+    if (!city) return alert(tf("needCity"));
     const pe = priceError(f.price);
     if (pe) return alert(tp(pe));
     setBusy(true);
     try {
       await apiSubmitEvent({
-        name: f.name.trim(), venue: f.venue.trim(), lang: locale, country: f.country, city: f.city.trim(), date: f.date,
+        name: f.name.trim(), venue: f.venue.trim(), lang: locale, country: f.country, city, date: f.date,
         endDate: f.endDate || undefined,
         startTime: f.startTime || undefined,
         endTime: f.endTime || undefined,
@@ -111,7 +116,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
                 <label>{t("location")}</label>
                 <AddressAutocomplete
                   value={locQuery}
-                  onChange={setLocQuery}
+                  onChange={(v) => { setLocQuery(v); setF((s) => ({ ...s, lng: "", lat: "" })); }}
                   onSelect={(r) => {
                     set("lng", String(r.lng));
                     set("lat", String(r.lat));
@@ -119,11 +124,6 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
                   placeholder={t("locationPlaceholder")}
                 />
               </div>
-              <div className="field-row">
-                <div className="field"><label>{tf("longitude")}</label><input value={f.lng} onChange={(e) => set("lng", e.target.value)} placeholder="24.9354" /></div>
-                <div className="field"><label>{tf("latitude")}</label><input value={f.lat} onChange={(e) => set("lat", e.target.value)} placeholder="60.2012" /></div>
-              </div>
-              <p className="muted" style={{ fontSize: 12, marginTop: -4 }}>{tf("coordsHint")}</p>
               <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{tf("description")}</label><textarea rows={3} value={f.description} onChange={(e) => set("description", e.target.value)} placeholder={t("descriptionPlaceholder")} /></div>
               <PriceFields value={f.price} onChange={(p) => set("price", { ...f.price, ...p })} />

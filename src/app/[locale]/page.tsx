@@ -1,4 +1,5 @@
 import type { Locale } from "next-intl";
+import { pageMetadata } from "@/lib/seo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
@@ -8,6 +9,11 @@ import UpcomingEvents from "@/components/UpcomingEvents";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import SubmitSpotDialog from "@/components/SubmitSpotDialog";
 import HotSpots from "@/components/HotSpots";
+
+/** Search-engine title, description and language links (lib/seo.ts). */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata((await params).locale, "home", "/");
+}
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

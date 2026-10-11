@@ -275,7 +275,7 @@ export default function AdminDashboard() {
         <div className="nav-inner admin-bar">
           <Link className="brand" href="/">
             <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
-            <span className="brand-text">CosoraAtlas<small>Admin panel</small></span>
+            <span className="brand-text">CosOverHere<small>Admin panel</small></span>
           </Link>
           <span className="admin-badge">ADMIN</span>
           <div className="admin-right">

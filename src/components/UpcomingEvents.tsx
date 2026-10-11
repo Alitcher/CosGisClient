@@ -10,7 +10,7 @@ import ShareButton from "./ShareButton";
 import { Link } from "@/i18n/navigation";
 import CountryFlag from "./CountryFlag";
 import TransitBadges from "./TransitBadges";
-import { priceLabel } from "@/lib/price";
+import { priceLabel, isFree } from "@/lib/price";
 
 export default function UpcomingEvents() {
   const { events } = useEventStore();
@@ -43,7 +43,7 @@ export default function UpcomingEvents() {
             <div className="ev-meta">{e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span></div>
             <TransitBadges transit={e.transit} />
             {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
-            <div className="ev-actions"><span className="price-tag">{priceLabel(e, tp)}</span><ShareButton title={txt.name} path={`/events/${e.id}`} /></div>
+            <div className="ev-actions"><span className={`price-tag${isFree(e) ? " free" : ""}`}>{priceLabel(e, tp)}</span><ShareButton title={txt.name} path={`/events/${e.id}`} /></div>
           </div>
         );
       })}

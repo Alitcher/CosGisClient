@@ -1,8 +1,14 @@
 import { Suspense } from "react";
+import { pageMetadata } from "@/lib/seo";
 import type { Locale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Nav from "@/components/Nav";
 import MapView from "@/components/MapView";
+
+/** Search-engine title, description and language links (lib/seo.ts). */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata((await params).locale, "map", "/map");
+}
 
 export default async function MapPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

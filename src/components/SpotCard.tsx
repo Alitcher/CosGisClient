@@ -62,7 +62,7 @@ export default function SpotCard({ place: p }: { place: Place }) {
           ))}
         </div>
         {/* Entry, bottom-left: "Paid" only when marked paid, otherwise free (the default). */}
-        <div className="card-foot"><span className="price-tag">{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
+        <div className="card-foot"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}>{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
       </div>
     </div>
   );

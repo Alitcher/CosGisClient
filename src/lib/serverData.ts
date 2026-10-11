@@ -32,3 +32,16 @@ async function getLive<T extends { status: string }>(path: string): Promise<T | 
 
 export const getEvent = (id: string) => getLive<Event>(`/v1/events/${encodeURIComponent(id)}`);
 export const getPlace = (id: string) => getLive<Place>(`/v1/places/${encodeURIComponent(id)}`);
+
+/** Every live item of one kind, for the sitemap. Empty when the API is down. Cached 1 h. */
+async function listLive<T>(path: string): Promise<T[]> {
+  try {
+    const res = await fetch(`${API}${path}`, { next: { revalidate: 3600 } });
+    return res.ok ? ((await res.json()) as T[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export const listLiveEvents = () => listLive<Event>("/v1/events");
+export const listLivePlaces = () => listLive<Place>("/v1/places");

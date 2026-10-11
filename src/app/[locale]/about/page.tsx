@@ -1,8 +1,14 @@
 import type { Locale } from "next-intl";
+import { pageMetadata } from "@/lib/seo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+
+/** Search-engine title, description and language links (lib/seo.ts). */
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return pageMetadata((await params).locale, "about", "/about");
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

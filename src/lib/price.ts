@@ -64,3 +64,8 @@ export function priceLabel(
     default: return range || t("free");
   }
 }
+
+/** True when priceLabel shows plain "Free" (marked free, or no price known). Used to colour the tag green. */
+export function isFree(e: { admission?: Admission; priceMin?: number; priceMax?: number }): boolean {
+  return e.admission === "free" || (e.admission == null && e.priceMin == null && e.priceMax == null);
+}

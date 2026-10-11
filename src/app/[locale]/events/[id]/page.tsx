@@ -9,8 +9,9 @@ import EventThumb from "@/components/EventThumb";
 import CountryFlag from "@/components/CountryFlag";
 import ShareButton from "@/components/ShareButton";
 import TransitBadges from "@/components/TransitBadges";
-import { priceLabel } from "@/lib/price";
-import { getEvent } from "@/lib/serverData";
+import { priceLabel, isFree } from "@/lib/price";
+import { getEvent, SITE_URL } from "@/lib/serverData";
+import { alternatesFor, localePath, eventJsonLd, jsonLdString } from "@/lib/seo";
 import { localText } from "@/lib/localText";
 import { cityChip, cityLabel, countryOf } from "@/lib/cities";
 import { fmtRange, fmtTimes } from "@/lib/data";
@@ -31,8 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: txt.name,
     description,
-    alternates: { canonical: `/${locale}/events/${id}` },
-    openGraph: { title: txt.name, description, url: `/${locale}/events/${id}`, type: "website" },
+    alternates: alternatesFor(locale, `/events/${id}`),
+    openGraph: { title: txt.name, description, url: localePath(locale, `/events/${id}`), type: "website" },
     twitter: { card: "summary_large_image", title: txt.name, description },
   };
 }
@@ -51,6 +52,8 @@ export default async function EventPage({ params }: Props) {
 
   return (
     <>
+      {/* Event details for Google's event results (schema.org). */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(eventJsonLd(e, txt.name, txt.description, SITE_URL + localePath(locale, `/events/${e.id}`))) }} />
       <Nav />
       <div className="ev-shell detail">
         <Link className="detail-back" href="/events">{t("allEvents")}</Link>
@@ -68,7 +71,7 @@ export default async function EventPage({ params }: Props) {
           </div>
           <TransitBadges transit={e.transit} />
           {txt.description && <p className="detail-text">{txt.description}</p>}
-          <p className="detail-price"><span className="price-tag">{price}</span>{e.priceNote && <span className="muted">{e.priceNote}</span>}</p>
+          <p className="detail-price"><span className={`price-tag${isFree(e) ? " free" : ""}`}>{price}</span>{e.priceNote && <span className="muted">{e.priceNote}</span>}</p>
           <div className="detail-actions">
             <Link className="btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`}>{t("showOnMap")}</Link>
             {e.url && <a className="btn ghost" href={e.url} target="_blank" rel="noopener noreferrer">{t("website")}</a>}
