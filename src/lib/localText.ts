@@ -6,11 +6,13 @@ type Texts = { name: string; description?: string; lang?: Lang; i18n?: I18n };
  * An event's or place's name and description in the UI language. The item's own
  * fields are its original text; translations (filled by the server, fixable in
  * admin) come from `i18n`. Anything missing falls back to the original.
+ * Names are proper names and always stay as written (old translated names in
+ * `i18n` are ignored).
  */
 export function localText(item: Texts, locale: string): { name: string; description?: string } {
   const t = item.lang === locale ? undefined : item.i18n?.[locale as Lang];
   return {
-    name: t?.name || item.name,
+    name: item.name,
     description: t?.description || item.description,
   };
 }

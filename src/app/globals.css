@@ -530,7 +530,8 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .credit .credit-by { margin-top: 10px; color: var(--text-1); font-weight: 600; }
 .credit .credit-license { margin-top: 4px; }
 .credit a { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
-.cta-band { text-align: center; padding-top: 40px; padding-bottom: 50px; margin-top: 30px; background: radial-gradient(600px 300px at 50% 0%, rgba(0,114,206,0.16), transparent 70%); }
+/* No top padding: the divider line (::before) is the top edge, so the glow starts right on it. */
+.cta-band { text-align: center; padding-top: 0; padding-bottom: 50px; margin-top: 70px; background: radial-gradient(600px 300px at 50% 0%, rgba(0,114,206,0.16), transparent 70%); }
 .cta-band h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
 .cta-band p { color: var(--text-2); margin: 10px auto 24px; max-width: 480px; }
 
@@ -769,7 +770,7 @@ tbody tr:hover { background: var(--surface-2); }
   /* About / Donate */
   .about-hero { padding-top: 32px; }
   .about-hero p, .d-hero p { font-size: 16px; }
-  .cta-band { padding-top: 28px; padding-bottom: 36px; }
+  .cta-band { padding-top: 0; padding-bottom: 36px; margin-top: 58px; }
   .cta-band h2 { font-size: 24px; }
   .d-hero { padding-top: 36px; }
   .bmc { font-size: 17px; padding: 14px 22px; }
