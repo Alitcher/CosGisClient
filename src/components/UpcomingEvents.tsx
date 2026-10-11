@@ -9,6 +9,7 @@ import EventThumb from "./EventThumb";
 import ShareButton from "./ShareButton";
 import { Link } from "@/i18n/navigation";
 import CountryFlag from "./CountryFlag";
+import TransitBadges from "./TransitBadges";
 
 export default function UpcomingEvents() {
   const { events } = useEventStore();
@@ -34,8 +35,9 @@ export default function UpcomingEvents() {
               <EventThumb event={e} size={56} />
             </div>
             <h4><Link className="title-link" href={`/events/${e.id}`}>{txt.name}</Link></h4>
-            <div className="ev-meta">📍 {e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span></div>
-            {times && <div className="ev-meta">🕐 {times}</div>}
+            <div className="ev-meta">{e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span></div>
+            {times && <div className="ev-meta">{times}</div>}
+            <TransitBadges transit={e.transit} />
             {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
             <div className="ev-actions"><ShareButton title={txt.name} path={`/events/${e.id}`} /></div>
           </div>

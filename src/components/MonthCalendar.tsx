@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { localText } from "@/lib/localText";
 import { useEventStore } from "@/lib/eventsStore";
+import Icon from "./Icon";
 import { cityChip, cityColor, cityCountries, citiesIn, cityLabel, countryOf } from "@/lib/cities";
 
 const MONTHS = [
@@ -38,7 +39,7 @@ export default function MonthCalendar() {
   const total = firstDow + daysInMonth;
   const trail = (7 - (total % 7)) % 7;
 
-  // events for this month, keyed by day — multi-day events appear on every day
+  // events for this month, keyed by day - multi-day events appear on every day
   // they span (start..endDate), not just their first day.
   const byDay = new Map<number, typeof events>();
   for (const e of events) {
@@ -60,9 +61,9 @@ export default function MonthCalendar() {
     <div className="cal-shell">
       <div className="cal-toolbar">
         <div className="tb-nav">
-          <button type="button" aria-label={tc("previousMonth")} onClick={() => shift(-1)}>‹</button>
+          <button type="button" aria-label={tc("previousMonth")} onClick={() => shift(-1)}><Icon name="chevron-left" size={16} /></button>
           <button className="tb-today" type="button" onClick={goToday}>{t("today")}</button>
-          <button type="button" aria-label={tc("nextMonth")} onClick={() => shift(1)}>›</button>
+          <button type="button" aria-label={tc("nextMonth")} onClick={() => shift(1)}><Icon name="chevron-right" size={16} /></button>
         </div>
         <h1>{MONTHS[month]} <span>{year}</span></h1>
       </div>

@@ -121,7 +121,7 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: 24 }}>
       <div className="card" style={{ width: "100%", maxWidth: 380, padding: 28, display: "grid", gap: 14 }}>
         <div>
-          <h2 style={{ margin: 0 }}>🔒 Admin access</h2>
+          <h2 style={{ margin: 0 }}>Admin access</h2>
           <p className="muted" style={{ marginTop: 6, fontSize: 14 }}>
             {phase === "register"
               ? "First time here. Enter the admin setup key (the ADMIN_TOKEN secret, NOT your Windows password). Windows Hello will then ask for your PC PIN to finish."

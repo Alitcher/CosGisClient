@@ -14,6 +14,8 @@ import ShareButton from "@/components/ShareButton";
 import { useEventStore } from "@/lib/eventsStore";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import EventThumb from "@/components/EventThumb";
+import TransitBadges from "@/components/TransitBadges";
+import Icon from "@/components/Icon";
 import type { City } from "@/types";
 
 const WHENS = ["Upcoming", "Past", "All"] as const;
@@ -101,15 +103,16 @@ export default function EventsPage() {
                   <div>
                     <h3><Link className="title-link" href={`/events/${e.id}`}>{localText(e, locale).name}</Link></h3>
                     <div className="meta">
-                      <span>📍 <b>{e.venue}</b></span>
+                      <span><b>{e.venue}</b></span>
                       <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
-                      {e.endDate && e.endDate > e.date && <span>🗓️ {fmtRange(e.date, e.endDate)}</span>}
-                      {times && <span>🕐 {times}</span>}
+                      {e.endDate && e.endDate > e.date && <span>{fmtRange(e.date, e.endDate)}</span>}
+                      {times && <span>{times}</span>}
                     </div>
+                    <TransitBadges transit={e.transit} />
                   </div>
                 </div>
                 <div className="r-cta">
-                  <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}>🗺️</Link>
+                  <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link>
                   <ShareButton title={localText(e, locale).name} path={`/events/${e.id}`} />
                 </div>
               </div>

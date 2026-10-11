@@ -23,11 +23,11 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <section className="stack shell">
         <h2 className="section-title">{t("stackTitle")}</h2>
         <div className="grid stack-grid" style={{ marginTop: 24 }}>
-          <div className="card tech"><div className="ic">▲</div><h4>Next.js + TS</h4><p>{t("techNext")}</p></div>
-          <div className="card tech"><div className="ic">🗺️</div><h4>MapLibre GL</h4><p>{t("techMapLibre")}</p></div>
-          <div className="card tech"><div className="ic">☁️</div><h4>Cloudflare</h4><p>{t("techCloudflare")}</p></div>
-          <div className="card tech"><div className="ic">🛰️</div><h4>hel.kartta.fi</h4><p>{t("techGis")}</p></div>
-          <div className="card tech"><div className="ic">🎌</div><h4>Linked Events</h4><p>{t("techLinkedEvents")}</p></div>
+          <div className="card tech"><h4>Next.js + TS</h4><p>{t("techNext")}</p></div>
+          <div className="card tech"><h4>MapLibre GL</h4><p>{t("techMapLibre")}</p></div>
+          <div className="card tech"><h4>Cloudflare</h4><p>{t("techCloudflare")}</p></div>
+          <div className="card tech"><h4>hel.kartta.fi</h4><p>{t("techGis")}</p></div>
+          <div className="card tech"><h4>Linked Events</h4><p>{t("techLinkedEvents")}</p></div>
         </div>
 
         <p className="muted" style={{ marginTop: 18, fontSize: ".9rem" }}>

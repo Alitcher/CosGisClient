@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { EVENT_CATEGORIES, type City } from "@/types";
 import { cityLabel, countryLabel, type Country } from "@/lib/cities";
+import Icon from "./Icon";
 import { DEFAULT_FILTERS, activeFilterCount, type DatePreset, type MapFilters as Filters } from "@/lib/mapFilters";
 
 const PRESETS: DatePreset[] = ["any", "7d", "30d", "3m", "custom"];
@@ -49,7 +50,7 @@ export default function MapFilters({ value: f, onChange, countries, cities, city
           {active > 0 && <span className="mf-badge">{active}</span>}
         </span>
         <span className="mf-count">{t("results", { count: resultCount })}</span>
-        <span className={`mf-caret${open ? " up" : ""}`} aria-hidden>▾</span>
+        <span className={`mf-caret${open ? " up" : ""}`} aria-hidden><Icon name="chevron-down" size={14} /></span>
       </button>
 
       {open && (

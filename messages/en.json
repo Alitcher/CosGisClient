@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "CosOverHere - Nordic & Baltic",
-    "description": "Find every anime con near you, plus the cafés, malls and photo spots that welcome cosplayers — across Helsinki, Vantaa & Espoo."
+    "description": "Find every anime con near you, plus the cafés, malls and photo spots that welcome cosplayers - across Helsinki, Vantaa & Espoo."
   },
   "Nav": {
     "menu": "Menu",
@@ -11,15 +11,18 @@
     "events": "Events",
     "spots": "Spots",
     "practice": "Practice",
+    "cosplayEvents": "Cosplay events",
+    "cosplaySpots": "Cosplay spots",
+    "practiceSpots": "Practice spots",
     "about": "About",
     "donate": "Donate",
-    "tagline": "Nordic · Baltic",
+    "tagline": "Nordic & Baltic",
     "toggleTheme": "Toggle light/dark mode",
     "language": "Language"
   },
   "Footer": {
-    "copyright": "© 2026 CosoraAtlas · Nordic · Baltic · Open data from hel.kartta.fi",
-    "madeWith": "Made with 💜 for the cosplay community"
+    "copyright": "2026 CosOverHere | Nordic & Baltic | Open data from hel.kartta.fi",
+    "madeWith": "Made with love for the cosplay community"
   },
   "Common": {
     "submitEvent": "Submit an event",
@@ -39,8 +42,8 @@
     "practice-space": "Practice space"
   },
   "Home": {
-    "title": "<grad>Ani</grad>me & <grad>cos</grad>play spots in Nordic & Baltic",
-    "lead": "Find every event near you — plus the cafés, malls and photo spots that welcome cosplayers, with pics and themes so you know exactly where to shoot. 💜",
+    "title": "<grad>Ani</grad>me & <grad>cos</grad>play \n\n in Nordic & Baltic",
+    "lead": "Find every event near you - plus the cafés, malls and photo spots that welcome cosplayers, with pics and themes so you know exactly where to shoot.",
     "statConventions": "Conventions",
     "statVenues": "Venues",
     "statCities": "Cities",
@@ -52,7 +55,7 @@
   },
   "About": {
     "title": "A <grad>zero-budget</grad> cosplay map for the Helsinki region.",
-    "intro": "This maps two things across Helsinki, Vantaa and Espoo: anime conventions, and the cosplay-friendly cafés, restaurants, malls and photo spots that welcome people in costume — each with pictures and a theme. It pulls open geospatial data and event listings from the City of Helsinki, renders it on a fast vector map, and ties everything together with a calendar and event list — all for €0/month.",
+    "intro": "This maps two things across Helsinki, Vantaa and Espoo: anime conventions, and the cosplay-friendly cafés, restaurants, malls and photo spots that welcome people in costume - each with pictures and a theme. It pulls open geospatial data and event listings from the City of Helsinki, renders it on a fast vector map, and ties everything together with a calendar and event list - all for 0 EUR/month.",
     "stackTitle": "The tech stack",
     "techNext": "App Router frontend",
     "techMapLibre": "Open vector map renderer",
@@ -66,11 +69,11 @@
     "step2Title": "Render on MapLibre",
     "step2Text": "Venues and places become GeoJSON sources styled with custom markers and popups.",
     "step3Title": "Connect the views",
-    "step3Text": "Map, calendar, events and spots share one dataset — click a date, jump to its pin.",
+    "step3Text": "Map, calendar, events and spots share one dataset - click a date, jump to its pin.",
     "ctaTitle": "Want to dig into the map?",
     "ctaText": "Jump straight to the interactive map or browse cosplay-friendly spots across the region.",
-    "ctaMap": "🗺️ Open the map",
-    "ctaSpots": "📸 Browse spots"
+    "ctaMap": "Open the map",
+    "ctaSpots": "Browse spots"
   },
   "Donate": {
     "title": "Keep the map <grad>caffeinated</grad> 💛",
@@ -102,26 +105,26 @@
   },
   "Events": {
     "title": "All conventions",
-    "count": "{count, plural, one {# event} other {# events}} · sorted by date",
-    "calendarView": "📅 Calendar view",
+    "count": "{count, plural, one {# event} other {# events}} | sorted by date",
+    "calendarView": "Calendar view",
     "search": "Search conventions, venues...",
     "allCities": "All cities",
     "upcoming": "Upcoming",
-    "past": "🗄️ Past",
+    "past": "Past",
     "all": "All",
     "noMatches": "No conventions match your filters."
   },
   "Spots": {
     "title": "Where to shoot in costume",
-    "intro": "Cafés, restaurants, malls, studios and parks around the capital region that welcome cosplayers — each with a vibe and themes to match your shoot.",
+    "intro": "Cafés, restaurants, malls, studios and parks around the capital region that welcome cosplayers - each with a vibe and themes to match your shoot.",
     "empty": "No spots yet.",
     "search": "Search spots, themes, areas...",
     "noMatches": "No spots match your search."
   },
   "Map": {
-    "loading": "Loading map…",
+    "loading": "Loading map...",
     "title": "Conventions & venues",
-    "subtitle": "Filter events · click an event to fly there",
+    "subtitle": "Filter events | click an event to fly there",
     "all": "All",
     "noMatches": "No events match these filters.",
     "mapTitle": "Cosplay map",
@@ -159,20 +162,20 @@
     "reset": "Reset filters"
   },
   "MiniCalendar": {
-    "conDay": "● = con day",
-    "fullCalendar": "Full calendar →"
+    "conDay": "Dot = con day",
+    "fullCalendar": "Full calendar ->"
   },
   "Calendar": {
     "today": "Today",
     "more": "+{count} more",
-    "browseHint": "‹ › to browse past & future months"
+    "browseHint": "< > to browse past & future months"
   },
   "SubmitForm": {
-    "thanksTitle": "Thanks — it's submitted!",
+    "thanksTitle": "Thanks - it's submitted!",
     "done": "Done",
     "cancel": "Cancel",
-    "submitting": "Submitting…",
-    "submit": "📨 Submit for review",
+    "submitting": "Submitting...",
+    "submit": "Submit for review",
     "country": "Country",
     "city": "City",
     "cityPlaceholder": "Type the town name",
@@ -186,12 +189,13 @@
     "cityUnknown": "Couldn't detect the city right now. Please type it.",
     "longitude": "Longitude *",
     "latitude": "Latitude *",
-    "coordsHint": "📍 Pick from the search list above and these fill in automatically.",
+    "coordsHint": "Pick from the search list above and these fill in automatically.",
     "description": "Description",
     "yourName": "Your name (optional)",
     "yourNamePlaceholder": "So we can credit you",
     "needCoordsTip": "Tip: right-click a spot in Google Maps to copy its coordinates.",
-    "submitFailed": "Couldn't submit.\nIs the API server running? (:8787)\n\n{error}"
+    "submitFailed": "Couldn't submit.\nIs the API server running? (:8787)\n\n{error}",
+    "duplicate": "This is already on the map or waiting for review, so it was not sent again."
   },
   "SubmitEvent": {
     "title": "Suggest an event",
@@ -209,7 +213,9 @@
     "locationPlaceholder": "Search a venue, address or postcode",
     "descriptionPlaceholder": "What is the event about?",
     "image": "Thumbnail / logo URL (optional)",
-    "imagePlaceholder": "https://… link to the event's logo or poster",
+    "imagePlaceholder": "https://... link to the event's logo or poster",
+    "link": "Link to the event page (optional)",
+    "linkPlaceholder": "https://...",
     "required": "Name, venue and start date are required.",
     "endBeforeStart": "End date can't be before the start date.",
     "endTimeBeforeStart": "End time can't be before the start time on a one-day event.",
@@ -247,7 +253,7 @@
     "changing-room": "Changing room",
     "big-floor": "Big floor",
     "youthFriendly": "Under-18s welcome",
-    "bookingLink": "Book / more info ↗",
+    "bookingLink": "Book / more info",
     "search": "Search studios, spaces, areas...",
     "noMatches": "No places match your search."
   },
@@ -261,11 +267,11 @@
     "booking": "How to get in",
     "price": "Price",
     "priceNote": "Price details",
-    "priceNotePlaceholder": "e.g. 15 €/h, free for under 18s",
+    "priceNotePlaceholder": "e.g. 15 EUR/h, free for under 18s",
     "facilities": "Facilities",
     "bookingUrl": "Booking / info link",
-    "descriptionPlaceholder": "What's it like for rehearsing? Floor size, rules…",
-    "notSet": "— not sure —"
+    "descriptionPlaceholder": "What's it like for rehearsing? Floor size, rules...",
+    "notSet": "- not sure -"
   },
   "Share": {
     "share": "Share",
@@ -279,5 +285,12 @@
     "allEvents": "All events",
     "allSpots": "All spots",
     "openingHours": "Opening hours"
+  },
+  "Transit": {
+    "nearby": "Nearby public transport",
+    "metro": "Metro",
+    "train": "Train",
+    "tram": "Tram",
+    "bus": "Bus"
   }
 }

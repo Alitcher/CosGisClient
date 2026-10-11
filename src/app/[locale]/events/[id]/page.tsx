@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import EventThumb from "@/components/EventThumb";
 import CountryFlag from "@/components/CountryFlag";
 import ShareButton from "@/components/ShareButton";
+import TransitBadges from "@/components/TransitBadges";
 import { getEvent } from "@/lib/serverData";
 import { localText } from "@/lib/localText";
 import { cityChip, cityLabel, countryOf } from "@/lib/cities";
@@ -62,6 +63,7 @@ export default async function EventPage({ params }: Props) {
             <span>{e.venue}</span>
             <span className={`chip ${chip.className}`} style={chip.style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
           </div>
+          <TransitBadges transit={e.transit} />
           {txt.description && <p className="detail-text">{txt.description}</p>}
           <div className="detail-actions">
             <Link className="btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`}>{t("showOnMap")}</Link>

@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "CosoraAtlas — Põhjamaad & Baltikum",
-    "description": "Leia kõik lähedal toimuvad animeüritused ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud — Helsingis, Vantaas ja Espoos."
+    "title": "CosoraAtlas - Põhjamaad & Baltikum",
+    "description": "Leia kõik lähedal toimuvad animeüritused ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud - Helsingis, Vantaas ja Espoos."
   },
   "Nav": {
     "menu": "Menüü",
@@ -11,23 +11,26 @@
     "events": "Üritused",
     "spots": "Kohad",
     "practice": "Trenn",
+    "cosplayEvents": "Cosplay-üritused",
+    "cosplaySpots": "Cosplay-kohad",
+    "practiceSpots": "Harjutuskohad",
     "about": "Projektist",
     "donate": "Toeta",
-    "tagline": "Põhjamaad · Baltikum",
+    "tagline": "Põhjamaad | Baltikum",
     "toggleTheme": "Vaheta hele/tume režiim",
     "language": "Keel"
   },
   "Footer": {
-    "copyright": "© 2026 CosoraAtlas · Põhjamaad · Baltikum · Avaandmed: hel.kartta.fi",
-    "madeWith": "Tehtud 💜-ga cosplay-kogukonnale"
+    "copyright": "2026 CosoraAtlas | Põhjamaad | Baltikum | Avaandmed: hel.kartta.fi",
+    "madeWith": "Tehtud armastusega cosplay-kogukonnale"
   },
   "Common": {
-    "submitEvent": "＋ Soovita üritust",
-    "submitSpot": "＋ Soovita kohta",
+    "submitEvent": "+ Soovita üritust",
+    "submitSpot": "+ Soovita kohta",
     "showOnMap": "Näita asukohta kaardil",
     "previousMonth": "Eelmine kuu",
     "nextMonth": "Järgmine kuu",
-    "submitPracticeSpot": "＋ Soovita harjutuskohta"
+    "submitPracticeSpot": "+ Soovita harjutuskohta"
   },
   "PlaceTypes": {
     "cafe": "Kohvik",
@@ -39,20 +42,20 @@
     "practice-space": "Harjutusruum"
   },
   "Home": {
-    "title": "Animeüritused + <grad>cosplay-kohad</grad> Põhjamaades ja Baltikumis 🎌",
-    "lead": "Leia kõik lähedal toimuvad conid — ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud. Pildid ja teemad näitavad kohe, kus pildistada. 💜",
+    "title": "Animeüritused + <grad>cosplay-kohad</grad> Põhjamaades ja Baltikumis",
+    "lead": "Leia kõik lähedal toimuvad conid - ning kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplay'jad on oodatud. Pildid ja teemad näitavad kohe, kus pildistada.",
     "statConventions": "Üritused",
     "statVenues": "Toimumiskohad",
     "statCities": "Linnad",
     "mapTitle": "Cosplay-kohtade kaart",
     "upcomingTitle": "Tulevased üritused",
-    "seeAllEvents": "Kõik üritused →",
+    "seeAllEvents": "Kõik üritused ->",
     "hotSpotsTitle": "Cosplay kuumad kohad",
-    "seeAllSpots": "Kõik kohad →"
+    "seeAllSpots": "Kõik kohad ->"
   },
   "About": {
     "title": "<grad>Nulleelarvega</grad> cosplay-kaart Helsingi piirkonnale.",
-    "intro": "Kaart näitab Helsingis, Vantaas ja Espoos kahte asja: animeüritusi ning cosplay-sõbralikke kohvikuid, restorane, kaubanduskeskusi ja pildistamiskohti, kus kostüümis inimesed on oodatud — igaühel pildid ja teema. See kasutab Helsingi linna avatud ruumiandmeid ja ürituste nimekirju, kuvab need kiirel vektorkaardil ning seob kõik kalendri ja ürituste nimekirjaga — kõik 0 €/kuus.",
+    "intro": "Kaart näitab Helsingis, Vantaas ja Espoos kahte asja: animeüritusi ning cosplay-sõbralikke kohvikuid, restorane, kaubanduskeskusi ja pildistamiskohti, kus kostüümis inimesed on oodatud - igaühel pildid ja teema. See kasutab Helsingi linna avatud ruumiandmeid ja ürituste nimekirju, kuvab need kiirel vektorkaardil ning seob kõik kalendri ja ürituste nimekirjaga - kõik 0 EUR/kuus.",
     "stackTitle": "Tehnoloogiad",
     "techNext": "App Routeri kasutajaliides",
     "techMapLibre": "Avatud vektorkaardi mootor",
@@ -66,11 +69,11 @@
     "step2Title": "Kuvamine MapLibre'iga",
     "step2Text": "Kohad muutuvad GeoJSON-allikateks oma märkide ja hüpikakendega.",
     "step3Title": "Vaated koos",
-    "step3Text": "Kaart, kalender, üritused ja kohad kasutavad samu andmeid — klõpsa kuupäeval ja hüppa selle märgini.",
+    "step3Text": "Kaart, kalender, üritused ja kohad kasutavad samu andmeid - klõpsa kuupäeval ja hüppa selle märgini.",
     "ctaTitle": "Tahad kaarti uurida?",
     "ctaText": "Mine otse interaktiivsele kaardile või sirvi piirkonna cosplay-sõbralikke kohti.",
-    "ctaMap": "🗺️ Ava kaart",
-    "ctaSpots": "📸 Sirvi kohti"
+    "ctaMap": "Ava kaart",
+    "ctaSpots": "Sirvi kohti"
   },
   "Donate": {
     "title": "Hoia kaart <grad>kofeiini</grad> peal 💛",
@@ -102,26 +105,26 @@
   },
   "Events": {
     "title": "Kõik üritused",
-    "count": "{count, plural, one {# üritus} other {# üritust}} · kuupäeva järgi",
-    "calendarView": "📅 Kalendrivaade",
+    "count": "{count, plural, one {# üritus} other {# üritust}} | kuupäeva järgi",
+    "calendarView": "Kalendrivaade",
     "search": "Otsi üritusi, kohti...",
     "allCities": "Kõik linnad",
     "upcoming": "Tulevased",
-    "past": "🗄️ Möödunud",
+    "past": "Möödunud",
     "all": "Kõik",
     "noMatches": "Filtritele vastavaid üritusi ei leitud."
   },
   "Spots": {
     "title": "Kus kostüümis pildistada",
-    "intro": "Pealinnapiirkonna kohvikud, restoranid, kaubanduskeskused, stuudiod ja pargid, kus cosplay'jad on oodatud — igaühel oma meeleolu ja teemad sinu pildistamiseks.",
+    "intro": "Pealinnapiirkonna kohvikud, restoranid, kaubanduskeskused, stuudiod ja pargid, kus cosplay'jad on oodatud - igaühel oma meeleolu ja teemad sinu pildistamiseks.",
     "empty": "Kohti veel pole.",
     "search": "Otsi kohti, teemasid, piirkondi...",
     "noMatches": "Otsingule vastavaid kohti ei leitud."
   },
   "Map": {
-    "loading": "Kaardi laadimine…",
+    "loading": "Kaardi laadimine...",
     "title": "Üritused & kohad",
-    "subtitle": "Filtreeri üritusi · klõpsa üritusel, et sinna lennata",
+    "subtitle": "Filtreeri üritusi | klõpsa üritusel, et sinna lennata",
     "all": "Kõik",
     "noMatches": "Nende filtritega üritusi pole.",
     "mapTitle": "Cosplay-kaart",
@@ -159,20 +162,20 @@
     "reset": "Lähtesta filtrid"
   },
   "MiniCalendar": {
-    "conDay": "● = con-päev",
-    "fullCalendar": "Täielik kalender →"
+    "conDay": "Punkt = con-päev",
+    "fullCalendar": "Täielik kalender ->"
   },
   "Calendar": {
     "today": "Täna",
     "more": "+{count} veel",
-    "browseHint": "‹ › sirvi möödunud ja tulevasi kuid"
+    "browseHint": "< > sirvi möödunud ja tulevasi kuid"
   },
   "SubmitForm": {
-    "thanksTitle": "Aitäh — saadetud!",
+    "thanksTitle": "Aitäh - saadetud!",
     "done": "Valmis",
     "cancel": "Tühista",
-    "submitting": "Saatmine…",
-    "submit": "📨 Saada ülevaatamiseks",
+    "submitting": "Saatmine...",
+    "submit": "Saada ülevaatamiseks",
     "country": "Riik",
     "city": "Linn",
     "cityPlaceholder": "Sisesta asula nimi",
@@ -186,12 +189,13 @@
     "cityUnknown": "Linna ei õnnestunud praegu tuvastada. Palun sisesta see ise.",
     "longitude": "Pikkuskraad *",
     "latitude": "Laiuskraad *",
-    "coordsHint": "📍 Vali ülalolevast otsingunimekirjast ja need täidetakse automaatselt.",
+    "coordsHint": "Vali ülalolevast otsingunimekirjast ja need täidetakse automaatselt.",
     "description": "Kirjeldus",
     "yourName": "Sinu nimi (valikuline)",
     "yourNamePlaceholder": "Et saaksime sind mainida",
     "needCoordsTip": "Vihje: paremklõpsa kohal Google Mapsis, et kopeerida selle koordinaadid.",
-    "submitFailed": "Saatmine ebaõnnestus.\nKas API-server töötab? (:8787)\n\n{error}"
+    "submitFailed": "Saatmine ebaõnnestus.\nKas API-server töötab? (:8787)\n\n{error}",
+    "duplicate": "See on juba kaardil või ootab ülevaatust, seega seda uuesti ei saadetud."
   },
   "SubmitEvent": {
     "title": "Soovita üritust",
@@ -209,7 +213,9 @@
     "locationPlaceholder": "Otsi kohta, aadressi või postiindeksit",
     "descriptionPlaceholder": "Millest üritus räägib?",
     "image": "Pisipildi / logo URL (valikuline)",
-    "imagePlaceholder": "https://… link ürituse logole või plakatile",
+    "imagePlaceholder": "https://... link ürituse logole või plakatile",
+    "link": "Link ürituse lehele (valikuline)",
+    "linkPlaceholder": "https://...",
     "required": "Nimi, toimumiskoht ja alguskuupäev on kohustuslikud.",
     "endBeforeStart": "Lõppkuupäev ei saa olla enne alguskuupäeva.",
     "endTimeBeforeStart": "Ühepäevase ürituse lõpuaeg ei saa olla enne algusaega.",
@@ -247,7 +253,7 @@
     "changing-room": "Riietusruum",
     "big-floor": "Suur põrand",
     "youthFriendly": "Alla 18-aastased oodatud",
-    "bookingLink": "Broneeri / lisainfo ↗",
+    "bookingLink": "Broneeri / lisainfo",
     "search": "Otsi stuudioid, ruume, piirkondi...",
     "noMatches": "Otsingule vastavaid kohti ei leitud."
   },
@@ -261,11 +267,11 @@
     "booking": "Kuidas sisse saab",
     "price": "Hind",
     "priceNote": "Hinna üksikasjad",
-    "priceNotePlaceholder": "nt 15 €/h, alla 18-aastastele tasuta",
+    "priceNotePlaceholder": "nt 15 EUR/h, alla 18-aastastele tasuta",
     "facilities": "Varustus",
     "bookingUrl": "Broneerimise / info link",
-    "descriptionPlaceholder": "Milline on koht harjutamiseks? Põranda suurus, reeglid…",
-    "notSet": "— ei tea —"
+    "descriptionPlaceholder": "Milline on koht harjutamiseks? Põranda suurus, reeglid...",
+    "notSet": "- ei tea -"
   },
   "Share": {
     "share": "Jaga",
@@ -279,5 +285,12 @@
     "allEvents": "Kõik üritused",
     "allSpots": "Kõik kohad",
     "openingHours": "Lahtiolekuajad"
+  },
+  "Transit": {
+    "nearby": "Ühistransport lähedal",
+    "metro": "Metroo",
+    "train": "Rong",
+    "tram": "Tramm",
+    "bus": "Buss"
   }
 }

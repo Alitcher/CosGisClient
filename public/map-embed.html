@@ -20,7 +20,7 @@
                    color: #fff; font: 700 18px Inter, sans-serif; }
   .maplibregl-popup-content { padding: 0; border-radius: 14px; overflow: hidden;
         box-shadow: 0 10px 28px rgba(0,0,0,.28); border: 2px solid rgba(0,53,128,.25); }
-  /* Close (×) button: solid red circle so it stands out over card photos. */
+  /* Close (x) button: solid red circle so it stands out over card photos. */
   .maplibregl-popup-close-button { top: 6px; right: 6px; width: 24px; height: 24px; padding: 0;
         border-radius: 50%; background: #ef4444; color: #fff; font-size: 18px; font-weight: 700;
         line-height: 22px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); z-index: 2; }
@@ -39,6 +39,9 @@
   .card .themes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
   .card .themes span { font-size: 10px; font-weight: 700; color: #3d5275; background: #eef4fc;
         border: 1.5px solid #d3e1f5; padding: 2px 7px; border-radius: 999px; }
+  .card .transit { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .card .transit span { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; color: #0b1f3f; background: #e8f0fb; border: 1.5px solid #b9cff0; padding: 1px 7px 1px 2px; border-radius: 999px; white-space: nowrap; }
+  .card .transit img { width: 14px; height: 14px; border-radius: 3px; }
   .card .date { font-size: 12px; font-weight: 700; color: #c8102e; }
   .card .ev-link { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700;
         color: #003580; text-decoration: none; border-bottom: 1.5px solid #b9cff0; }
@@ -69,8 +72,8 @@
     Oulu: '#a16207', Jyvaskyla: '#9e3039', Kuopio: '#64748b'
   };
   function cityLabel(c) { return c === 'Jyvaskyla' ? 'Jyväskylä' : (c || ''); }
-  // "10:00–18:00", "10:00–", "–18:00" or "" (matches fmtTimes in src/lib/data.ts).
-  function fmtTimes(s, e) { return (s || e) ? (s || '') + '–' + (e || '') : ''; }
+  // "10:00-18:00", "10:00-", "-18:00" or "" (matches fmtTimes in src/lib/data.ts).
+  function fmtTimes(s, e) { return (s || e) ? (s || '') + '-' + (e || '') : ''; }
   var TYPE_LABEL = { cafe: 'Café', restaurant: 'Restaurant', mall: 'Mall', studio: 'Photo studio', outdoor: 'Outdoor',
                      'dance-studio': 'Dance studio', 'practice-space': 'Practice space' };
   var ACCESS_LABEL = { 'drop-in': 'Drop-in', 'booking-required': 'Booking needed', 'classes-only': 'Classes only' };
@@ -87,15 +90,23 @@
     var s = (start || '').split('-'), e = (end || '').split('-');
     if (s.length < 3 || e.length < 3) return fmtDate(start);
     var sMon = MON[(+s[1]) - 1] || '', eMon = MON[(+e[1]) - 1] || '';
-    if (s[0] === e[0] && s[1] === e[1]) return s[2] + '–' + e[2] + ' ' + sMon + ' ' + s[0];
-    if (s[0] === e[0]) return s[2] + ' ' + sMon + ' – ' + e[2] + ' ' + eMon + ' ' + s[0];
-    return s[2] + ' ' + sMon + ' ' + s[0] + ' – ' + e[2] + ' ' + eMon + ' ' + e[0];
+    if (s[0] === e[0] && s[1] === e[1]) return s[2] + '-' + e[2] + ' ' + sMon + ' ' + s[0];
+    if (s[0] === e[0]) return s[2] + ' ' + sMon + ' - ' + e[2] + ' ' + eMon + ' ' + s[0];
+    return s[2] + ' ' + sMon + ' ' + s[0] + ' - ' + e[2] + ' ' + eMon + ' ' + e[0];
   }
   // Escape user-submitted text so a name/description with < > & " can't break the card.
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  // Precise location line — events have no street address, only a venue + coordinates.
+  // Precise location line - events have no street address, only a venue + coordinates.
   function fmtCoord(lat, lng) { return (typeof lat === 'number' && typeof lng === 'number') ? lat.toFixed(4) + ', ' + lng.toFixed(4) : ''; }
-  function row(icon, text) { return text ? '<div class="meta">' + icon + ' ' + esc(text) + '</div>' : ''; }
+  function row(text) { return text ? '<div class="meta">' + esc(text) + '</div>' : ''; }
+  // Nearby public transport, e.g. "Metro Kamppi 220 m" (set by an admin, see TransitEditor.tsx).
+  var TRANSIT_LABEL = { metro: 'Metro', train: 'Train', tram: 'Tram', bus: 'Bus' };
+  function transitRow(list) {
+    if (!list || !list.length) return '';
+    return '<div class="transit">' + list.map(function (s) {
+      return '<span title="' + esc(TRANSIT_LABEL[s.kind] || s.kind) + '"><img src="/transit/' + esc(s.kind) + '.svg" alt="' + esc(TRANSIT_LABEL[s.kind] || s.kind) + '"/>' + esc(s.name) + ' ' + esc(s.distance) + ' m</span>';
+    }).join('') + '</div>';
+  }
 
   // Filled by the app (setPlaces / setEvents messages) from the real database. No demo data.
   var places = [];
@@ -110,9 +121,10 @@
     var loc = addr ? (addr + (p.city && addr.indexOf(p.city) < 0 ? ', ' + p.city : '')) : (p.city || '');
     return '<div class="card">' + (photo ? '<img src="' + esc(photo) + '" alt=""/>' : '') + '<div class="body">' +
       '<div class="top"><h3>' + esc(p.name) + '</h3><span class="tag">' + esc(TYPE_LABEL[p.type] || p.type) + '</span></div>' +
-      row('📍', loc) +
-      row('🕐', hours) +
-      row('🧭', fmtCoord(p.lat, p.lng)) +
+      row(loc) +
+      row(hours) +
+      transitRow(p.transit) +
+      row(fmtCoord(p.lat, p.lng)) +
       (isPractice(p) ? practiceRows(p) : '') +
       (desc ? '<p>' + esc(desc) + '</p>' : '') +
       '<div class="themes">' + (p.themes || []).map(function (t) { return '<span>#' + esc(t) + '</span>'; }).join('') + '</div>' +
@@ -122,12 +134,12 @@
   // facilities and a booking link. The link must be http(s) - never javascript:.
   function isPractice(p) { return p.type === 'dance-studio' || p.type === 'practice-space'; }
   function practiceRows(p) {
-    var access = [ACCESS_LABEL[p.booking], PRICE_LABEL[p.price], p.priceNote].filter(Boolean).join(' · ');
+    var access = [ACCESS_LABEL[p.booking], PRICE_LABEL[p.price], p.priceNote].filter(Boolean).join(' | ');
     var link = p.bookingUrl && /^https?:\/\//i.test(p.bookingUrl) ? p.bookingUrl : '';
-    return row('🎟️', access) +
-      (p.youthFriendly ? row('🧒', 'Under-18s welcome') : '') +
-      row('🪞', (p.facilities || []).map(function (f) { return FACILITY_LABEL[f] || f; }).join(', ')) +
-      (link ? '<a class="ev-link" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">🔗 Book / more info ↗</a>' : '');
+    return row(access) +
+      (p.youthFriendly ? row('Under-18s welcome') : '') +
+      row((p.facilities || []).map(function (f) { return FACILITY_LABEL[f] || f; }).join(', ')) +
+      (link ? '<a class="ev-link" href="' + esc(link) + '" target="_blank" rel="noopener noreferrer">Book / more info</a>' : '');
   }
   function eventCard(e) {
     var color = e.color || CITY_COLOR[e.city] || '#0057b8';
@@ -137,17 +149,18 @@
     var logo = e.image ? '<img class="logo" src="' + esc(e.image) + '" alt="" referrerpolicy="no-referrer" onerror="this.remove()"/>' : '';
     return '<div class="card"><div class="body">' +
       logo + '<div class="top"><h3>' + esc(e.name) + '</h3><span class="tag" style="color:' + color + ';border-color:' + color + '">' + esc(city) + '</span></div>' +
-      '<div class="date" style="margin-top:6px;">🎌 ' + esc(fmtRange(e.date, e.endDate)) + '</div>' +
-      row('🕐', fmtTimes(e.startTime, e.endTime)) +
-      row('📍', e.venue ? (e.venue + (city ? ', ' + city : '')) : '') +
-      row('🧭', fmtCoord(e.lat, e.lng)) +
+      '<div class="date" style="margin-top:6px;">' + esc(fmtRange(e.date, e.endDate)) + '</div>' +
+      row(fmtTimes(e.startTime, e.endTime)) +
+      row(e.venue ? (e.venue + (city ? ', ' + city : '')) : '') +
+      transitRow(e.transit) +
+      row(fmtCoord(e.lat, e.lng)) +
       (desc ? '<p>' + esc(desc) + '</p>' : '') +
-      (e.url ? '<a class="ev-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">🔗 Event page ↗</a>' : '') +
+      (e.url ? '<a class="ev-link" href="' + esc(e.url) + '" target="_blank" rel="noopener noreferrer">Event page</a>' : '') +
       '</div></div>';
   }
 
   var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/liberty', center: [24.945, 60.2], zoom: 10.5 });
-  // Keep the zoom buttons but drop the stock compass — we add our own below.
+  // Keep the zoom buttons but drop the stock compass - we add our own below.
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
 
   // --- custom compass: needle points to true north as you rotate, the pill shows how
@@ -165,7 +178,7 @@
             '<polygon points="12,22 7.5,11 12,13.5 16.5,11" fill="#9aa0b4"></polygon>' +  /* S half (grey) */
           '</svg>' +
         '</button>' +
-        '<div class="deg">0°</div>';
+        '<div class="deg">0</div>';
       compassBtn = c.querySelector('.rose');
       compassNeedle = c.querySelector('.needle');
       compassDeg = c.querySelector('.deg');
@@ -182,10 +195,10 @@
     compassNeedle.style.transform = 'rotate(' + (-b) + 'deg)'; // keep the red arrow on true north
     var heading = (Math.round(b) + 360) % 360;      // 0..359
     var diff = Math.min(heading, 360 - heading);    // shortest turn from default, 0..180
-    compassDeg.textContent = diff + '°';
+    compassDeg.textContent = String(diff);
     compassBtn.title = diff === 0
       ? 'Facing north (default)'
-      : 'Rotated ' + diff + '° from north — click to reset';
+      : 'Rotated ' + diff + ' degrees from north - click to reset';
     compassBtn.style.opacity = diff === 0 ? '.7' : '1';
   }
   map.addControl(CompassControl, 'top-right');
@@ -254,7 +267,7 @@
   }
 
   function buildEvents(list) {
-    // Map shows upcoming only — past events live in the calendar / Events archive.
+    // Map shows upcoming only - past events live in the calendar / Events archive.
     // A multi-day event counts as "over" only after its end date.
     var t = todayISO();
     list = (list || []).filter(function (e) { return (e.endDate || e.date || '') >= t; });

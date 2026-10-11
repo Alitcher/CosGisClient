@@ -1,7 +1,7 @@
 {
   "Metadata": {
-    "title": "CosoraAtlas — Pohjoismaat & Baltia",
-    "description": "Löydä kaikki lähelläsi olevat animetapahtumat sekä kahvilat, ostoskeskukset ja kuvauspaikat, joihin cosplayaajat ovat tervetulleita — Helsingissä, Vantaalla ja Espoossa."
+    "title": "CosoraAtlas - Pohjoismaat & Baltia",
+    "description": "Löydä kaikki lähelläsi olevat animetapahtumat sekä kahvilat, ostoskeskukset ja kuvauspaikat, joihin cosplayaajat ovat tervetulleita - Helsingissä, Vantaalla ja Espoossa."
   },
   "Nav": {
     "menu": "Valikko",
@@ -16,21 +16,21 @@
     "practiceSpots": "Treenipaikat",
     "about": "Tietoa",
     "donate": "Lahjoita",
-    "tagline": "Pohjoismaat · Baltia",
+    "tagline": "Pohjoismaat | Baltia",
     "toggleTheme": "Vaihda vaalea/tumma tila",
     "language": "Kieli"
   },
   "Footer": {
-    "copyright": "© 2026 CosoraAtlas · Pohjoismaat · Baltia · Avointa dataa: hel.kartta.fi",
-    "madeWith": "Tehty 💜:lla cosplay-yhteisölle"
+    "copyright": "2026 CosoraAtlas | Pohjoismaat | Baltia | Avointa dataa: hel.kartta.fi",
+    "madeWith": "Tehty rakkaudella cosplay-yhteisölle"
   },
   "Common": {
-    "submitEvent": "＋ Ehdota tapahtumaa",
-    "submitSpot": "＋ Ehdota paikkaa",
+    "submitEvent": "+ Ehdota tapahtumaa",
+    "submitSpot": "+ Ehdota paikkaa",
     "showOnMap": "Näytä sijainti kartalla",
     "previousMonth": "Edellinen kuukausi",
     "nextMonth": "Seuraava kuukausi",
-    "submitPracticeSpot": "＋ Ehdota treenipaikkaa"
+    "submitPracticeSpot": "+ Ehdota treenipaikkaa"
   },
   "PlaceTypes": {
     "cafe": "Kahvila",
@@ -42,20 +42,20 @@
     "practice-space": "Harjoitustila"
   },
   "Home": {
-    "title": "Animetapahtumat + <grad>cosplay-paikat</grad> Pohjoismaissa ja Baltiassa 🎌",
-    "lead": "Löydä kaikki lähelläsi olevat conit — sekä kahvilat, ostoskeskukset ja kuvauspaikat, joihin cosplayaajat ovat tervetulleita. Kuvat ja teemat kertovat heti, missä kannattaa kuvata. 💜",
+    "title": "Animetapahtumat + <grad>cosplay-paikat</grad> Pohjoismaissa ja Baltiassa",
+    "lead": "Löydä kaikki lähelläsi olevat conit - sekä kahvilat, ostoskeskukset ja kuvauspaikat, joihin cosplayaajat ovat tervetulleita. Kuvat ja teemat kertovat heti, missä kannattaa kuvata.",
     "statConventions": "Tapahtumat",
     "statVenues": "Tapahtumapaikat",
     "statCities": "Kaupungit",
     "mapTitle": "Cosplay-paikkojen kartta",
     "upcomingTitle": "Tulevat tapahtumat",
-    "seeAllEvents": "Kaikki tapahtumat →",
+    "seeAllEvents": "Kaikki tapahtumat ->",
     "hotSpotsTitle": "Cosplay-kuumat paikat",
-    "seeAllSpots": "Kaikki paikat →"
+    "seeAllSpots": "Kaikki paikat ->"
   },
   "About": {
     "title": "<grad>Nollabudjetin</grad> cosplay-kartta pääkaupunkiseudulle.",
-    "intro": "Kartta näyttää kaksi asiaa Helsingissä, Vantaalla ja Espoossa: animetapahtumat sekä cosplay-ystävälliset kahvilat, ravintolat, ostoskeskukset ja kuvauspaikat, joihin pukeutuneet ovat tervetulleita — jokaisella kuvat ja teema. Se hakee avointa paikkatietoa ja tapahtumalistauksia Helsingin kaupungilta, piirtää ne nopealle vektorikartalle ja yhdistää kaiken kalenteriin ja tapahtumalistaan — kaikki 0 €/kk.",
+    "intro": "Kartta näyttää kaksi asiaa Helsingissä, Vantaalla ja Espoossa: animetapahtumat sekä cosplay-ystävälliset kahvilat, ravintolat, ostoskeskukset ja kuvauspaikat, joihin pukeutuneet ovat tervetulleita - jokaisella kuvat ja teema. Se hakee avointa paikkatietoa ja tapahtumalistauksia Helsingin kaupungilta, piirtää ne nopealle vektorikartalle ja yhdistää kaiken kalenteriin ja tapahtumalistaan - kaikki 0 EUR/kk.",
     "stackTitle": "Teknologiat",
     "techNext": "App Router -käyttöliittymä",
     "techMapLibre": "Avoin vektorikarttamoottori",
@@ -69,11 +69,11 @@
     "step2Title": "Piirto MapLibrellä",
     "step2Text": "Paikoista tulee GeoJSON-lähteitä, joilla on omat merkit ja ponnahdusikkunat.",
     "step3Title": "Näkymät yhteen",
-    "step3Text": "Kartta, kalenteri, tapahtumat ja paikat käyttävät samaa dataa — klikkaa päivää ja hyppää sen merkkiin.",
+    "step3Text": "Kartta, kalenteri, tapahtumat ja paikat käyttävät samaa dataa - klikkaa päivää ja hyppää sen merkkiin.",
     "ctaTitle": "Haluatko tutkia karttaa?",
     "ctaText": "Siirry suoraan interaktiiviseen karttaan tai selaa alueen cosplay-ystävällisiä paikkoja.",
-    "ctaMap": "🗺️ Avaa kartta",
-    "ctaSpots": "📸 Selaa paikkoja"
+    "ctaMap": "Avaa kartta",
+    "ctaSpots": "Selaa paikkoja"
   },
   "Donate": {
     "title": "Pidä kartta <grad>kofeiinissa</grad> 💛",
@@ -105,26 +105,26 @@
   },
   "Events": {
     "title": "Kaikki tapahtumat",
-    "count": "{count, plural, one {# tapahtuma} other {# tapahtumaa}} · päivämäärän mukaan",
-    "calendarView": "📅 Kalenterinäkymä",
+    "count": "{count, plural, one {# tapahtuma} other {# tapahtumaa}} | päivämäärän mukaan",
+    "calendarView": "Kalenterinäkymä",
     "search": "Hae tapahtumia, paikkoja...",
     "allCities": "Kaikki kaupungit",
     "upcoming": "Tulevat",
-    "past": "🗄️ Menneet",
+    "past": "Menneet",
     "all": "Kaikki",
     "noMatches": "Suodattimia vastaavia tapahtumia ei löytynyt."
   },
   "Spots": {
     "title": "Missä kuvata cosplayssa",
-    "intro": "Pääkaupunkiseudun kahvilat, ravintolat, ostoskeskukset, studiot ja puistot, joihin cosplayaajat ovat tervetulleita — jokaisella oma tunnelma ja teemat kuvauksiisi.",
+    "intro": "Pääkaupunkiseudun kahvilat, ravintolat, ostoskeskukset, studiot ja puistot, joihin cosplayaajat ovat tervetulleita - jokaisella oma tunnelma ja teemat kuvauksiisi.",
     "empty": "Ei vielä paikkoja.",
     "search": "Hae paikkoja, teemoja, alueita...",
     "noMatches": "Hakuasi vastaavia paikkoja ei löytynyt."
   },
   "Map": {
-    "loading": "Ladataan karttaa…",
+    "loading": "Ladataan karttaa...",
     "title": "Tapahtumat & paikat",
-    "subtitle": "Suodata tapahtumia · klikkaa tapahtumaa siirtyäksesi sinne",
+    "subtitle": "Suodata tapahtumia | klikkaa tapahtumaa siirtyäksesi sinne",
     "all": "Kaikki",
     "noMatches": "Ei tapahtumia näillä suodattimilla.",
     "mapTitle": "Cosplay-kartta",
@@ -162,20 +162,20 @@
     "reset": "Tyhjennä suodattimet"
   },
   "MiniCalendar": {
-    "conDay": "● = con-päivä",
-    "fullCalendar": "Koko kalenteri →"
+    "conDay": "Piste = con-päivä",
+    "fullCalendar": "Koko kalenteri ->"
   },
   "Calendar": {
     "today": "Tänään",
     "more": "+{count} lisää",
-    "browseHint": "‹ › selaa menneitä ja tulevia kuukausia"
+    "browseHint": "< > selaa menneitä ja tulevia kuukausia"
   },
   "SubmitForm": {
-    "thanksTitle": "Kiitos — lähetetty!",
+    "thanksTitle": "Kiitos - lähetetty!",
     "done": "Valmis",
     "cancel": "Peruuta",
-    "submitting": "Lähetetään…",
-    "submit": "📨 Lähetä tarkistettavaksi",
+    "submitting": "Lähetetään...",
+    "submit": "Lähetä tarkistettavaksi",
     "country": "Maa",
     "city": "Kaupunki",
     "cityPlaceholder": "Kirjoita paikkakunnan nimi",
@@ -189,12 +189,13 @@
     "cityUnknown": "Kaupunkia ei juuri nyt voitu tunnistaa. Kirjoita se itse.",
     "longitude": "Pituusaste *",
     "latitude": "Leveysaste *",
-    "coordsHint": "📍 Valitse yllä olevasta hakulistasta, niin nämä täyttyvät automaattisesti.",
+    "coordsHint": "Valitse yllä olevasta hakulistasta, niin nämä täyttyvät automaattisesti.",
     "description": "Kuvaus",
     "yourName": "Nimesi (vapaaehtoinen)",
     "yourNamePlaceholder": "Jotta voimme mainita sinut",
     "needCoordsTip": "Vinkki: napsauta paikkaa hiiren oikealla Google Mapsissa kopioidaksesi koordinaatit.",
-    "submitFailed": "Lähetys epäonnistui.\nOnko API-palvelin käynnissä? (:8787)\n\n{error}"
+    "submitFailed": "Lähetys epäonnistui.\nOnko API-palvelin käynnissä? (:8787)\n\n{error}",
+    "duplicate": "Tämä on jo kartalla tai odottaa tarkistusta, joten sitä ei lähetetty uudelleen."
   },
   "SubmitEvent": {
     "title": "Ehdota tapahtumaa",
@@ -212,7 +213,9 @@
     "locationPlaceholder": "Hae paikkaa, osoitetta tai postinumeroa",
     "descriptionPlaceholder": "Mistä tapahtumassa on kyse?",
     "image": "Pikkukuvan / logon URL (vapaaehtoinen)",
-    "imagePlaceholder": "https://… linkki tapahtuman logoon tai julisteeseen",
+    "imagePlaceholder": "https://... linkki tapahtuman logoon tai julisteeseen",
+    "link": "Linkki tapahtuman sivulle (valinnainen)",
+    "linkPlaceholder": "https://...",
     "required": "Nimi, paikka ja alkamispäivä ovat pakollisia.",
     "endBeforeStart": "Päättymispäivä ei voi olla ennen alkamispäivää.",
     "endTimeBeforeStart": "Päättymisaika ei voi olla ennen alkamisaikaa yksipäiväisessä tapahtumassa.",
@@ -250,7 +253,7 @@
     "changing-room": "Pukuhuone",
     "big-floor": "Iso lattia",
     "youthFriendly": "Alle 18-vuotiaat tervetulleita",
-    "bookingLink": "Varaa / lisätietoa ↗",
+    "bookingLink": "Varaa / lisätietoa",
     "search": "Hae studioita, tiloja, alueita...",
     "noMatches": "Hakuasi vastaavia paikkoja ei löytynyt."
   },
@@ -264,11 +267,11 @@
     "booking": "Miten pääsee",
     "price": "Hinta",
     "priceNote": "Hinnan tiedot",
-    "priceNotePlaceholder": "esim. 15 €/h, ilmainen alle 18-vuotiaille",
+    "priceNotePlaceholder": "esim. 15 EUR/h, ilmainen alle 18-vuotiaille",
     "facilities": "Varustelu",
     "bookingUrl": "Varaus- / infolinkki",
-    "descriptionPlaceholder": "Millainen paikka on treenaamiseen? Lattian koko, säännöt…",
-    "notSet": "— en tiedä —"
+    "descriptionPlaceholder": "Millainen paikka on treenaamiseen? Lattian koko, säännöt...",
+    "notSet": "- en tiedä -"
   },
   "Share": {
     "share": "Jaa",
@@ -282,5 +285,12 @@
     "allEvents": "Kaikki tapahtumat",
     "allSpots": "Kaikki paikat",
     "openingHours": "Aukioloajat"
+  },
+  "Transit": {
+    "nearby": "Julkinen liikenne lähellä",
+    "metro": "Metro",
+    "train": "Juna",
+    "tram": "Raitiovaunu",
+    "bus": "Bussi"
   }
 }

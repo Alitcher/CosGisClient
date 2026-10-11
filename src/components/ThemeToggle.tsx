@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Icon from "./Icon";
 
 export default function ThemeToggle() {
   const t = useTranslations("Nav");
@@ -23,8 +24,8 @@ export default function ThemeToggle() {
       aria-label={t("toggleTheme")}
       type="button"
     >
-      <span className="moon">🌙</span>
-      <span className="sun">☀️</span>
+      <span className="moon"><Icon name="moon" /></span>
+      <span className="sun"><Icon name="sun" /></span>
     </button>
   );
 }

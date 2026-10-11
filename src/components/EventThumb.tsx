@@ -6,7 +6,7 @@ import { useState } from "react";
  * An event's thumbnail / logo. The image keeps its own shape: `size` is its
  * height and the width follows the picture (up to 3x the height), so a wide
  * banner logo shows whole instead of being cropped into a square. Falls back to
- * a square 🎌 tile when there's no image or it fails to load (dead link,
+ * a square tile with the event's first letter when there's no image or it fails to load (dead link,
  * hotlink-blocked), so cards never show a broken image icon.
  */
 export default function EventThumb({
@@ -37,7 +37,7 @@ export default function EventThumb({
   }
   return (
     <span className="ev-thumb" style={{ width: size, height: size, fontSize: size * 0.45 }} aria-hidden="true">
-      🎌
+      {event.name.trim().charAt(0).toUpperCase() || "?"}
     </span>
   );
 }

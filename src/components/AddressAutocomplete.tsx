@@ -96,7 +96,7 @@ export default function AddressAutocomplete({
                 background: i === active ? "var(--surface-2)" : "transparent",
               }}
             >
-              📍 {r.label}
+              {r.label}
             </li>
           ))}
         </ul>

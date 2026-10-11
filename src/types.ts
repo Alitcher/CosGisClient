@@ -28,6 +28,11 @@ export type PlaceType =
 export type Booking = 'drop-in' | 'booking-required' | 'classes-only';
 export type Price = 'free' | 'paid';
 export type Facility = 'mirrors' | 'sound-system' | 'changing-room' | 'big-floor';
+/** Kind of public transport stop (server TransitKindEnum). */
+export type TransitKind = 'metro' | 'train' | 'tram' | 'bus';
+export const TRANSIT_KINDS: readonly TransitKind[] = ['metro', 'train', 'tram', 'bus'];
+/** A nearby stop; distance = straight line in metres. */
+export type TransitStop = { kind: TransitKind; name: string; distance: number };
 
 /** Types listed on the Practice tab instead of the Spots tab (matches the server). */
 export const PRACTICE_TYPES: readonly PlaceType[] = ['dance-studio', 'practice-space'];
@@ -54,6 +59,7 @@ export interface Event {
   image?: string; // thumbnail / logo URL
   startTime?: string; // local 'HH:MM' on `date`
   endTime?: string; // local 'HH:MM' on `endDate` (or `date`)
+  transit?: TransitStop[]; // nearby stops, set by an admin (missing = never checked, [] = none close)
   status: Status;
   createdAt?: string;
 }
@@ -74,6 +80,7 @@ export interface Place {
   lang?: Lang; // language of name/description (missing = not known yet)
   i18n?: I18n; // name/description in the other languages (see localText in lib/localText)
   address?: string;
+  transit?: TransitStop[]; // nearby stops, set by an admin (missing = never checked, [] = none close)
   lng: number;
   lat: number;
   themes: string[];
@@ -91,7 +98,7 @@ export interface Place {
   createdAt?: string;
 }
 
-/* ---- GeoJSON shapes returned by the services (lng/lat → coordinates) ---- */
+/* ---- GeoJSON shapes returned by the services (lng/lat -> coordinates) ---- */
 
 export interface Feature<P> {
   type: 'Feature';

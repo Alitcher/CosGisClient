@@ -12,6 +12,8 @@ import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import CitySelect from "./CitySelect";
 import AddressAutocomplete from "./AddressAutocomplete";
 import TranslationsEditor from "./TranslationsEditor";
+import TransitEditor from "./TransitEditor";
+import Icon from "./Icon";
 import EventThumb from "./EventThumb";
 import {
   apiListPendingEvents,
@@ -22,11 +24,11 @@ import {
   apiDeletePlace,
   apiSyncLinkedEvents,
 } from "@/lib/api";
-import { isPracticeType, FACILITIES, type Event, type Place, type City, type Country, type Lang, type I18n, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
+import { isPracticeType, FACILITIES, type Event, type Place, type TransitStop, type City, type Country, type Lang, type I18n, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
 type Tab = "events" | "spots" | "pending";
 
-/** A row in the Pending tab — either a pending event or a pending place. Keeps
+/** A row in the Pending tab - either a pending event or a pending place. Keeps
  *  the full record so the admin can open it in the edit drawer before approving. */
 type PendingItem = { id: string; name: string; meta: string; lng: number; lat: number } & (
   | { kind: "event"; event: Event }
@@ -39,20 +41,28 @@ type EventForm = {
   startTime: string; endTime: string;
   lng: string; lat: string; description: string; url: string; image: string; status: Status;
   lang: Lang | ""; i18n: I18n; // original language + translations (TranslationsEditor)
+  transit: TransitStop[] | null; // null = never checked (TransitEditor)
 };
 type PlaceForm = {
   id: string | null;
   name: string; type: PlaceType; country: Country; city: City; address: string;
   lng: string; lat: string; themes: string; photo: string;
   lang: Lang | ""; i18n: I18n; // original language + translations (TranslationsEditor)
+  transit: TransitStop[] | null; // null = never checked (TransitEditor)
   description: string; openingHours: string; status: Status;
   // practice places only
   booking: Booking | ""; price: Price | ""; priceNote: string; facilities: Facility[];
   youthFriendly: "" | "yes" | "no"; bookingUrl: string;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {} };
-const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "", lang: "", i18n: {} };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null };
+const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "", lang: "", i18n: {}, transit: null };
+
+/** Transit to save: rows without a name are dropped; never checked (null) sends nothing. */
+function transitField(t: TransitStop[] | null): { transit?: TransitStop[] } {
+  if (t === null) return {};
+  return { transit: t.map((s) => ({ ...s, name: s.name.trim() })).filter((s) => s.name).sort((a, b) => a.distance - b.distance) };
+}
 
 function fail(action: string, err: unknown) {
   alert(`Couldn't ${action}.\nIs the API server running? (:8787)\n\n${(err as Error).message}`);
@@ -82,18 +92,18 @@ export default function AdminDashboard() {
   }, []);
 
   // Load pending on mount (for the tab badge count) and whenever the tab opens.
-  // Fails silently — like the live stores — so an offline server doesn't spam alerts.
+  // Fails silently - like the live stores - so an offline server doesn't spam alerts.
   async function loadPending() {
     try {
       const [ev, pl] = await Promise.all([apiListPendingEvents(), apiListPendingPlaces()]);
       setPendingItems([
         ...ev.map((e): PendingItem => ({
           kind: "event", event: e, id: e.id, name: e.name, lng: e.lng, lat: e.lat,
-          meta: `📍 ${[e.venue, e.city].filter(Boolean).join(", ")} · ${fmtRange(e.date, e.endDate)}`,
+          meta: `${[e.venue, e.city].filter(Boolean).join(", ")} | ${fmtRange(e.date, e.endDate)}`,
         })),
         ...pl.map((p): PendingItem => ({
           kind: "place", place: p, id: p.id, name: p.name, lng: p.lng, lat: p.lat,
-          meta: `📍 ${p.address ?? p.city} · ${placeTypeLabel[p.type]}`,
+          meta: `${p.address ?? p.city} | ${placeTypeLabel[p.type]}`,
         })),
       ]);
       setSelected(new Set());
@@ -143,7 +153,7 @@ export default function AdminDashboard() {
       await loadPending();
       alert(
         r.skipped
-          ? "Already up to date — nothing new from Helsinki right now."
+          ? "Already up to date - nothing new from Helsinki right now."
           : `Imported ${r.created} new event(s) from Helsinki (fetched ${r.fetched}, ${r.duplicates} already had).\nThey're in the pending queue below for approval.`,
       );
     } catch (err) {
@@ -169,12 +179,12 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {} });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null });
     setDrawerKind("events");
     setOpen(true);
   }
   function editPlace(p: Place) {
-    setPlaceForm({ id: p.id, name: p.name, type: p.type, country: countryOf(p), city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status, lang: p.lang ?? "", i18n: p.i18n ?? {},
+    setPlaceForm({ id: p.id, name: p.name, type: p.type, country: countryOf(p), city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status, lang: p.lang ?? "", i18n: p.i18n ?? {}, transit: p.transit ?? null,
       booking: p.booking ?? "", price: p.price ?? "", priceNote: p.priceNote ?? "", facilities: p.facilities ?? [],
       youthFriendly: p.youthFriendly == null ? "" : p.youthFriendly ? "yes" : "no", bookingUrl: p.bookingUrl ?? "" });
     setDrawerKind("spots");
@@ -196,6 +206,7 @@ export default function AdminDashboard() {
       name: f.name.trim(), venue: f.venue.trim(), ...(f.lang ? { lang: f.lang } : {}), i18n: f.i18n, country: f.country, city: f.city.trim(), date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
       ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
       ...(f.url.trim() ? { url: f.url.trim() } : {}), ...(f.image.trim() ? { image: f.image.trim() } : {}),
+      ...transitField(f.transit),
     };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
@@ -214,6 +225,7 @@ export default function AdminDashboard() {
       themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),
       photos: f.photo.trim() ? [{ url: f.photo.trim() }] : [],
       description: f.description.trim(), openingHours: f.openingHours.trim(),
+      ...transitField(f.transit),
       // Empty selects are sent as "not given" (undefined), so the API leaves the saved value as is.
       ...(isPracticeType(f.type) && {
         booking: f.booking || undefined,
@@ -259,11 +271,11 @@ export default function AdminDashboard() {
             <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
             <span className="brand-text">CosoraAtlas<small>Admin panel</small></span>
           </Link>
-          <span className="admin-badge">🔒 ADMIN</span>
+          <span className="admin-badge">ADMIN</span>
           <div className="admin-right">
-            <Link className="view-site" href="/">↗ View site</Link>
+            <Link className="view-site" href="/">View site</Link>
             <ThemeToggle />
-            <div className="who"><span className="avatar">🦊</span><span className="hide-sm">admin</span></div>
+            <div className="who"><span className="avatar">A</span><span className="hide-sm">admin</span></div>
           </div>
         </div>
       </nav>
@@ -271,36 +283,36 @@ export default function AdminDashboard() {
       <div className="admin-shell">
         <div className="admin-head">
           <div>
-            <h1>{tab === "pending" ? "Pending requests ⏳" : `Manage ${tab === "events" ? "events" : "spots"} ✏️`}</h1>
+            <h1>{tab === "pending" ? "Pending requests" : `Manage ${tab === "events" ? "events" : "spots"}`}</h1>
             <p>{tab === "pending"
               ? "Approve or reject community submissions and imported events. Approved items go live on the map."
               : `Add, edit and remove ${tab === "events" ? "conventions" : "cosplay-friendly places"}. Saved to the server database.`}</p>
           </div>
-          {tab !== "pending" && <button className="btn" type="button" onClick={addNew}>＋ Add {tab === "events" ? "event" : "spot"}</button>}
+          {tab !== "pending" && <button className="btn" type="button" onClick={addNew}>+ Add {tab === "events" ? "event" : "spot"}</button>}
         </div>
 
         {/* tab switch */}
         <div className="view-switch" style={{ margin: "0 0 18px", display: "inline-flex" }}>
-          <button className={tab === "events" ? "on" : ""} type="button" onClick={() => setTab("events")}>🎌 Events</button>
-          <button className={tab === "spots" ? "on" : ""} type="button" onClick={() => setTab("spots")}>📸 Spots</button>
-          <button className={tab === "pending" ? "on" : ""} type="button" onClick={() => setTab("pending")}>⏳ Pending{pendingItems.length ? ` (${pendingItems.length})` : ""}</button>
+          <button className={tab === "events" ? "on" : ""} type="button" onClick={() => setTab("events")}>Events</button>
+          <button className={tab === "spots" ? "on" : ""} type="button" onClick={() => setTab("spots")}>Spots</button>
+          <button className={tab === "pending" ? "on" : ""} type="button" onClick={() => setTab("pending")}>Pending{pendingItems.length ? ` (${pendingItems.length})` : ""}</button>
         </div>
 
         {tab !== "pending" && (
           <div className="grid stats">
             {tab === "events" ? (
               <>
-                <div className="card stat-card"><span className="ic">🎌</span><span className="n">{events.length}</span><span className="l">Total events</span></div>
-                <div className="card stat-card"><span className="ic">🗓️</span><span className="n">{eventsThisMonth}</span><span className="l">This month</span></div>
-                <div className="card stat-card"><span className="ic">📍</span><span className="n">{new Set(events.map((e) => e.venue)).size}</span><span className="l">Venues</span></div>
-                <div className="card stat-card"><span className="ic">🏙️</span><span className="n">{new Set(events.map((e) => e.city)).size}</span><span className="l">Cities</span></div>
+                <div className="card stat-card"><span className="n">{events.length}</span><span className="l">Total events</span></div>
+                <div className="card stat-card"><span className="n">{eventsThisMonth}</span><span className="l">This month</span></div>
+                <div className="card stat-card"><span className="n">{new Set(events.map((e) => e.venue)).size}</span><span className="l">Venues</span></div>
+                <div className="card stat-card"><span className="n">{new Set(events.map((e) => e.city)).size}</span><span className="l">Cities</span></div>
               </>
             ) : (
               <>
-                <div className="card stat-card"><span className="ic">📸</span><span className="n">{places.length}</span><span className="l">Total spots</span></div>
-                <div className="card stat-card"><span className="ic">☕</span><span className="n">{places.filter((p) => p.type === "cafe").length}</span><span className="l">Cafés</span></div>
-                <div className="card stat-card"><span className="ic">🍜</span><span className="n">{places.filter((p) => p.type === "restaurant").length}</span><span className="l">Restaurants</span></div>
-                <div className="card stat-card"><span className="ic">🏙️</span><span className="n">{new Set(places.map((p) => p.city)).size}</span><span className="l">Cities</span></div>
+                <div className="card stat-card"><span className="n">{places.length}</span><span className="l">Total spots</span></div>
+                <div className="card stat-card"><span className="n">{places.filter((p) => p.type === "cafe").length}</span><span className="l">Cafés</span></div>
+                <div className="card stat-card"><span className="n">{places.filter((p) => p.type === "restaurant").length}</span><span className="l">Restaurants</span></div>
+                <div className="card stat-card"><span className="n">{new Set(places.map((p) => p.city)).size}</span><span className="l">Cities</span></div>
               </>
             )}
           </div>
@@ -308,7 +320,7 @@ export default function AdminDashboard() {
 
         {tab !== "pending" && (
           <div className="a-toolbar">
-            <div className="a-search">🔍 <input placeholder={`Search ${tab}…`} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
+            <div className="a-search"><Icon name="search" size={16} /><input placeholder={`Search ${tab}...`} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
           </div>
         )}
 
@@ -324,11 +336,11 @@ export default function AdminDashboard() {
                       <td><div className="ev-name-cell"><EventThumb event={e} size={36} /><div><div className="ev-name">{e.name}</div><div className="ev-sub">{cityLabel(e.city)}</div></div></div></td>
                       <td className="hide-sm">{e.venue}</td>
                       <td className="hide-sm">{fmtRange(e.date, e.endDate)}</td>
-                      <td><span className={`status ${e.status}`}>{e.status === "live" ? "● Live" : e.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
+                      <td><span className={`status ${e.status}`}>{e.status === "live" ? "Live" : e.status === "draft" ? "Draft" : "Pending"}</span></td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
-                        <a className="mini-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
-                        <button className="mini-btn" type="button" title="Edit" onClick={() => editEvent(e)}>✏️</button>
-                        <button className="mini-btn del" type="button" title="Delete" onClick={async () => { try { await deleteEvent(e.id); } catch (err) { fail("delete the event", err); } }}>🗑️</button>
+                        <a className="mini-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map"><Icon name="map" /></a>
+                        <button className="mini-btn" type="button" title="Edit" onClick={() => editEvent(e)}><Icon name="edit" /></button>
+                        <button className="mini-btn del" type="button" title="Delete" onClick={async () => { try { await deleteEvent(e.id); } catch (err) { fail("delete the event", err); } }}><Icon name="trash" /></button>
                       </div></td>
                     </tr>
                   );
@@ -350,11 +362,11 @@ export default function AdminDashboard() {
                     <td><div className="ev-name">{p.name}</div><div className="ev-sub">{p.address ?? p.city}</div></td>
                     <td className="hide-sm">{placeTypeLabel[p.type]}</td>
                     <td className="hide-sm">{cityLabel(p.city)}</td>
-                    <td><span className={`status ${p.status}`}>{p.status === "live" ? "● Live" : p.status === "draft" ? "◌ Draft" : "⏳ Pending"}</span></td>
+                    <td><span className={`status ${p.status}`}>{p.status === "live" ? "Live" : p.status === "draft" ? "Draft" : "Pending"}</span></td>
                     <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
-                      <a className="mini-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
-                      <button className="mini-btn" type="button" title="Edit" onClick={() => editPlace(p)}>✏️</button>
-                      <button className="mini-btn del" type="button" title="Delete" onClick={async () => { try { await deletePlace(p.id); } catch (err) { fail("delete the spot", err); } }}>🗑️</button>
+                      <a className="mini-btn" href={`/map?lng=${p.lng}&lat=${p.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map"><Icon name="map" /></a>
+                      <button className="mini-btn" type="button" title="Edit" onClick={() => editPlace(p)}><Icon name="edit" /></button>
+                      <button className="mini-btn del" type="button" title="Delete" onClick={async () => { try { await deletePlace(p.id); } catch (err) { fail("delete the spot", err); } }}><Icon name="trash" /></button>
                     </div></td>
                   </tr>
                 ))}
@@ -368,13 +380,13 @@ export default function AdminDashboard() {
         {tab === "pending" && (
           <div className="card table-card">
             <div className="a-toolbar" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", padding: "12px 14px", borderBottom: "1px solid var(--border, #2a2a35)" }}>
-              <span style={{ color: "var(--text-2)" }}>{pendingItems.length} pending · {selected.size} selected</span>
-              <button className="btn ghost" type="button" disabled={busy} title="Fetch cosplay/manga events from Helsinki's open data into the queue" onClick={runImport}>🔄 Import from Helsinki</button>
+              <span style={{ color: "var(--text-2)" }}>{pendingItems.length} pending | {selected.size} selected</span>
+              <button className="btn ghost" type="button" disabled={busy} title="Fetch cosplay/manga events from Helsinki's open data into the queue" onClick={runImport}>Import from Helsinki</button>
               <div style={{ flex: 1 }} />
-              <button className="btn ghost" type="button" disabled={busy || selected.size === 0} onClick={approveSelected}>✓ Approve selected</button>
-              <button className="btn ghost" type="button" style={danger} disabled={busy || selected.size === 0} onClick={rejectSelected}>✕ Reject selected</button>
-              <button className="btn" type="button" disabled={busy || pendingItems.length === 0} onClick={approveAll}>✓✓ Approve all</button>
-              <button className="btn ghost" type="button" style={danger} disabled={busy || pendingItems.length === 0} onClick={rejectAll}>🗑️ Reject all</button>
+              <button className="btn ghost" type="button" disabled={busy || selected.size === 0} onClick={approveSelected}>Approve selected</button>
+              <button className="btn ghost" type="button" style={danger} disabled={busy || selected.size === 0} onClick={rejectSelected}>Reject selected</button>
+              <button className="btn" type="button" disabled={busy || pendingItems.length === 0} onClick={approveAll}>Approve all</button>
+              <button className="btn ghost" type="button" style={danger} disabled={busy || pendingItems.length === 0} onClick={rejectAll}>Reject all</button>
             </div>
             <table>
               <thead><tr>
@@ -387,19 +399,19 @@ export default function AdminDashboard() {
                   return (
                     <tr key={k}>
                       <td><input type="checkbox" checked={selected.has(k)} onChange={() => toggleSelect(k)} aria-label={`Select ${it.name}`} /></td>
-                      <td><div className="ev-name">{it.name}</div><div className="ev-sub">{it.kind === "event" ? "🎌 event" : "📸 spot"}</div></td>
+                      <td><div className="ev-name">{it.name}</div><div className="ev-sub">{it.kind === "event" ? "event" : "spot"}</div></td>
                       <td className="hide-sm">{it.kind === "event" ? "Event" : "Spot"}</td>
                       <td className="hide-sm">{it.meta}</td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
-                        <a className="mini-btn" href={`/map?lng=${it.lng}&lat=${it.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map">🗺️</a>
-                        <button className="mini-btn" type="button" title="Edit" disabled={busy} onClick={() => editPending(it)}>✏️</button>
-                        <button className="mini-btn" type="button" title="Approve" disabled={busy} onClick={() => approveOne(it)}>✓</button>
-                        <button className="mini-btn del" type="button" title="Reject" disabled={busy} onClick={() => rejectOne(it)}>✕</button>
+                        <a className="mini-btn" href={`/map?lng=${it.lng}&lat=${it.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map"><Icon name="map" /></a>
+                        <button className="mini-btn" type="button" title="Edit" disabled={busy} onClick={() => editPending(it)}><Icon name="edit" /></button>
+                        <button className="mini-btn" type="button" title="Approve" disabled={busy} onClick={() => approveOne(it)}><Icon name="check" /></button>
+                        <button className="mini-btn del" type="button" title="Reject" disabled={busy} onClick={() => rejectOne(it)}><Icon name="close" /></button>
                       </div></td>
                     </tr>
                   );
                 })}
-                {pendingItems.length === 0 && <tr><td colSpan={5} style={{ textAlign: "center", color: "var(--text-2)" }}>🎉 No pending requests.</td></tr>}
+                {pendingItems.length === 0 && <tr><td colSpan={5} style={{ textAlign: "center", color: "var(--text-2)" }}>No pending requests.</td></tr>}
               </tbody>
             </table>
           </div>
@@ -410,7 +422,7 @@ export default function AdminDashboard() {
       <aside className={`drawer${open ? " open" : ""}`}>
         <div className="drawer-head">
           <h3>{drawerKind === "events" ? (eventForm.id ? "Edit event" : "Add event") : (placeForm.id ? "Edit spot" : "Add spot")}</h3>
-          <button className="close-x" type="button" onClick={() => setOpen(false)}>✕</button>
+          <button className="close-x" type="button" onClick={() => setOpen(false)} aria-label="Close"><Icon name="close" size={16} /></button>
         </div>
 
         {drawerKind === "events" ? (
@@ -442,13 +454,14 @@ export default function AdminDashboard() {
               </div>
               <CitySelect country={eventForm.country} city={eventForm.city} onCountry={(c) => setE("country", c)} onCity={(c) => setE("city", c)} detect={eventCityDetect} />
               <div className="field"><label>Description</label><textarea rows={3} value={eventForm.description} onChange={(e) => setE("description", e.target.value)} /></div>
+              <TransitEditor value={eventForm.transit} onChange={(v) => setE("transit", v)} lat={eventForm.lat} lng={eventForm.lng} />
               <TranslationsEditor lang={eventForm.lang} i18n={eventForm.i18n} onLang={(l) => setE("lang", l)} onI18n={(v) => setE("i18n", v)} />
-              <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://… event page" /></div>
+              <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://... event page" /></div>
               <div className="field">
                 <label>Thumbnail / logo URL (optional)</label>
                 <div className="thumb-input">
                   <EventThumb event={{ name: eventForm.name, image: eventForm.image.trim() || undefined }} size={44} />
-                  <input type="url" value={eventForm.image} onChange={(e) => setE("image", e.target.value)} placeholder="https://… .png / .jpg" />
+                  <input type="url" value={eventForm.image} onChange={(e) => setE("image", e.target.value)} placeholder="https://... .png / .jpg" />
                 </div>
               </div>
               {eventForm.id && (
@@ -457,7 +470,7 @@ export default function AdminDashboard() {
             </div>
             <div className="drawer-foot">
               <button className="btn ghost" type="button" onClick={() => setOpen(false)}>Cancel</button>
-              <button className="btn" type="button" onClick={saveEvent}>💾 Save event</button>
+              <button className="btn" type="button" onClick={saveEvent}>Save event</button>
             </div>
           </>
         ) : (
@@ -480,17 +493,18 @@ export default function AdminDashboard() {
               </div>
               <CitySelect country={placeForm.country} city={placeForm.city} onCountry={(c) => setP("country", c)} onCity={(c) => setP("city", c)} detect={placeCityDetect} />
               <div className="field"><label>Themes (comma-separated)</label><input value={placeForm.themes} onChange={(e) => setP("themes", e.target.value)} placeholder="pastel, kawaii, neon" /></div>
-              <div className="field"><label>Photo URL</label><input value={placeForm.photo} onChange={(e) => setP("photo", e.target.value)} placeholder="https://…" /></div>
-              <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00–20:00" /></div>
+              <div className="field"><label>Photo URL</label><input value={placeForm.photo} onChange={(e) => setP("photo", e.target.value)} placeholder="https://..." /></div>
+              <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00-20:00" /></div>
               <div className="field"><label>Description</label><textarea rows={3} value={placeForm.description} onChange={(e) => setP("description", e.target.value)} /></div>
+              <TransitEditor value={placeForm.transit} onChange={(v) => setP("transit", v)} lat={placeForm.lat} lng={placeForm.lng} />
               <TranslationsEditor lang={placeForm.lang} i18n={placeForm.i18n} onLang={(l) => setP("lang", l)} onI18n={(v) => setP("i18n", v)} />
               {isPracticeType(placeForm.type) && (
                 <>
                   <div className="field-row">
-                    <div className="field"><label>Access</label><select value={placeForm.booking} onChange={(e) => setP("booking", e.target.value as PlaceForm["booking"])}><option value="">—</option><option value="drop-in">Drop-in</option><option value="booking-required">Booking needed</option><option value="classes-only">Classes only</option></select></div>
-                    <div className="field"><label>Price</label><select value={placeForm.price} onChange={(e) => setP("price", e.target.value as PlaceForm["price"])}><option value="">—</option><option value="free">Free</option><option value="paid">Paid</option></select></div>
+                    <div className="field"><label>Access</label><select value={placeForm.booking} onChange={(e) => setP("booking", e.target.value as PlaceForm["booking"])}><option value="">-</option><option value="drop-in">Drop-in</option><option value="booking-required">Booking needed</option><option value="classes-only">Classes only</option></select></div>
+                    <div className="field"><label>Price</label><select value={placeForm.price} onChange={(e) => setP("price", e.target.value as PlaceForm["price"])}><option value="">-</option><option value="free">Free</option><option value="paid">Paid</option></select></div>
                   </div>
-                  <div className="field"><label>Price details</label><input value={placeForm.priceNote} onChange={(e) => setP("priceNote", e.target.value)} placeholder="15 €/h, free for under 18s" /></div>
+                  <div className="field"><label>Price details</label><input value={placeForm.priceNote} onChange={(e) => setP("priceNote", e.target.value)} placeholder="15 EUR/h, free for under 18s" /></div>
                   <div className="field">
                     <label>Facilities</label>
                     <div className="flex gap-sm" style={{ flexWrap: "wrap" }}>
@@ -502,7 +516,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="field"><label>Under-18s welcome? (check the venue&apos;s own rules)</label><select value={placeForm.youthFriendly} onChange={(e) => setP("youthFriendly", e.target.value as PlaceForm["youthFriendly"])}><option value="">Not verified</option><option value="yes">Yes</option><option value="no">No</option></select></div>
-                  <div className="field"><label>Booking / info link</label><input value={placeForm.bookingUrl} onChange={(e) => setP("bookingUrl", e.target.value)} placeholder="https://…" /></div>
+                  <div className="field"><label>Booking / info link</label><input value={placeForm.bookingUrl} onChange={(e) => setP("bookingUrl", e.target.value)} placeholder="https://..." /></div>
                 </>
               )}
               {placeForm.id && (
@@ -511,7 +525,7 @@ export default function AdminDashboard() {
             </div>
             <div className="drawer-foot">
               <button className="btn ghost" type="button" onClick={() => setOpen(false)}>Cancel</button>
-              <button className="btn" type="button" onClick={savePlace}>💾 Save spot</button>
+              <button className="btn" type="button" onClick={savePlace}>Save spot</button>
             </div>
           </>
         )}

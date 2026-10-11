@@ -1,5 +1,5 @@
 /* ===========================================================
-   Cosplay Map — global styles (playful, dual light/dark theme)
+   Cosplay Map - global styles (playful, dual light/dark theme)
    Toggle via <html data-theme="light"|"dark">
    =========================================================== */
 
@@ -480,6 +480,16 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .spot-meta { font-size: 12.5px; color: var(--text-2); }
 .spot-themes { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
 .theme-tag { font-size: 11px; font-weight: 700; color: var(--text-1); background: var(--surface-2); border: 2px solid var(--border); padding: 3px 9px; border-radius: 999px; }
+/* Nearby public transport badges (TransitBadges), e.g. "Metro Kamppi 220 m". */
+.transit { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.transit-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-1); background: color-mix(in srgb, var(--primary-2) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary-2) 35%, transparent); padding: 2px 9px 2px 3px; border-radius: 999px; white-space: nowrap; }
+.transit-icon { width: 16px; height: 16px; border-radius: 3px; flex: none; }
+.transit-name { font-weight: 700; color: var(--text-0); }
+/* Map list: logos + distance only, so the row stays small. */
+.transit.compact { margin-top: 4px; gap: 4px; }
+.transit.compact .transit-badge { font-size: 10.5px; padding: 1px 6px 1px 2px; }
+.transit.compact .transit-icon { width: 14px; height: 14px; }
+.transit-dist { color: var(--text-2); }
 
 /* ===========================================================
    ABOUT
@@ -492,7 +502,6 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .stack-grid { grid-template-columns: repeat(4, 1fr); }
 .tech { padding: 20px; text-align: center; transition: transform .16s ease; }
 .tech:hover { transform: translateY(-4px); }
-.tech .ic { font-size: 28px; margin-bottom: 10px; }
 .tech h4 { font-size: 15px; }
 .tech p { font-size: 12px; color: var(--text-2); margin-top: 3px; }
 .how { padding-top: 40px; padding-bottom: 40px; }
@@ -550,7 +559,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .admin-badge { font-family: var(--font-display); font-weight: 600; font-size: 12px; color: #fff; background: linear-gradient(135deg, var(--primary-2), var(--green)); padding: 5px 12px; border-radius: 999px; box-shadow: 0 3px 0 var(--hard); }
 .admin-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 .who { display: flex; align-items: center; gap: 9px; font-size: 13px; }
-.avatar { width: 34px; height: 34px; border-radius: 11px; background: var(--btn-grad); display: grid; place-items: center; font-size: 16px; box-shadow: 0 3px 0 var(--hard); }
+.avatar { width: 34px; height: 34px; border-radius: 11px; background: var(--btn-grad); display: grid; place-items: center; font-size: 15px; font-weight: 800; color: #fff; box-shadow: 0 3px 0 var(--hard); }
 .view-site { font-size: 13px; font-weight: 700; color: var(--text-1); padding: 8px 14px; border-radius: 999px; border: 2px solid var(--border); }
 .view-site:hover { background: var(--surface-2); }
 .admin-shell { max-width: 1240px; margin: 0 auto; padding: 26px 22px 50px; }
@@ -559,7 +568,6 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .admin-head p { color: var(--text-2); margin-top: 3px; font-size: 14px; }
 .stats { grid-template-columns: repeat(4, 1fr); margin-bottom: 24px; }
 .stat-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; }
-.stat-card .ic { font-size: 22px; }
 .stat-card .n { font-family: var(--font-display); font-weight: 700; font-size: 30px; letter-spacing: -0.02em; }
 .stat-card .l { font-size: 12.5px; color: var(--text-2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 .a-toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
@@ -599,6 +607,10 @@ tbody tr:hover { background: var(--surface-2); }
 .field-row .field { flex: 1; min-width: 0; } /* min-width: date/time inputs won't shrink otherwise */
 .field-note { font-size: 12px; margin-top: 6px; }
 .field-note.warn { color: #e5484d; }
+/* Admin: nearby public transport rows (TransitEditor). */
+.transit-edit { display: flex; flex-direction: column; gap: 6px; }
+.transit-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 76px auto auto; gap: 6px; align-items: center; }
+.transit-unit { font-size: 12px; color: var(--text-2); }
 .thumb-input { display: flex; align-items: center; gap: 10px; }
 .thumb-input input { flex: 1; min-width: 0; }
 /* Admin: Translations section (TranslationsEditor) */
