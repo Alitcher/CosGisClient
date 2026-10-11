@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { localText } from "@/lib/localText";
 import { useEventStore } from "@/lib/eventsStore";
 import { cityChip, cityColor, citiesIn, cityLabel } from "@/lib/cities";
 
@@ -13,6 +14,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 export default function MonthCalendar() {
   const t = useTranslations("Calendar");
+  const locale = useLocale();
   const tc = useTranslations("Common");
   const { events } = useEventStore();
   const today = new Date();
@@ -86,7 +88,7 @@ export default function MonthCalendar() {
                 {list.slice(0, 2).map((e) => (
                   <span key={e.id} className={`ev ${cityChip(e.city).className}`} style={cityChip(e.city).style}>
                     <span className="dot" />
-                    {e.name}
+                    {localText(e, locale).name}
                   </span>
                 ))}
                 {list.length > 2 && <div className="ev-more">{t("more", { count: list.length - 2 })}</div>}
