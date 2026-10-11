@@ -1,22 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTranslations, type Messages } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 
-const links = [
-  ["/", "home"],
-  ["/map", "map"],
-  ["/calendar", "calendar"],
-  ["/events", "events"],
-  ["/spots", "spots"],
-  ["/practice", "practice"],
-  ["/about", "about"],
-  ["/donate", "donate"],
-] as const;
+type NavKey = keyof Messages["Nav"];
+type Page = readonly [href: string, key: NavKey];
+type Item = { page: Page } | { group: NavKey; pages: readonly Page[] };
+
+// A group is a heading with sub pages: a dropdown on wide screens, a titled
+// section in the phone/tablet menu. To add a page later (JK-pop events,
+// cosplay rental spots), add one line to its group.
+const items: readonly Item[] = [
+  { page: ["/", "home"] },
+  { page: ["/map", "map"] },
+  { group: "events", pages: [["/calendar", "calendar"], ["/events", "cosplayEvents"]] },
+  { group: "spots", pages: [["/spots", "cosplaySpots"], ["/practice", "practiceSpots"]] },
+  { page: ["/about", "about"] },
+  { page: ["/donate", "donate"] },
+];
 
 /**
  * Top bar. On wide screens the page links sit in the bar; on tablets and
@@ -27,8 +32,41 @@ export default function Nav() {
   const t = useTranslations("Nav");
   const pathname = usePathname(); // without the language prefix, so /fi/map -> /map
   const [open, setOpen] = useState(false);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
+
+  // Close a dropdown on outside click or Escape.
+  useEffect(() => {
+    if (!openGroup) return;
+    function onDown(e: MouseEvent) {
+      if (!navRef.current?.contains(e.target as Node)) setOpenGroup(null);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenGroup(null);
+    }
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [openGroup]);
+
+  function close() {
+    setOpen(false);
+    setOpenGroup(null);
+  }
+
+  function pageLink([href, key]: Page) {
+    return (
+      <Link key={href} href={href} className={pathname === href ? "active" : ""} onClick={close}>
+        {t(key)}
+      </Link>
+    );
+  }
+
   return (
-    <nav className="nav">
+    <nav className="nav" ref={navRef}>
       <div className="nav-inner">
         <Link className="brand" href="/">
           <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
@@ -39,18 +77,30 @@ export default function Nav() {
         </Link>
         <div className="nav-links">
           <div id="nav-pages" className={`nav-pages${open ? " open" : ""}`}>
-            {links.map(([href, key]) => (
-              <Link
-                key={href}
-                href={href}
-                className={pathname === href ? "active" : ""}
-                onClick={() => setOpen(false)}
-              >
-                {t(key)}
-              </Link>
-            ))}
+            {items.map((item) => {
+              if ("page" in item) return pageLink(item.page);
+              const active = item.pages.some(([href]) => href === pathname);
+              const isOpen = openGroup === item.group;
+              return (
+                <div key={item.group} className={`nav-group${isOpen ? " open" : ""}`}>
+                  {/* Wide screens: a button that opens the dropdown. */}
+                  <button
+                    type="button"
+                    className={`nav-group-btn${active ? " active" : ""}`}
+                    aria-expanded={isOpen}
+                    onClick={() => setOpenGroup(isOpen ? null : item.group)}
+                  >
+                    {t(item.group)}
+                  </button>
+                  {/* Phone/tablet menu: a plain heading over the sub pages. */}
+                  <div className="nav-group-title">{t(item.group)}</div>
+                  <div className="nav-sub">{item.pages.map(pageLink)}</div>
+                </div>
+              );
+            })}
             {/* Phone/tablet: languages live in the menu instead of the bar. */}
             <div className="nav-lang">
+              <div className="nav-group-title">{t("language")}</div>
               <LanguageSwitcher inline />
             </div>
           </div>

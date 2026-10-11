@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { localText } from "@/lib/localText";
 import { useEventStore } from "@/lib/eventsStore";
-import { cityChip, cityColor, citiesIn, cityLabel } from "@/lib/cities";
+import { cityChip, cityColor, cityCountries, citiesIn, cityLabel, countryOf } from "@/lib/cities";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -86,7 +86,7 @@ export default function MonthCalendar() {
               <div key={`d${d}`} className={`cell${weekend ? " weekend" : ""}${isToday(d) ? " today" : ""}`}>
                 <div className="num">{d}</div>
                 {list.slice(0, 2).map((e) => (
-                  <span key={e.id} className={`ev ${cityChip(e.city).className}`} style={cityChip(e.city).style}>
+                  <span key={e.id} className={`ev ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}>
                     <span className="dot" />
                     {localText(e, locale).name}
                   </span>
@@ -104,7 +104,7 @@ export default function MonthCalendar() {
 
       <div className="cal-foot">
         {citiesIn(events).map((c) => (
-          <div className="lg" key={c}><span className="sw" style={{ background: cityColor(c) }} /> {cityLabel(c)}</div>
+          <div className="lg" key={c}><span className="sw" style={{ background: cityColor(c, cityCountries(events).get(c)) }} /> {cityLabel(c)}</div>
         ))}
         <div className="lg" style={{ marginLeft: "auto", color: "var(--text-2)" }}>
           {t("browseHint")}

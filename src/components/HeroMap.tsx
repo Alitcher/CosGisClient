@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { useLocale } from "next-intl";
-import { cityColor } from "@/lib/cities";
+import { cityColor, countryOf } from "@/lib/cities";
 import { localized } from "@/lib/localText";
 
 // The React/MapLibre integration kept rendering blank, while the standalone page
@@ -30,7 +30,7 @@ export default function HeroMap({ title }: { title: string }) {
     const win = iframeRef.current?.contentWindow;
     if (!ready || !win) return;
     // The embed hides past events itself.
-    win.postMessage({ type: "setEvents", events: events.map((e) => ({ ...localized(e, locale), color: cityColor(e.city) })) }, "*");
+    win.postMessage({ type: "setEvents", events: events.map((e) => ({ ...localized(e, locale), color: cityColor(e.city, countryOf(e)) })) }, "*");
     win.postMessage({ type: "setPlaces", places: places.map((p) => localized(p, locale)) }, "*");
   }, [ready, events, places, locale]);
 

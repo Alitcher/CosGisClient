@@ -43,7 +43,7 @@ export default async function EventPage({ params }: Props) {
   const t = await getTranslations("Detail");
   const txt = localText(e, locale);
   const times = fmtTimes(e.startTime, e.endTime);
-  const chip = cityChip(e.city);
+  const chip = cityChip(e.city, countryOf(e));
 
   return (
     <>

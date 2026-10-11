@@ -102,7 +102,7 @@ export default function EventsPage() {
                     <h3><Link className="title-link" href={`/events/${e.id}`}>{localText(e, locale).name}</Link></h3>
                     <div className="meta">
                       <span>📍 <b>{e.venue}</b></span>
-                      <span className={`chip ${cityChip(e.city).className}`} style={cityChip(e.city).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
+                      <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
                       {e.endDate && e.endDate > e.date && <span>🗓️ {fmtRange(e.date, e.endDate)}</span>}
                       {times && <span>🕐 {times}</span>}
                     </div>

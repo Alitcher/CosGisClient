@@ -8,7 +8,7 @@ import MiniCalendar from "./MiniCalendar";
 import { useEventStore } from "@/lib/eventsStore";
 import { usePlaceStore } from "@/lib/placesStore";
 import { splitDate, eventEndsOn } from "@/lib/data";
-import { cityColor, cityCountries, citiesIn, cityLabel, countriesIn } from "@/lib/cities";
+import { cityColor, cityCountries, citiesIn, cityLabel, countriesIn, countryOf } from "@/lib/cities";
 import { DEFAULT_FILTERS, filterEvents, filterPlaces, todayISO, type MapFilters as Filters } from "@/lib/mapFilters";
 import EventThumb from "./EventThumb";
 import MapFilters from "./MapFilters";
@@ -47,7 +47,7 @@ export default function MapView() {
   // push the filtered (possibly admin-edited) events + places into the map
   useEffect(() => {
     // The embed has no colour table for cities outside the old Finnish list, so send each one's colour.
-    if (ready) post({ type: "setEvents", events: list.map((e) => ({ ...localized(e, locale), color: cityColor(e.city) })) });
+    if (ready) post({ type: "setEvents", events: list.map((e) => ({ ...localized(e, locale), color: cityColor(e.city, countryOf(e)) })) });
   }, [ready, list, locale]);
   useEffect(() => {
     if (ready) post({ type: "setPlaces", places: shownPlaces.map((p) => localized(p, locale)) });
@@ -74,6 +74,7 @@ export default function MapView() {
   // only lists what's currently shown.
   const optionItems = [...upcoming, ...places];
   const legendCities = citiesIn(list);
+  const legendCountry = cityCountries(list);
 
   return (
     <div className="map-layout">
@@ -130,13 +131,13 @@ export default function MapView() {
         />
         <div className="map-legend">
           {shownPlaces.some((p) => !isPracticeType(p.type)) && (
-            <div className="legend-row"><span className="sw" style={{ background: "#8b5cf6", borderRadius: 3 }} /> {t("legendSpots")}</div>
+            <div className="legend-row"><span className="sw" style={{ background: "#9e3039", borderRadius: 3 }} /> {t("legendSpots")}</div>
           )}
           {shownPlaces.some((p) => isPracticeType(p.type)) && (
             <div className="legend-row"><span className="sw" style={{ background: "#0ea5e9", borderRadius: 3 }} /> {t("legendPractice")}</div>
           )}
           {legendCities.map((c) => (
-            <div className="legend-row" key={c}><span className="sw" style={{ background: cityColor(c) }} /> {t("legendCity", { city: cityLabel(c) })}</div>
+            <div className="legend-row" key={c}><span className="sw" style={{ background: cityColor(c, legendCountry.get(c)) }} /> {t("legendCity", { city: cityLabel(c) })}</div>
           ))}
         </div>
         <MiniCalendar />
