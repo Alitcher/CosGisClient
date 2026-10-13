@@ -273,6 +273,11 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .ev-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; transition: transform .18s ease; }
 .ev-card:hover { transform: translateY(-4px); }
 .ev-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+/* "Today" icon on the top-left corner of the card (events on today only). */
+.ev-card { position: relative; }
+.today-badge { position: absolute; top: -12px; left: -12px; z-index: 1; display: flex; align-items: center; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)); }
+.today-badge img { position: relative; z-index: 1; } /* icon on top of the label start, so there is no gap */
+.today-badge span { margin-left: -16px; background: #006aa7; color: var(--gold); padding: 3px 8px 3px 22px; border-radius: 2px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.2; }
 .ev-date { display: flex; align-items: baseline; gap: 8px; }
 .ev-time { margin-top: 2px; font-size: 13px; font-weight: 700; color: var(--text-1); }
 .ev-date .d { font-size: 30px; font-weight: 900; letter-spacing: -0.03em; }
@@ -425,6 +430,9 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .ev-rows { display: flex; flex-direction: column; gap: 12px; }
 .row { display: grid; grid-template-columns: 76px 1fr auto; gap: 18px; align-items: center; padding: 16px 20px; transition: transform .15s ease, border-color .15s ease; }
 .row:hover { transform: translateX(4px); border-color: var(--border-strong); }
+/* An event that is on today: Swedish flag yellow. */
+.card.is-today, .card.is-today:hover { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 28%, var(--surface)); box-shadow: 0 0 0 1px var(--gold); }
+:root[data-theme="dark"] .card.is-today { background: color-mix(in srgb, var(--gold) 14%, var(--surface)); }
 .r-date { text-align: center; border-right: 2px solid var(--border); padding-right: 16px; }
 .r-date .d { font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
 .r-date .m { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; }

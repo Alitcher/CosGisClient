@@ -19,6 +19,7 @@ export default function UpcomingEvents() {
   const locale = useLocale();
   const tp = useTranslations("Price");
   const tc = useTranslations("Common");
+  const tCal = useTranslations("Calendar");
   const now = new Date();
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const upcoming = events
@@ -34,12 +35,16 @@ export default function UpcomingEvents() {
         const times = fmtTimes(e.startTime, e.endTime);
         const txt = localText(e, locale);
         return (
-          <div className="card ev-card" key={e.id}>
+          <div className={`card ev-card${e.date <= todayISO ? " is-today" : ""}`} key={e.id}>
             <div className="ev-card-head">
               <div className="ev-when">
                 <div className="ev-date"><span className="d">{day}</span><span className="m">{mon}</span></div>
                 {times && <div className="ev-time">{times}</div>}
               </div>
+              {e.date <= todayISO && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <span className="today-badge"><img src="/today.svg" width={34} height={34} alt="" /><span>{tCal("today")}</span></span>
+              )}
               <EventThumb event={e} size={56} />
             </div>
             <h4><Link className="title-link" href={`/events/${e.id}`}>{txt.name}</Link></h4>

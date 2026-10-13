@@ -95,7 +95,7 @@ export default function EventsPage() {
             const { day, mon, year } = splitDate(e.date);
             const times = fmtTimes(e.startTime, e.endTime);
             return (
-              <div className="card row" key={e.id}>
+              <div className={`card row${e.date <= todayISO && eventEndsOn(e) >= todayISO ? " is-today" : ""}`} key={e.id}>
                 <div className="r-date">
                   <div className="d">{day}</div>
                   <div className="m">{mon}</div>
