@@ -444,6 +444,10 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .r-main .meta b { color: var(--text-0); font-weight: 700; }
 .r-cta { display: flex; gap: 9px; align-items: center; }
 .r-buttons { display: flex; gap: 9px; }
+/* Month heading in the events list: a line with the month name in the middle. */
+.month-divider { display: flex; align-items: center; gap: 14px; margin: 18px 0 4px; color: var(--text-1); font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; }
+.month-divider::before, .month-divider::after { content: ""; flex: 1; height: 1px; background: var(--border-strong); }
+.month-divider:first-child { margin-top: 0; }
 /* Same-width box for every thumbnail, so the text column starts at the same place on each row. */
 .r-thumb { flex: none; width: 180px; height: 96px; display: flex; align-items: center; justify-content: center; }
 .r-thumb .ev-logo { max-width: 100% !important; object-fit: contain; }

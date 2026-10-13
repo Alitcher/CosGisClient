@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { localText } from "@/lib/localText";
 import { Link } from "@/i18n/navigation";
@@ -26,6 +26,8 @@ const WHEN_LABEL = { Upcoming: "upcoming", Past: "past", All: "all" } as const;
 export default function EventsPage() {
   const t = useTranslations("Events");
   const locale = useLocale();
+  // Gregorian calendar also in Thai (the default there is the Buddhist year).
+  const monthFmt = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", calendar: "gregory" });
   const tc = useTranslations("Common");
   const tp = useTranslations("Price");
   const { events } = useEventStore();
@@ -91,11 +93,17 @@ export default function EventsPage() {
         </div>
 
         <div className="ev-rows">
-          {list.map((e) => {
+          {list.map((e, i) => {
             const { day, mon, year } = splitDate(e.date);
             const times = fmtTimes(e.startTime, e.endTime);
+            // A "November 2026" divider before the first event of each month.
+            const newMonth = i === 0 || list[i - 1]!.date.slice(0, 7) !== e.date.slice(0, 7);
             return (
-              <div className={`card row${e.date <= todayISO && eventEndsOn(e) >= todayISO ? " is-today" : ""}`} key={e.id}>
+              <Fragment key={e.id}>
+              {newMonth && (
+                <div className="month-divider"><span>{monthFmt.format(new Date(`${e.date.slice(0, 7)}-15T12:00:00`))}</span></div>
+              )}
+              <div className={`card row${e.date <= todayISO && eventEndsOn(e) >= todayISO ? " is-today" : ""}`}>
                 <div className="r-date">
                   <div className="d">{day}</div>
                   <div className="m">{mon}</div>
@@ -122,6 +130,7 @@ export default function EventsPage() {
                   <span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span>
                 </div>
               </div>
+              </Fragment>
             );
           })}
           {list.length === 0 && (
