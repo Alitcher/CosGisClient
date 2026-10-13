@@ -440,6 +440,7 @@ export default function AdminDashboard() {
                 {/* Typing searches places; picking one fills the coordinates (country + city follow). */}
                 <AddressAutocomplete
                   keepText
+                  country={eventForm.country}
                   value={eventForm.venue}
                   onChange={(v) => setE("venue", v)}
                   onSelect={(r) => setEventForm((f) => ({ ...f, lng: String(r.lng), lat: String(r.lat) }))}
@@ -488,6 +489,7 @@ export default function AdminDashboard() {
               <div className="field">
                 <label>Address</label>
                 <AddressAutocomplete
+                  country={placeForm.country}
                   value={placeForm.address}
                   onChange={(v) => setP("address", v)}
                   onSelect={(r) => setPlaceForm((f) => ({ ...f, lng: String(r.lng), lat: String(r.lat) }))}

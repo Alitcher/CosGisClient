@@ -53,7 +53,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
     if (!f.name.trim()) return alert(t("required"));
     let lng = Number(f.lng), lat = Number(f.lat), city = f.city.trim();
     if (f.lng === "" || f.lat === "") {
-      const hit = (await geocode(f.address).catch(() => []))[0];
+      const hit = (await geocode(f.address, undefined, f.country).catch(() => []))[0];
       if (!hit) return alert(t("needCoords"));
       lng = hit.lng; lat = hit.lat;
       if (!city && hit.city) city = hit.city;
@@ -115,6 +115,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
               <div className="field">
                 <label>{t("address")}</label>
                 <AddressAutocomplete
+                  country={f.country}
                   value={f.address}
                   onChange={(v) => setF((s) => ({ ...s, address: v, lng: "", lat: "" }))}
                   onSelect={(r) => {

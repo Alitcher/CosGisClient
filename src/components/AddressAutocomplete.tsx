@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { geocode, type GeoResult } from "@/lib/geocode";
+import type { Country } from "@/types";
 
 /**
  * Type-ahead address / place / postcode search with a clickable suggestion list,
@@ -18,12 +19,14 @@ export default function AddressAutocomplete({
   onSelect,
   placeholder,
   keepText = false,
+  country,
 }: {
   value: string;
   onChange: (text: string) => void;
   onSelect: (result: GeoResult) => void;
   placeholder?: string;
   keepText?: boolean;
+  country?: Country; // favor results in this country
 }) {
   const [items, setItems] = useState<GeoResult[]>([]);
   const [open, setOpen] = useState(false);
@@ -31,6 +34,9 @@ export default function AddressAutocomplete({
   const [active, setActive] = useState(-1);
   const skipNext = useRef(false); // don't re-search the text we just filled in
   const typed = useRef(false); // the user has typed since mount
+  // Read at search time only: picking a result sets the country, which must not reopen the list.
+  const countryRef = useRef(country);
+  useEffect(() => { countryRef.current = country; }, [country]);
 
   useEffect(() => {
     if (!typed.current) return;
@@ -40,7 +46,7 @@ export default function AddressAutocomplete({
     const ctrl = new AbortController();
     setBusy(true);
     const timer = setTimeout(async () => {
-      const res = await geocode(q, ctrl.signal);
+      const res = await geocode(q, ctrl.signal, countryRef.current);
       setItems(res);
       setOpen(res.length > 0);
       setActive(-1);

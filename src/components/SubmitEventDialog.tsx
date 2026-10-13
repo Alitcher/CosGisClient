@@ -48,7 +48,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
     if ((!f.endDate || f.endDate === f.date) && f.startTime && f.endTime && f.endTime < f.startTime) return alert(t("endTimeBeforeStart"));
     let lng = Number(f.lng), lat = Number(f.lat), city = f.city.trim();
     if (f.lng === "" || f.lat === "") {
-      const hit = (await geocode(locQuery).catch(() => []))[0];
+      const hit = (await geocode(locQuery, undefined, f.country).catch(() => []))[0];
       if (!hit) return alert(t("needCoords"));
       lng = hit.lng; lat = hit.lat;
       if (!city && hit.city) city = hit.city;
@@ -115,6 +115,7 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
               <div className="field">
                 <label>{t("location")}</label>
                 <AddressAutocomplete
+                  country={f.country}
                   value={locQuery}
                   onChange={(v) => { setLocQuery(v); setF((s) => ({ ...s, lng: "", lat: "" })); }}
                   onSelect={(r) => {
