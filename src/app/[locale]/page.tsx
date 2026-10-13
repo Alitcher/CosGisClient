@@ -9,6 +9,8 @@ import UpcomingEvents from "@/components/UpcomingEvents";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import SubmitSpotDialog from "@/components/SubmitSpotDialog";
 import HotSpots from "@/components/HotSpots";
+import { listLiveEvents } from "@/lib/serverData";
+import { eventEndsOn } from "@/lib/data";
 
 /** Search-engine title, description and language links (lib/seo.ts). */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -20,6 +22,16 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   setRequestLocale(locale as Locale);
   const t = await getTranslations("Home");
   const tc = await getTranslations("Common");
+
+  // Hero numbers from the real data: upcoming live events, their venues and cities.
+  // (The event list is cached for an hour; Helsinki date decides what "upcoming" is.)
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Helsinki" }).format(new Date());
+  const upcoming = (await listLiveEvents()).filter((e) => e.status === "live" && eventEndsOn(e) >= today);
+  const stats = {
+    events: upcoming.length,
+    venues: new Set(upcoming.map((e) => e.venue.trim().toLowerCase())).size,
+    cities: new Set(upcoming.map((e) => `${e.country ?? "FI"}:${e.city}`)).size,
+  };
 
   return (
     <>
@@ -40,11 +52,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <HeroMap title={t("mapTitle")} />
           </div>
 
-          <div className="hero-stats">
-            <div className="stat"><div className="n">12</div><div className="l">{t("statConventions")}</div></div>
-            <div className="stat"><div className="n">7</div><div className="l">{t("statVenues")}</div></div>
-            <div className="stat"><div className="n">3</div><div className="l">{t("statCities")}</div></div>
-          </div>
+          {/* Hidden when the API is down, rather than showing zeros. */}
+          {stats.events > 0 && (
+            <div className="hero-stats">
+              <div className="stat"><div className="n">{stats.events}</div><div className="l">{t("statConventions")}</div></div>
+              <div className="stat"><div className="n">{stats.venues}</div><div className="l">{t("statVenues")}</div></div>
+              <div className="stat"><div className="n">{stats.cities}</div><div className="l">{t("statCities")}</div></div>
+            </div>
+          )}
         </div>
       </section>
 
