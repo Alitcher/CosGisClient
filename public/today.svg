@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <!-- "Happening today": a calendar page in Swedish flag colours with a star. -->
+  <!-- page -->
+  <rect x="3" y="6" width="34" height="31" rx="5" fill="#fecc02" stroke="#ffffff" stroke-width="2"/>
+  <!-- blue header band -->
+  <path d="M8 7h24a4 4 0 0 1 4 4v4H4v-4a4 4 0 0 1 4-4z" fill="#006aa7"/>
+  <!-- binder rings -->
+  <rect x="11" y="2" width="4" height="9" rx="2" fill="#ffffff" stroke="#006aa7" stroke-width="1.5"/>
+  <rect x="25" y="2" width="4" height="9" rx="2" fill="#ffffff" stroke="#006aa7" stroke-width="1.5"/>
+  <!-- star for "today" -->
+  <path d="M20 17.5l2.5 5.1 5.6 0.8-4.05 3.95 0.95 5.6L20 30.3l-5 2.65 0.95-5.6-4.05-3.95 5.6-0.8z" fill="#006aa7"/>
+</svg>

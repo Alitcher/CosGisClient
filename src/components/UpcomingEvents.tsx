@@ -50,7 +50,7 @@ export default function UpcomingEvents() {
             <h4><Link className="title-link" href={`/events/${e.id}`}>{txt.name}</Link></h4>
             <div className="ev-meta">{e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} height={15} />{cityLabel(e.city)}, {countryLabel(countryOf(e), locale)}</span></div>
             <TransitBadges transit={e.transit} />
-            {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
+            {txt.description && <p className="muted card-desc" style={{ fontSize: 13 }}>{txt.description}</p>}
             <div className="ev-actions"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span><div className="flex gap-sm"><Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link><ShareButton title={txt.name} path={`/events/${e.id}`} /></div></div>
           </div>
         );

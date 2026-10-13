@@ -61,7 +61,7 @@ export default function SpotCard({ place: p }: { place: Place }) {
           <span className={`chip ${cityChip(p.city, countryOf(p)).className}`} style={cityChip(p.city, countryOf(p)).style}><CountryFlag country={countryOf(p)} height={15} />{cityLabel(p.city)}, {countryLabel(countryOf(p), locale)}</span>
         </div>
         <TransitBadges transit={p.transit} />
-        {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
+        {txt.description && <p className="muted card-desc" style={{ fontSize: 13 }}>{txt.description}</p>}
         {isPracticeType(p.type) && <PracticeDetails place={p} />}
         <div className="spot-themes">
           {p.themes.map((t) => (
