@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
-import { cityChip, citiesIn, cityLabel, countryOf } from "@/lib/cities";
+import { cityChip, citiesIn, cityLabel, countryLabel, countryOf } from "@/lib/cities";
 import CountryFlag from "@/components/CountryFlag";
 import SearchBox from "@/components/SearchBox";
 import ShareButton from "@/components/ShareButton";
@@ -103,21 +103,23 @@ export default function EventsPage() {
                   {times && <div className="t">{times}</div>}
                 </div>
                 <div className="r-main r-with-thumb">
-                  <EventThumb event={e} size={52} />
+                  <div className="r-thumb"><EventThumb event={e} size={96} /></div>
                   <div>
                     <h3><Link className="title-link" href={`/events/${e.id}`}>{localText(e, locale).name}</Link></h3>
                     <div className="meta">
                       <span><b>{e.venue}</b></span>
-                      <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span>
+                      <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} height={15} />{cityLabel(e.city)}, {countryLabel(countryOf(e), locale)}</span>
                       {e.endDate && e.endDate > e.date && <span>{fmtRange(e.date, e.endDate)}</span>}
                     </div>
                     <TransitBadges transit={e.transit} />
-                    <div className="card-foot"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon />{priceLabel(e, tp)}</span></div>
+                    <div className="card-foot r-buttons">
+                      <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link>
+                      <ShareButton title={localText(e, locale).name} path={`/events/${e.id}`} />
+                    </div>
                   </div>
                 </div>
                 <div className="r-cta">
-                  <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link>
-                  <ShareButton title={localText(e, locale).name} path={`/events/${e.id}`} />
+                  <span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span>
                 </div>
               </div>
             );

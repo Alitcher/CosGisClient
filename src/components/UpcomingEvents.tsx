@@ -3,10 +3,11 @@
 import { useLocale, useTranslations } from "next-intl";
 import { splitDate, eventEndsOn, fmtTimes } from "@/lib/data";
 import { localText } from "@/lib/localText";
-import { cityChip, cityLabel, countryOf } from "@/lib/cities";
+import { cityChip, cityLabel, countryLabel, countryOf } from "@/lib/cities";
 import { useEventStore } from "@/lib/eventsStore";
 import EventThumb from "./EventThumb";
 import ShareButton from "./ShareButton";
+import Icon from "./Icon";
 import { Link } from "@/i18n/navigation";
 import CountryFlag from "./CountryFlag";
 import TransitBadges from "./TransitBadges";
@@ -17,6 +18,7 @@ export default function UpcomingEvents() {
   const { events } = useEventStore();
   const locale = useLocale();
   const tp = useTranslations("Price");
+  const tc = useTranslations("Common");
   const now = new Date();
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const upcoming = events
@@ -41,10 +43,10 @@ export default function UpcomingEvents() {
               <EventThumb event={e} size={56} />
             </div>
             <h4><Link className="title-link" href={`/events/${e.id}`}>{txt.name}</Link></h4>
-            <div className="ev-meta">{e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} />{cityLabel(e.city)}</span></div>
+            <div className="ev-meta">{e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} height={15} />{cityLabel(e.city)}, {countryLabel(countryOf(e), locale)}</span></div>
             <TransitBadges transit={e.transit} />
             {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
-            <div className="ev-actions"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon />{priceLabel(e, tp)}</span><ShareButton title={txt.name} path={`/events/${e.id}`} /></div>
+            <div className="ev-actions"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span><div className="flex gap-sm"><Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link><ShareButton title={txt.name} path={`/events/${e.id}`} /></div></div>
           </div>
         );
       })}

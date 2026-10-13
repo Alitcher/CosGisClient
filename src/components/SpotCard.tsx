@@ -8,6 +8,8 @@ import { Link } from "@/i18n/navigation";
 import Icon from "./Icon";
 import { isPracticeType, type Place } from "@/types";
 import TicketIcon from "@/components/TicketIcon";
+import CountryFlag from "./CountryFlag";
+import { cityChip, cityLabel, countryLabel, countryOf } from "@/lib/cities";
 
 /** Booking / price / facilities rows for practice places (Practice tab). */
 function PracticeDetails({ place: p }: { place: Place }) {
@@ -39,7 +41,8 @@ export default function SpotCard({ place: p }: { place: Place }) {
   const tType = useTranslations("PlaceTypes");
   const tp = useTranslations("Price");
   const photo = p.photos[0]?.url;
-  const txt = localText(p, useLocale());
+  const locale = useLocale();
+  const txt = localText(p, locale);
   return (
     <div className="card spot">
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -53,7 +56,10 @@ export default function SpotCard({ place: p }: { place: Place }) {
             <ShareButton title={txt.name} path={`/spots/${p.id}`} />
           </div>
         </div>
-        <div className="spot-meta">{p.address ?? p.city}</div>
+        <div className="spot-where">
+          {p.address && <span>{p.address}</span>}
+          <span className={`chip ${cityChip(p.city, countryOf(p)).className}`} style={cityChip(p.city, countryOf(p)).style}><CountryFlag country={countryOf(p)} height={15} />{cityLabel(p.city)}, {countryLabel(countryOf(p), locale)}</span>
+        </div>
         <TransitBadges transit={p.transit} />
         {txt.description && <p className="muted" style={{ fontSize: 13 }}>{txt.description}</p>}
         {isPracticeType(p.type) && <PracticeDetails place={p} />}
@@ -63,7 +69,7 @@ export default function SpotCard({ place: p }: { place: Place }) {
           ))}
         </div>
         {/* Entry, bottom-left: "Paid" only when marked paid, otherwise free (the default). */}
-        <div className="card-foot"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}><TicketIcon />{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
+        <div className="card-foot"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}><TicketIcon size={20} />{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
       </div>
     </div>
   );
