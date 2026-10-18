@@ -112,7 +112,7 @@ export default function EventsPage() {
                 </div>
                 <div className="r-main r-with-thumb">
                   <div className="r-thumb"><EventThumb event={e} size={96} /></div>
-                  <div>
+                  <div className="r-text">
                     <h3><Link className="title-link" href={`/events/${e.id}`}>{localText(e, locale).name}</Link></h3>
                     <div className="meta">
                       <span><b>{e.venue}</b></span>
