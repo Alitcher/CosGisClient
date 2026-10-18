@@ -675,6 +675,10 @@ tbody tr:hover { background: var(--surface-2); }
 .field-note.warn { color: #e5484d; }
 /* Admin Pending tab: event / local community dropdown. */
 .kind-select { padding: 6px 8px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text-0); font-family: inherit; font-size: 13px; }
+/* Admin > History (AdminHistory): undone lines faded, the current point marked. */
+.hist-undone td { opacity: 0.55; }
+.hist-current td { background: color-mix(in srgb, var(--primary-2) 6%, transparent); }
+.hist-btn { padding: 6px 12px; font-size: 13px; white-space: nowrap; }
 .import-select { padding: 10px 12px; font-size: 14px; } /* admin Pending tab: import source */
 /* Home page section filters (SectionFilters): Filters button + chips, slide-in panel. */
 .sf-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -6px 0 18px; }

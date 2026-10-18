@@ -351,7 +351,7 @@
     "monthly3": "{day}ที่ 3 ของเดือน",
     "monthly4": "{day}ที่ 4 ของเดือน",
     "monthlyLast": "{day}สุดท้ายของเดือน",
-    "custom": "ตามวันที่กำหนด",
+    "custom": "จัดเป็นประจำ",
     "next": "ครั้งถัดไป: {date}",
     "yearTitle": "นัดพบในปี {year}",
     "yearCount": "ปีนี้มีนัดพบ {count} ครั้ง",

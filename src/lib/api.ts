@@ -18,11 +18,48 @@ const API =
 
 // The admin token is entered at the /admin login screen and read from
 // sessionStorage at call time - it is never embedded in the public bundle.
+/** While set, admin writes are one action in Admin > History (see asOneAction). */
+let historyAction: { group: string; label: string } | null = null;
+
 function adminHeaders(): HeadersInit {
   return {
     "Content-Type": "application/json",
     Authorization: `Bearer ${getAdminToken()}`,
+    ...(historyAction ? { "X-History-Group": historyAction.group, "X-History-Label": historyAction.label } : {}),
   };
+}
+
+/**
+ * Run several admin writes as ONE line in Admin > History (one undo), e.g. a combine or
+ * "Approve all". Without it every request is its own line.
+ */
+export async function asOneAction<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  historyAction = { group: crypto.randomUUID(), label: label.slice(0, 200) };
+  try {
+    return await fn();
+  } finally {
+    historyAction = null;
+  }
+}
+
+/* ---------------- Admin history (api-service /v1/admin/history) ---------------- */
+
+/** One admin action and the rows it changed (newest first from the API). */
+export type HistoryGroup = {
+  group: string; at: string; actor: string; label: string; undone: boolean;
+  rows: { table: "events" | "places"; id: string; name: string; change: "created" | "edited" | "deleted" }[];
+};
+export async function apiListHistory(limit = 100): Promise<HistoryGroup[]> {
+  return jsonOrThrow(await fetch(`${API}/v1/admin/history?limit=${limit}`, { headers: adminHeaders() }), "GET /v1/admin/history");
+}
+/** undo / redo one action, or jump: make the data look like right after it. 409 = later changes touch the same rows. */
+export async function apiHistoryAction(group: string, action: "undo" | "redo" | "jump"): Promise<void> {
+  const res = await fetch(`${API}/v1/admin/history/${encodeURIComponent(group)}/${action}`, { method: "POST", headers: adminHeaders() });
+  if (res.ok) return;
+  // The server explains a refusal, e.g. which later changes are in the way.
+  const body = (await res.json().catch(() => null)) as { error?: string; conflicts?: string[] } | null;
+  const why = [body?.error, body?.conflicts?.length ? `In the way: ${body.conflicts.join(", ")}` : ""].filter(Boolean).join("\n");
+  throw new ApiError(why || `POST /v1/admin/history/${action} -> ${res.status}`, res.status);
 }
 
 /** A failed API call; `status` is the HTTP status (409 = duplicate submission). */

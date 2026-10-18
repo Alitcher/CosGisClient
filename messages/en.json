@@ -351,7 +351,7 @@
     "monthly3": "3rd {day} of the month",
     "monthly4": "4th {day} of the month",
     "monthlyLast": "Last {day} of the month",
-    "custom": "On selected dates",
+    "custom": "Recurring",
     "next": "Next: {date}",
     "yearTitle": "Meetings in {year}",
     "yearCount": "{count, plural, one {# meeting} other {# meetings}} this year",

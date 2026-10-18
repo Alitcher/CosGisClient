@@ -32,10 +32,12 @@ import {
   apiSyncSource,
   IMPORT_SOURCES,
   type ImportRoute,
+  asOneAction,
 } from "@/lib/api";
+import AdminHistory from "./AdminHistory";
 import { isPracticeType, FACILITIES, type Event, type Place, type TransitStop, type City, type Country, type Lang, type I18n, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
-type Tab = "events" | "spots" | "pending";
+type Tab = "events" | "spots" | "pending" | "history";
 
 /** A row in the Pending tab - either a pending event or a pending place. Keeps
  *  the full record so the admin can open it in the edit drawer before approving. */
@@ -142,13 +144,17 @@ export default function AdminDashboard() {
     if (items.length === 0) return;
     setBusy(true);
     try {
-      for (const it of items) {
-        if (action === "approve") {
-          if (it.kind === "event") await apiApproveEvent(it.id); else await apiApprovePlace(it.id);
-        } else {
-          if (it.kind === "event") await apiDeleteEvent(it.id); else await apiDeletePlace(it.id);
+      // One line in Admin > History for the whole batch, so one undo brings them all back.
+      const what = items.length === 1 ? items[0].name : `${items.length} requests`;
+      await asOneAction(`${action === "approve" ? "Approve" : "Reject"} ${what}`, async () => {
+        for (const it of items) {
+          if (action === "approve") {
+            if (it.kind === "event") await apiApproveEvent(it.id); else await apiApprovePlace(it.id);
+          } else {
+            if (it.kind === "event") await apiDeleteEvent(it.id); else await apiDeletePlace(it.id);
+          }
         }
-      }
+      });
       await Promise.all([loadPending(), refreshEvents(), refreshPlaces()]);
     } catch (err) {
       fail(action === "approve" ? "approve the request(s)" : "reject the request(s)", err);
@@ -195,8 +201,10 @@ export default function AdminDashboard() {
     if (!confirm(`Combine ${evs.length} events into one Local community meetup "${keep.name}" with ${count} date(s)?\nThe other ${plan.draftIds.length} row(s) are set to draft (not deleted).`)) return;
     setBusy(true);
     try {
-      await updateEvent(plan.keepId, plan.patch);
-      for (const id of plan.draftIds) await updateEvent(id, { status: "draft" });
+      await asOneAction(`Combine ${evs.length} events: ${keep.name}`, async () => {
+        await updateEvent(plan.keepId, plan.patch);
+        for (const id of plan.draftIds) await updateEvent(id, { status: "draft" });
+      });
       await loadPending();
       setEventSel(new Set());
     } catch (err) { fail("combine the events", err); }
@@ -216,8 +224,10 @@ export default function AdminDashboard() {
     if (!confirm(`Combine ${ps.length} spots into "${keep.name}"? Themes, photos and missing details are merged.\nThe other ${plan.draftIds.length} spot(s) are set to draft (not deleted).`)) return;
     setBusy(true);
     try {
-      await updatePlace(plan.keepId, plan.patch);
-      for (const id of plan.draftIds) await updatePlace(id, { status: "draft" });
+      await asOneAction(`Combine ${ps.length} spots: ${keep.name}`, async () => {
+        await updatePlace(plan.keepId, plan.patch);
+        for (const id of plan.draftIds) await updatePlace(id, { status: "draft" });
+      });
       setPlaceSel(new Set());
     } catch (err) { fail("combine the spots", err); }
     finally { setBusy(false); }
@@ -364,12 +374,14 @@ export default function AdminDashboard() {
       <div className="admin-shell">
         <div className="admin-head">
           <div>
-            <h1>{tab === "pending" ? "Pending requests" : `Manage ${tab === "events" ? "events" : "spots"}`}</h1>
+            <h1>{tab === "pending" ? "Pending requests" : tab === "history" ? "History" : `Manage ${tab === "events" ? "events" : "spots"}`}</h1>
             <p>{tab === "pending"
               ? "Approve or reject community submissions and imported events. Approved items go live on the map."
+              : tab === "history"
+              ? "Every admin change, newest first. Undo or redo a change, or jump back to any point."
               : `Add, edit and remove ${tab === "events" ? "conventions" : "cosplay-friendly places"}. Saved to the server database.`}</p>
           </div>
-          {tab !== "pending" && <button className="btn" type="button" onClick={addNew}>+ Add {tab === "events" ? "event" : "spot"}</button>}
+          {(tab === "events" || tab === "spots") && <button className="btn" type="button" onClick={addNew}>+ Add {tab === "events" ? "event" : "spot"}</button>}
         </div>
 
         {/* tab switch */}
@@ -377,9 +389,12 @@ export default function AdminDashboard() {
           <button className={tab === "events" ? "on" : ""} type="button" onClick={() => setTab("events")}>Events</button>
           <button className={tab === "spots" ? "on" : ""} type="button" onClick={() => setTab("spots")}>Spots</button>
           <button className={tab === "pending" ? "on" : ""} type="button" onClick={() => setTab("pending")}>Pending{pendingItems.length ? ` (${pendingItems.length})` : ""}</button>
+          <button className={tab === "history" ? "on" : ""} type="button" onClick={() => setTab("history")}>History</button>
         </div>
 
-        {tab !== "pending" && (
+        {tab === "history" && <AdminHistory onChanged={() => Promise.all([loadPending(), refreshEvents(), refreshPlaces()])} />}
+
+        {(tab === "events" || tab === "spots") && (
           <div className="grid stats">
             {tab === "events" ? (
               <>
@@ -399,7 +414,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {tab !== "pending" && (
+        {(tab === "events" || tab === "spots") && (
           <div className="a-toolbar">
             <div className="a-search"><Icon name="search" size={16} /><input placeholder={`Search ${tab}...`} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
             {tab === "events" ? (

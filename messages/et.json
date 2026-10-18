@@ -351,7 +351,7 @@
     "monthly3": "Kuu 3. {day}",
     "monthly4": "Kuu 4. {day}",
     "monthlyLast": "Kuu viimane {day}",
-    "custom": "Valitud kuupäevadel",
+    "custom": "Korduv",
     "next": "Järgmine: {date}",
     "yearTitle": "Kohtumised aastal {year}",
     "yearCount": "{count, plural, one {# kohtumine} other {# kohtumist}} sel aastal",
