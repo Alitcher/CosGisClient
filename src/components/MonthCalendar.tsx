@@ -35,9 +35,14 @@ export default function MonthCalendar() {
   // Not while a share window opened from the card is up (closing the card would close it too).
   const sharing = () => !!document.querySelector(".share-dialog");
   const closeSoon = () => { keepOpen(); closeTimer.current = setTimeout(() => { if (sharing()) closeSoon(); else setPeek(null); }, 180); };
+  const openedAtScroll = useRef(0);
+  // Mouse: hover opens / leaving closes. Touch and pen: one tap opens (a phone fakes mouse
+  // events on a tap, which used to open and close it again at once).
+  const isMouse = (ev: React.PointerEvent) => ev.pointerType === "mouse";
   function show(e: Event, dayISO: string, el: HTMLElement) {
     keepOpen();
     // a repeating meetup shows the meeting on this day
+    openedAtScroll.current = window.scrollY;
     setPeek({ event: e.recurrence ? { ...e, date: dayISO, endDate: undefined } : e, rect: el.getBoundingClientRect() });
   }
   // Tap outside or Escape closes it (phones have no "mouse leave").
@@ -48,7 +53,8 @@ export default function MonthCalendar() {
       if (!cardRef.current?.contains(target) && !target.closest(".ev, .share-dialog, .overlay")) setPeek(null);
     };
     const onKey = (ev: KeyboardEvent) => { if (ev.key === "Escape" && !sharing()) setPeek(null); };
-    const onScroll = () => { if (!sharing()) setPeek(null); };
+    // Close on a real scroll only (phones nudge the page a little when a button is tapped).
+    const onScroll = () => { if (!sharing() && Math.abs(window.scrollY - openedAtScroll.current) > 60) setPeek(null); };
     document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -124,9 +130,10 @@ export default function MonthCalendar() {
                   return (
                     <button
                       type="button" key={e.id} className={`ev ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}
-                      onMouseEnter={(ev) => show(e, dayISO, ev.currentTarget)} onMouseLeave={closeSoon}
-                      onFocus={(ev) => show(e, dayISO, ev.currentTarget)} onBlur={closeSoon}
+                      onPointerEnter={(ev) => { if (isMouse(ev)) show(e, dayISO, ev.currentTarget); }}
+                      onPointerLeave={(ev) => { if (isMouse(ev)) closeSoon(); }}
                       onClick={(ev) => show(e, dayISO, ev.currentTarget)}
+                      onKeyUp={(ev) => { if (ev.key === "Tab") show(e, dayISO, ev.currentTarget); }}
                     >
                       <span className="dot" />
                       {localText(e, locale).name}
@@ -149,8 +156,8 @@ export default function MonthCalendar() {
           ref={cardRef}
           className="cal-peek"
           style={peekPosition(peek.rect)}
-          onMouseEnter={keepOpen}
-          onMouseLeave={closeSoon}
+          onPointerEnter={keepOpen}
+          onPointerLeave={(ev) => { if (isMouse(ev)) closeSoon(); }}
         >
           <EventCard event={peek.event} todayISO={todayISO} />
         </div>,
