@@ -24,7 +24,7 @@ export function alternatesFor(locale: string, path: string): Metadata["alternate
 }
 
 /** Pages with their own title + description in the "Seo" messages. */
-export type SeoPage = "home" | "map" | "calendar" | "events" | "spots" | "practice" | "about" | "donate";
+export type SeoPage = "home" | "map" | "calendar" | "events" | "spots" | "practice" | "community" | "about" | "donate";
 
 /** Title, description, language links and share preview for a list page. */
 export async function pageMetadata(locale: string, page: SeoPage, path: string): Promise<Metadata> {

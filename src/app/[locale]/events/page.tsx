@@ -18,6 +18,7 @@ import TransitBadges from "@/components/TransitBadges";
 import Icon from "@/components/Icon";
 import { priceLabel, isFree } from "@/lib/price";
 import AgeTag from "@/components/AgeTag";
+import { isCommunity } from "@/lib/recurrence";
 import type { City } from "@/types";
 import TicketIcon from "@/components/TicketIcon";
 
@@ -31,7 +32,8 @@ export default function EventsPage() {
   const monthFmt = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", calendar: "gregory" });
   const tc = useTranslations("Common");
   const tp = useTranslations("Price");
-  const { events } = useEventStore();
+  // Repeating local meetups have their own page (/community).
+  const events = useEventStore().events.filter((e) => !isCommunity(e));
   const [city, setCity] = useState<City | "All cities">("All cities");
   // Only offer cities that actually have events, so nine empty chips don't pile up.
   const cityOptions: (City | "All cities")[] = ["All cities", ...citiesIn(events)];

@@ -11,6 +11,8 @@ import EventThumb from "./EventThumb";
 import Icon from "./Icon";
 import PriceFields from "./PriceFields";
 import AgeFields from "./AgeFields";
+import RepeatFields from "./RepeatFields";
+import { EMPTY_REPEAT, repeatError, repeatFields, type RepeatForm } from "@/lib/recurrence";
 import { EMPTY_AGE, ageError, ageFields, type AgeForm } from "@/lib/age";
 import { EMPTY_PRICE, priceFields, priceError, type PriceForm } from "@/lib/price";
 import type { City, Country, Lang } from "@/types";
@@ -24,14 +26,17 @@ type Form = {
   name: string; venue: string; country: Country; city: City; date: string; endDate: string;
   startTime: string; endTime: string;
   lng: string; lat: string; description: string; url: string; image: string; submittedBy: string; price: PriceForm; age: AgeForm;
+  repeat: RepeatForm; // convention or repeating community meetup
 };
-const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", submittedBy: "", price: EMPTY_PRICE, age: EMPTY_AGE };
+const EMPTY: Form = { name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", submittedBy: "", price: EMPTY_PRICE, age: EMPTY_AGE, repeat: EMPTY_REPEAT };
 
-export default function SubmitEventDialog({ className = "btn", label }: { className?: string; label?: string }) {
+/** `kind` = what the form starts as (the Local community buttons open it as a meetup). */
+export default function SubmitEventDialog({ className = "btn", label, kind = "convention" }: { className?: string; label?: string; kind?: RepeatForm["kind"] }) {
   const t = useTranslations("SubmitEvent");
   const tf = useTranslations("SubmitForm");
   const tp = useTranslations("Price");
   const ta = useTranslations("Age");
+  const tk = useTranslations("EventKind");
   const tc = useTranslations("Common");
   const locale = useLocale() as Lang; // the text is written in the UI language (used for auto-translation)
   const [open, setOpen] = useState(false);
@@ -43,12 +48,15 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
   const cityDetect = useCityFromCoords(f.lng, f.lat, (p) => setF((s) => ({ ...s, country: p.country, city: p.city ?? "" })));
 
   function close() { setOpen(false); }
-  function start() { setF(EMPTY); setLocQuery(""); setSent(false); setOpen(true); }
+  function start() { setF({ ...EMPTY, repeat: { ...EMPTY_REPEAT, kind } }); setLocQuery(""); setSent(false); setOpen(true); }
+  const community = f.repeat.kind === "community";
 
   async function submit() {
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert(t("required"));
-    if (f.endDate && f.endDate < f.date) return alert(t("endBeforeStart"));
-    if ((!f.endDate || f.endDate === f.date) && f.startTime && f.endTime && f.endTime < f.startTime) return alert(t("endTimeBeforeStart"));
+    if (!community && f.endDate && f.endDate < f.date) return alert(t("endBeforeStart"));
+    const re = repeatError(f.repeat, f.date);
+    if (re) return alert(tk(re));
+    if ((community || !f.endDate || f.endDate === f.date) && f.startTime && f.endTime && f.endTime < f.startTime) return alert(t("endTimeBeforeStart"));
     let lng = Number(f.lng), lat = Number(f.lat), city = f.city.trim();
     if (f.lng === "" || f.lat === "") {
       const hit = (await geocode(locQuery, undefined, f.country).catch(() => []))[0];
@@ -65,7 +73,8 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
     try {
       await apiSubmitEvent({
         name: f.name.trim(), venue: f.venue.trim(), lang: locale, country: f.country, city, date: f.date,
-        endDate: f.endDate || undefined,
+        endDate: (!community && f.endDate) || undefined,
+        ...repeatFields(f.repeat),
         startTime: f.startTime || undefined,
         endTime: f.endTime || undefined,
         lng, lat,
@@ -111,9 +120,10 @@ export default function SubmitEventDialog({ className = "btn", label }: { classN
               <div className="field"><label>{t("name")}</label><input value={f.name} onChange={(e) => set("name", e.target.value)} placeholder={t("namePlaceholder")} /></div>
               <div className="field"><label>{t("venue")}</label><input value={f.venue} onChange={(e) => set("venue", e.target.value)} placeholder={t("venuePlaceholder")} /></div>
               <div className="field-row">
-                <div className="field"><label>{t("startDate")}</label><input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
-                <div className="field"><label>{t("endDate")}</label><input type="date" value={f.endDate} min={f.date || undefined} onChange={(e) => set("endDate", e.target.value)} /></div>
+                <div className="field"><label>{community ? tk("firstDate") : t("startDate")}</label><input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} /></div>
+                {!community && <div className="field"><label>{t("endDate")}</label><input type="date" value={f.endDate} min={f.date || undefined} onChange={(e) => set("endDate", e.target.value)} /></div>}
               </div>
+              <RepeatFields value={f.repeat} date={f.date} onChange={(p) => set("repeat", { ...f.repeat, ...p })} />
               <div className="field-row">
                 <div className="field"><label>{t("startTime")}</label><input type="time" value={f.startTime} onChange={(e) => set("startTime", e.target.value)} /></div>
                 <div className="field"><label>{t("endTime")}</label><input type="time" value={f.endTime} onChange={(e) => set("endTime", e.target.value)} /></div>

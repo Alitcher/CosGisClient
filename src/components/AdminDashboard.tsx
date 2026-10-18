@@ -15,6 +15,8 @@ import TranslationsEditor from "./TranslationsEditor";
 import TransitEditor from "./TransitEditor";
 import PriceFields from "./PriceFields";
 import AgeFields from "./AgeFields";
+import RepeatFields from "./RepeatFields";
+import { EMPTY_REPEAT, repeatError, repeatFields, repeatForm, type RepeatForm } from "@/lib/recurrence";
 import { EMPTY_AGE, ageError, ageFields, ageForm, type AgeForm } from "@/lib/age";
 import { EMPTY_PRICE, priceFields, priceForm, priceError, type PriceForm } from "@/lib/price";
 import Icon from "./Icon";
@@ -48,6 +50,7 @@ type EventForm = {
   transit: TransitStop[] | null; // null = never checked (TransitEditor)
   price: PriceForm; // entry + price range (PriceFields)
   age: AgeForm; // suggested ages (AgeFields), "from" required
+  repeat: RepeatForm; // convention or repeating community meetup (RepeatFields)
 };
 type PlaceForm = {
   id: string | null;
@@ -62,7 +65,7 @@ type PlaceForm = {
   youthFriendly: "" | "yes" | "no"; bookingUrl: string;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null, price: EMPTY_PRICE, age: EMPTY_AGE };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null, price: EMPTY_PRICE, age: EMPTY_AGE, repeat: EMPTY_REPEAT };
 const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "", lang: "", i18n: {}, transit: null, age: EMPTY_AGE };
 
 /** Transit to save: rows without a name are dropped; never checked (null) sends nothing. */
@@ -186,7 +189,7 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null, price: priceForm(e), age: ageForm(e) });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null, price: priceForm(e), age: ageForm(e), repeat: repeatForm(e) });
     setDrawerKind("events");
     setOpen(true);
   }
@@ -206,7 +209,10 @@ export default function AdminDashboard() {
   async function saveEvent() {
     const f = eventForm;
     if (!f.name.trim() || !f.venue.trim() || !f.date) return alert("Name, venue and start date are required.");
-    if (f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
+    const community = f.repeat.kind === "community";
+    if (!community && f.endDate && f.endDate < f.date) return alert("End date can't be before the start date.");
+    const re = repeatError(f.repeat, f.date);
+    if (re) return alert(re === "needDates" ? "Add at least one more date for custom repeats." : "'Until' can't be before the first meeting.");
     if (!f.endDate && f.startTime && f.endTime && f.endTime < f.startTime) return alert("End time can't be before the start time on a one-day event.");
     if (!f.city.trim()) return alert("City is required.");
     const pe = priceError(f.price);
@@ -215,11 +221,12 @@ export default function AdminDashboard() {
     if (ae) return alert(ae === "needMin" ? "Suggested age from is required, or tick All ages." : ae === "badRange" ? "The 'to' age can't be lower than the 'from' age." : "Ages must be whole numbers, e.g. 7 or 17.");
     const data = {
       name: f.name.trim(), venue: f.venue.trim(), ...(f.lang ? { lang: f.lang } : {}), i18n: f.i18n, country: f.country, city: f.city.trim(), date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
-      ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
+      ...(f.endDate && !community ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
       ...(f.url.trim() ? { url: f.url.trim() } : {}), ...(f.image.trim() ? { image: f.image.trim() } : {}),
       ...transitField(f.transit),
       ...priceFields(f.price),
       ...ageFields(f.age),
+      ...repeatFields(f.repeat),
     };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
@@ -458,9 +465,10 @@ export default function AdminDashboard() {
                 />
               </div>
               <div className="field-row">
-                <div className="field"><label>Start date</label><input type="date" value={eventForm.date} onChange={(e) => setE("date", e.target.value)} /></div>
-                <div className="field"><label>End date (optional)</label><input type="date" value={eventForm.endDate} min={eventForm.date || undefined} onChange={(e) => setE("endDate", e.target.value)} /></div>
+                <div className="field"><label>{eventForm.repeat.kind === "community" ? "First meeting" : "Start date"}</label><input type="date" value={eventForm.date} onChange={(e) => setE("date", e.target.value)} /></div>
+                {eventForm.repeat.kind !== "community" && <div className="field"><label>End date (optional)</label><input type="date" value={eventForm.endDate} min={eventForm.date || undefined} onChange={(e) => setE("endDate", e.target.value)} /></div>}
               </div>
+              <RepeatFields value={eventForm.repeat} date={eventForm.date} onChange={(p) => setE("repeat", { ...eventForm.repeat, ...p })} />
               <div className="field-row">
                 <div className="field"><label>Start time (optional)</label><input type="time" value={eventForm.startTime} onChange={(e) => setE("startTime", e.target.value)} /></div>
                 <div className="field"><label>End time (optional)</label><input type="time" value={eventForm.endTime} onChange={(e) => setE("endTime", e.target.value)} /></div>

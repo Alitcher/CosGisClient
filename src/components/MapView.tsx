@@ -13,7 +13,9 @@ import { DEFAULT_FILTERS, filterEvents, filterPlaces, todayISO, type MapFilters 
 import EventThumb from "./EventThumb";
 import TransitBadges from "./TransitBadges";
 import MapFilters from "./MapFilters";
-import { isPracticeType } from "@/types";
+import { isPracticeType, type Event } from "@/types";
+import { asNext } from "@/lib/recurrence";
+import RepeatTag from "./RepeatTag";
 
 export default function MapView() {
   const t = useTranslations("Map");
@@ -42,7 +44,7 @@ export default function MapView() {
 
   // The map only shows today + future (past = archive), narrowed by the filter panel.
   const today = todayISO();
-  const upcoming = useMemo(() => events.filter((e) => eventEndsOn(e) >= today), [events, today]);
+  const upcoming = useMemo(() => events.map((e) => asNext(e, today)).filter((e): e is Event => !!e && eventEndsOn(e) >= today), [events, today]);
   const list = useMemo(() => filterEvents(events, filters, today), [events, filters, today]);
   const shownPlaces = useMemo(() => filterPlaces(places, filters), [places, filters]);
 
@@ -105,6 +107,7 @@ export default function MapView() {
                 <div className="li-body">
                   <h4>{localText(e, locale).name}</h4>
                   <div className="meta">{e.venue} | {cityLabel(e.city)}</div>
+                  {e.recurrence && <RepeatTag event={e} />}
                   <TransitBadges transit={e.transit} compact />
                 </div>
               </div>

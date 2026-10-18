@@ -30,6 +30,19 @@ export type Price = 'free' | 'paid';
 export type Facility = 'mirrors' | 'sound-system' | 'changing-room' | 'big-floor';
 /** Event entry (server AdmissionEnum): free, paid, or free entry with paid extras. */
 export type Admission = 'free' | 'paid' | 'mixed';
+/** convention = dated event; community = repeating local meetup (server EventKindEnum). */
+export type EventKind = 'convention' | 'community';
+/**
+ * How a community meetup repeats (server RecurrenceSchema). Weekday = the one of the event's `date`.
+ * monthly: `nth` weekday of the month (-1 = last); custom: only `date` + `dates`. See lib/recurrence.
+ */
+export type Recurrence = {
+  freq: 'weekly' | 'biweekly' | 'monthly' | 'custom';
+  nth?: 1 | 2 | 3 | 4 | -1;
+  dates?: string[];
+  until?: string; // last possible day, 'YYYY-MM-DD'
+  note?: string;
+};
 /** Kind of public transport stop (server TransitKindEnum). */
 export type TransitKind = 'metro' | 'train' | 'tram' | 'bus';
 export const TRANSIT_KINDS: readonly TransitKind[] = ['metro', 'train', 'tram', 'bus'];
@@ -65,6 +78,8 @@ export interface Event {
   priceNote?: string; // e.g. "Day ticket 15, weekend 25"
   ageMin?: number | null; // suggested ages, e.g. 7-17 (see ageLabel in lib/age); null clears on update
   ageMax?: number | null;
+  kind?: EventKind; // missing = 'convention'
+  recurrence?: Recurrence | null; // community meetups only; null clears on update
   startTime?: string; // local 'HH:MM' on `date`
   endTime?: string; // local 'HH:MM' on `endDate` (or `date`)
   transit?: TransitStop[]; // nearby stops, set by an admin (missing = never checked, [] = none close)

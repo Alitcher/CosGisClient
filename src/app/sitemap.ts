@@ -6,7 +6,7 @@ import { localePath } from "@/lib/seo";
 /** Rebuilt at most once an hour, so new events show up for search engines. */
 export const revalidate = 3600;
 
-const PAGES = ["/", "/map", "/calendar", "/events", "/spots", "/practice", "/about", "/donate"];
+const PAGES = ["/", "/map", "/calendar", "/events", "/spots", "/practice", "/community", "/about", "/donate"];
 
 /** One sitemap entry per page, listing the same page in every language (hreflang). */
 function entry(path: string, lastModified?: string, priority = 0.6): MetadataRoute.Sitemap[number] {

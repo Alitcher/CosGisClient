@@ -11,6 +11,8 @@ import ShareButton from "@/components/ShareButton";
 import TransitBadges from "@/components/TransitBadges";
 import { priceLabel, isFree } from "@/lib/price";
 import AgeTag from "@/components/AgeTag";
+import RepeatTag from "@/components/RepeatTag";
+import { nextOccurrence } from "@/lib/recurrence";
 import { getEvent, SITE_URL } from "@/lib/serverData";
 import { alternatesFor, localePath, eventJsonLd, jsonLdString } from "@/lib/seo";
 import { localText } from "@/lib/localText";
@@ -51,6 +53,9 @@ export default async function EventPage({ params }: Props) {
   const tp = await getTranslations("Price");
   const price = priceLabel(e, tp);
   const chip = cityChip(e.city, countryOf(e));
+  // Repeating meetup: show the next meeting (Helsinki date decides "today").
+  const next = e.recurrence ? nextOccurrence(e, new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Helsinki" }).format(new Date())) : null;
+  const tr = await getTranslations("Repeat");
 
   return (
     <>
@@ -64,7 +69,8 @@ export default async function EventPage({ params }: Props) {
             <EventThumb event={e} size={72} />
             <div>
               <h1>{txt.name}</h1>
-              <p className="detail-when">{fmtRange(e.date, e.endDate)}{times && ` | ${times}`}</p>
+              <p className="detail-when">{e.recurrence ? (next ? tr("next", { date: fmtRange(next) }) : fmtRange(e.date)) : fmtRange(e.date, e.endDate)}{times && ` | ${times}`}</p>
+              {e.recurrence && <div className="repeat-row"><RepeatTag event={e} />{e.recurrence.note && <span className="muted">{e.recurrence.note}</span>}</div>}
             </div>
           </div>
           <div className="detail-meta">

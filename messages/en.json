@@ -18,7 +18,8 @@
     "donate": "Donate",
     "tagline": "Nordic & Baltic",
     "toggleTheme": "Toggle light/dark mode",
-    "language": "Language"
+    "language": "Language",
+    "community": "Local community"
   },
   "Footer": {
     "copyright": "2026 CosOverHere | Nordic & Baltic | Open data from hel.kartta.fi",
@@ -30,7 +31,8 @@
     "showOnMap": "Show this location on the map",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "submitPracticeSpot": "Submit a place"
+    "submitPracticeSpot": "Submit a place",
+    "submitMeetup": "Submit a meetup"
   },
   "PlaceTypes": {
     "cafe": "Café",
@@ -51,7 +53,9 @@
     "upcomingTitle": "Upcoming conventions",
     "seeAllEvents": "See all",
     "hotSpotsTitle": "Cosplay hot spots",
-    "seeAllSpots": "See all"
+    "seeAllSpots": "See all",
+    "communityTitle": "Local community",
+    "seeAllCommunity": "See all"
   },
   "About": {
     "title": "A <grad>zero-budget</grad> cosplay map for the Helsinki region.",
@@ -136,7 +140,8 @@
     "layer": {
       "events": "Events",
       "spots": "Cosplay spots",
-      "practice": "Practice places"
+      "practice": "Practice places",
+      "community": "Local community"
     },
     "category": "Type",
     "cat": {
@@ -328,6 +333,51 @@
     "aboutTitle": "About",
     "aboutDescription": "What CosOverHere is: an open map of anime conventions, cosplay events and cosplay-friendly places in Finland, the Nordics and the Baltics.",
     "donateTitle": "Support the map",
-    "donateDescription": "Help keep CosOverHere free and ad-free for the cosplay and anime community."
+    "donateDescription": "Help keep CosOverHere free and ad-free for the cosplay and anime community.",
+    "communityTitle": "Local cosplay community meetups",
+    "communityDescription": "Regular cosplay cafes, craft workshops and library meetups in Helsinki, Finland, the Nordics and Baltics. Weekly and monthly get-togethers, no contests."
+  },
+  "Community": {
+    "title": "Local community",
+    "intro": "Regular get-togethers: cosplay cafes, craft workshops, library meetups. No contests, just people meeting and talking.",
+    "empty": "No community meetups yet.",
+    "search": "Search meetups"
+  },
+  "Repeat": {
+    "weekly": "Every {day}",
+    "biweekly": "Every other {day}",
+    "monthly1": "1st {day} of the month",
+    "monthly2": "2nd {day} of the month",
+    "monthly3": "3rd {day} of the month",
+    "monthly4": "4th {day} of the month",
+    "monthlyLast": "Last {day} of the month",
+    "custom": "On selected dates",
+    "next": "Next: {date}"
+  },
+  "EventKind": {
+    "kindLabel": "What is it?",
+    "convention": "Convention or one-off event",
+    "community": "Local community meetup (repeats)",
+    "repeats": "Repeats",
+    "freqWeekly": "Every week",
+    "freqBiweekly": "Every 2 weeks",
+    "freqMonthly": "Once a month",
+    "freqCustom": "Custom (pick the dates)",
+    "which": "Which one",
+    "nth1": "1st",
+    "nth2": "2nd",
+    "nth3": "3rd",
+    "nth4": "4th",
+    "nthLast": "Last",
+    "firstDate": "First meeting *",
+    "dayHint": "Repeats on: {day}",
+    "moreDates": "Other meeting dates",
+    "addDate": "Add date",
+    "remove": "Remove",
+    "until": "Until (optional)",
+    "note": "Note (optional)",
+    "notePlaceholder": "e.g. Check Instagram for changes",
+    "needDates": "Add at least one more date for custom repeats.",
+    "untilBeforeStart": "'Until' can't be before the first meeting."
   }
 }

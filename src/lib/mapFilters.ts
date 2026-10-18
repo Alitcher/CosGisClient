@@ -2,6 +2,7 @@ import type { City, Event, EventCategory, Place } from "@/types";
 import { isPracticeType } from "@/types";
 import { countryOf, type Country } from "./cities";
 import { eventEndsOn } from "./data";
+import { asNext, isCommunity } from "./recurrence";
 
 /**
  * Filters for the map page. Empty arrays mean "no restriction" (All).
@@ -11,7 +12,7 @@ import { eventEndsOn } from "./data";
 export type DatePreset = "any" | "7d" | "30d" | "3m" | "custom";
 
 export interface MapFilters {
-  layers: { events: boolean; spots: boolean; practice: boolean };
+  layers: { events: boolean; community: boolean; spots: boolean; practice: boolean };
   categories: EventCategory[];
   countries: Country[];
   cities: City[];
@@ -21,7 +22,7 @@ export interface MapFilters {
 }
 
 export const DEFAULT_FILTERS: MapFilters = {
-  layers: { events: true, spots: true, practice: true },
+  layers: { events: true, community: true, spots: true, practice: true },
   categories: [],
   countries: [],
   cities: [],
@@ -73,11 +74,16 @@ function inPlace(item: { city: City; country?: Country }, f: MapFilters): boolea
   return true;
 }
 
-/** Upcoming events matching the filters, soonest first. */
+/**
+ * Upcoming events matching the filters, soonest first. "events" = conventions,
+ * "community" = repeating local meetups, each at its next meeting in the date window.
+ */
 export function filterEvents(events: Event[], f: MapFilters, today: string): Event[] {
-  if (!f.layers.events) return [];
   const { from, to } = dateWindow(f, today);
   return events
+    .filter((e) => (isCommunity(e) ? f.layers.community : f.layers.events))
+    .map((e) => asNext(e, from))
+    .filter((e): e is Event => !!e)
     .filter((e) => eventEndsOn(e) >= from && (to === null || e.date <= to))
     .filter((e) => !f.categories.length || f.categories.includes(eventCategory(e)))
     .filter((e) => inPlace(e, f))
@@ -95,7 +101,7 @@ export function filterPlaces(places: Place[], f: MapFilters): Place[] {
 export function activeFilterCount(f: MapFilters): number {
   const d = DEFAULT_FILTERS.layers;
   return (
-    Number(f.layers.events !== d.events || f.layers.spots !== d.spots || f.layers.practice !== d.practice) +
+    Number(f.layers.events !== d.events || f.layers.community !== d.community || f.layers.spots !== d.spots || f.layers.practice !== d.practice) +
     Number(f.categories.length > 0) +
     Number(f.countries.length > 0) +
     Number(f.cities.length > 0) +

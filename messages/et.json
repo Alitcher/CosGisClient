@@ -18,7 +18,8 @@
     "donate": "Toeta",
     "tagline": "Põhjamaad | Baltikum",
     "toggleTheme": "Vaheta hele/tume režiim",
-    "language": "Keel"
+    "language": "Keel",
+    "community": "Kohalik kogukond"
   },
   "Footer": {
     "copyright": "2026 CosOverHere | Põhjamaad | Baltikum | Avaandmed: hel.kartta.fi",
@@ -30,7 +31,8 @@
     "showOnMap": "Näita asukohta kaardil",
     "previousMonth": "Eelmine kuu",
     "nextMonth": "Järgmine kuu",
-    "submitPracticeSpot": "+ Soovita harjutuskohta"
+    "submitPracticeSpot": "+ Soovita harjutuskohta",
+    "submitMeetup": "Soovita kohtumist"
   },
   "PlaceTypes": {
     "cafe": "Kohvik",
@@ -51,7 +53,9 @@
     "upcomingTitle": "Tulevased üritused",
     "seeAllEvents": "Kõik üritused ->",
     "hotSpotsTitle": "Cosplay kuumad kohad",
-    "seeAllSpots": "Kõik kohad ->"
+    "seeAllSpots": "Kõik kohad ->",
+    "communityTitle": "Kohalik kogukond",
+    "seeAllCommunity": "Vaata kõiki"
   },
   "About": {
     "title": "<grad>Nulleelarvega</grad> cosplay-kaart Helsingi piirkonnale.",
@@ -136,7 +140,8 @@
     "layer": {
       "events": "Üritused",
       "spots": "Cosplay-kohad",
-      "practice": "Harjutuskohad"
+      "practice": "Harjutuskohad",
+      "community": "Kohalik kogukond"
     },
     "category": "Tüüp",
     "cat": {
@@ -328,6 +333,51 @@
     "aboutTitle": "Projektist",
     "aboutDescription": "Mis on CosOverHere: avatud kaart animekonverentsidest, cosplay-üritustest ja cosplay-sõbralikest kohtadest Soomes, Põhjamaades ja Baltikumis.",
     "donateTitle": "Toeta kaarti",
-    "donateDescription": "Aita hoida CosOverHere tasuta ja reklaamivabana cosplay- ja animekogukonna jaoks."
+    "donateDescription": "Aita hoida CosOverHere tasuta ja reklaamivabana cosplay- ja animekogukonna jaoks.",
+    "communityTitle": "Kohalikud cosplay kogukonna kohtumised",
+    "communityDescription": "Regulaarsed cosplay-kohvikud, meisterdamise töötoad ja raamatukogu kohtumised Helsingis, Soomes, Põhjamaades ja Baltikumis. Iganädalased ja igakuised, ilma võistlusteta."
+  },
+  "Community": {
+    "title": "Kohalik kogukond",
+    "intro": "Regulaarsed kokkusaamised: cosplay-kohvikud, meisterdamise töötoad, raamatukogu kohtumised. Võistlusi pole, lihtsalt koos olemine ja jutuajamine.",
+    "empty": "Kogukonna kohtumisi veel pole.",
+    "search": "Otsi kohtumisi"
+  },
+  "Repeat": {
+    "weekly": "Iga nädal: {day}",
+    "biweekly": "Üle nädala: {day}",
+    "monthly1": "Kuu 1. {day}",
+    "monthly2": "Kuu 2. {day}",
+    "monthly3": "Kuu 3. {day}",
+    "monthly4": "Kuu 4. {day}",
+    "monthlyLast": "Kuu viimane {day}",
+    "custom": "Valitud kuupäevadel",
+    "next": "Järgmine: {date}"
+  },
+  "EventKind": {
+    "kindLabel": "Mis see on?",
+    "convention": "Üritus või ühekordne kokkutulek",
+    "community": "Kohalik kogukonna kohtumine (kordub)",
+    "repeats": "Kordub",
+    "freqWeekly": "Iga nädal",
+    "freqBiweekly": "Üle nädala",
+    "freqMonthly": "Kord kuus",
+    "freqCustom": "Muu (vali kuupäevad)",
+    "which": "Mitmes",
+    "nth1": "1.",
+    "nth2": "2.",
+    "nth3": "3.",
+    "nth4": "4.",
+    "nthLast": "Viimane",
+    "firstDate": "Esimene kohtumine *",
+    "dayHint": "Kordub: {day}",
+    "moreDates": "Teised kohtumise kuupäevad",
+    "addDate": "Lisa kuupäev",
+    "remove": "Eemalda",
+    "until": "Kuni (valikuline)",
+    "note": "Märkus (valikuline)",
+    "notePlaceholder": "nt vaata muudatusi Instagramis",
+    "needDates": "Lisa vähemalt üks kuupäev veel.",
+    "untilBeforeStart": "Lõppkuupäev ei saa olla enne esimest kohtumist."
   }
 }

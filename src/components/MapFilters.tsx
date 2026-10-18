@@ -58,7 +58,7 @@ export default function MapFilters({ value: f, onChange, countries, cities, city
           <section>
             <h5>{t("show")}</h5>
             <div className="mf-chips">
-              {(["events", "spots", "practice"] as const).map((k) => (
+              {(["events", "community", "spots", "practice"] as const).map((k) => (
                 <button
                   key={k}
                   type="button"

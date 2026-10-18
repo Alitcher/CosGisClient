@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useEventStore } from "@/lib/eventsStore";
+import { asNext } from "@/lib/recurrence";
+import type { Event } from "@/types";
 import { usePlaceStore } from "@/lib/placesStore";
 import { useLocale } from "next-intl";
 import { cityColor, countryOf } from "@/lib/cities";
@@ -29,8 +31,9 @@ export default function HeroMap({ title }: { title: string }) {
   useEffect(() => {
     const win = iframeRef.current?.contentWindow;
     if (!ready || !win) return;
-    // The embed hides past events itself.
-    win.postMessage({ type: "setEvents", events: events.map((e) => ({ ...localized(e, locale), color: cityColor(e.city, countryOf(e)) })) }, "*");
+    // The embed hides past events itself. Repeating meetups go in at their next meeting.
+    const today = new Intl.DateTimeFormat("en-CA").format(new Date());
+    win.postMessage({ type: "setEvents", events: events.map((e) => asNext(e, today)).filter((e): e is Event => !!e).map((e) => ({ ...localized(e, locale), color: cityColor(e.city, countryOf(e)) })) }, "*");
     win.postMessage({ type: "setPlaces", places: places.map((p) => localized(p, locale)) }, "*");
   }, [ready, events, places, locale]);
 

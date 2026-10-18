@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useEventStore } from "@/lib/eventsStore";
-import { eventEndsOn } from "@/lib/data";
+import { occurrences } from "@/lib/recurrence";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const iso = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`; // m is 0-based
@@ -45,12 +45,8 @@ export default function MiniCalendar() {
   // Day numbers in this month that have at least one event.
   const eventDays = useMemo(() => {
     const days = new Set<number>();
-    for (const e of events) {
-      const from = e.date > monthStart ? e.date : monthStart;
-      const to = eventEndsOn(e) < monthEnd ? eventEndsOn(e) : monthEnd;
-      if (from > to) continue;
-      for (let d = Number(from.slice(8, 10)); d <= Number(to.slice(8, 10)); d++) days.add(d);
-    }
+    // multi-day events mark every day they span, repeating meetups every meeting day
+    for (const e of events) for (const d of occurrences(e, monthStart, monthEnd)) days.add(Number(d.slice(8, 10)));
     return days;
   }, [events, monthStart, monthEnd]);
 

@@ -11,6 +11,7 @@ import SubmitSpotDialog from "@/components/SubmitSpotDialog";
 import HotSpots from "@/components/HotSpots";
 import { listLiveEvents } from "@/lib/serverData";
 import { eventEndsOn } from "@/lib/data";
+import { isCommunity } from "@/lib/recurrence";
 
 /** Search-engine title, description and language links (lib/seo.ts). */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
@@ -26,7 +27,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   // Hero numbers from the real data: upcoming live events, their venues and cities.
   // (The event list is cached for an hour; Helsinki date decides what "upcoming" is.)
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Helsinki" }).format(new Date());
-  const upcoming = (await listLiveEvents()).filter((e) => e.status === "live" && eventEndsOn(e) >= today);
+  const upcoming = (await listLiveEvents()).filter((e) => e.status === "live" && !isCommunity(e) && eventEndsOn(e) >= today);
   const stats = {
     events: upcoming.length,
     venues: new Set(upcoming.map((e) => e.venue.trim().toLowerCase())).size,
@@ -74,6 +75,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
         </div>
         <UpcomingEvents />
+      </section>
+
+      {/* Repeating local meetups (cosplay cafes, workshops, library clubs), kept apart from the cons. */}
+      <section className="upcoming community shell">
+        <div className="up-head">
+          <div>
+            <h2 className="section-title">{t("communityTitle")}</h2>
+          </div>
+          <div className="flex gap-sm">
+            <SubmitEventDialog className="btn" label={tc("submitMeetup")} kind="community" />
+            <Link className="btn ghost" href="/community">{t("seeAllCommunity")}</Link>
+          </div>
+        </div>
+        <UpcomingEvents kind="community" />
       </section>
 
       <section className="upcoming hot-spots shell">

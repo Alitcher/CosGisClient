@@ -17,7 +17,7 @@ type Item = { page: Page } | { group: NavKey; pages: readonly Page[] };
 const items: readonly Item[] = [
   { page: ["/", "home"] },
   { page: ["/map", "map"] },
-  { group: "events", pages: [["/calendar", "calendar"], ["/events", "cosplayEvents"]] },
+  { group: "events", pages: [["/calendar", "calendar"], ["/events", "cosplayEvents"], ["/community", "community"]] },
   { group: "spots", pages: [["/spots", "cosplaySpots"], ["/practice", "practiceSpots"]] },
   { page: ["/about", "about"] },
   { page: ["/donate", "donate"] },

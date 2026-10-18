@@ -18,7 +18,8 @@
     "donate": "Lahjoita",
     "tagline": "Pohjoismaat | Baltia",
     "toggleTheme": "Vaihda vaalea/tumma tila",
-    "language": "Kieli"
+    "language": "Kieli",
+    "community": "Paikallinen yhteisö"
   },
   "Footer": {
     "copyright": "2026 CosOverHere | Pohjoismaat | Baltia | Avointa dataa: hel.kartta.fi",
@@ -30,7 +31,8 @@
     "showOnMap": "Näytä sijainti kartalla",
     "previousMonth": "Edellinen kuukausi",
     "nextMonth": "Seuraava kuukausi",
-    "submitPracticeSpot": "+ Ehdota treenipaikkaa"
+    "submitPracticeSpot": "+ Ehdota treenipaikkaa",
+    "submitMeetup": "Ehdota tapaamista"
   },
   "PlaceTypes": {
     "cafe": "Kahvila",
@@ -51,7 +53,9 @@
     "upcomingTitle": "Tulevat tapahtumat",
     "seeAllEvents": "Kaikki tapahtumat ->",
     "hotSpotsTitle": "Cosplay-kuumat paikat",
-    "seeAllSpots": "Kaikki paikat ->"
+    "seeAllSpots": "Kaikki paikat ->",
+    "communityTitle": "Paikallinen yhteisö",
+    "seeAllCommunity": "Näytä kaikki"
   },
   "About": {
     "title": "<grad>Nollabudjetin</grad> cosplay-kartta pääkaupunkiseudulle.",
@@ -136,7 +140,8 @@
     "layer": {
       "events": "Tapahtumat",
       "spots": "Cosplay-paikat",
-      "practice": "Treenipaikat"
+      "practice": "Treenipaikat",
+      "community": "Paikallinen yhteisö"
     },
     "category": "Tyyppi",
     "cat": {
@@ -328,6 +333,51 @@
     "aboutTitle": "Tietoa",
     "aboutDescription": "Mikä CosOverHere on: avoin kartta animeconeista, cosplay-tapahtumista ja cosplay-ystävällisistä paikoista Suomessa, Pohjoismaissa ja Baltiassa.",
     "donateTitle": "Tue karttaa",
-    "donateDescription": "Auta pitämään CosOverHere ilmaisena ja mainoksettomana cosplay- ja animeyhteisölle."
+    "donateDescription": "Auta pitämään CosOverHere ilmaisena ja mainoksettomana cosplay- ja animeyhteisölle.",
+    "communityTitle": "Paikalliset cosplay-yhteisötapaamiset",
+    "communityDescription": "Säännölliset cosplay-kahvilat, askartelupajat ja kirjastotapaamiset Helsingissä, Suomessa, Pohjoismaissa ja Baltiassa. Viikoittain ja kuukausittain, ei kilpailuja."
+  },
+  "Community": {
+    "title": "Paikallinen yhteisö",
+    "intro": "Säännölliset tapaamiset: cosplay-kahvilat, askartelupajat, kirjastojen tapaamiset. Ei kilpailuja, vain yhdessäoloa ja juttelua.",
+    "empty": "Ei vielä yhteisötapaamisia.",
+    "search": "Hae tapaamisia"
+  },
+  "Repeat": {
+    "weekly": "Joka {day}",
+    "biweekly": "Joka toinen {day}",
+    "monthly1": "Kuukauden 1. {day}",
+    "monthly2": "Kuukauden 2. {day}",
+    "monthly3": "Kuukauden 3. {day}",
+    "monthly4": "Kuukauden 4. {day}",
+    "monthlyLast": "Kuukauden viimeinen {day}",
+    "custom": "Valittuina päivinä",
+    "next": "Seuraava: {date}"
+  },
+  "EventKind": {
+    "kindLabel": "Mikä tämä on?",
+    "convention": "Conit tai kertaluonteinen tapahtuma",
+    "community": "Paikallinen yhteisötapaaminen (toistuu)",
+    "repeats": "Toistuu",
+    "freqWeekly": "Joka viikko",
+    "freqBiweekly": "Joka toinen viikko",
+    "freqMonthly": "Kerran kuukaudessa",
+    "freqCustom": "Muu (valitse päivät)",
+    "which": "Monesko",
+    "nth1": "1.",
+    "nth2": "2.",
+    "nth3": "3.",
+    "nth4": "4.",
+    "nthLast": "Viimeinen",
+    "firstDate": "Ensimmäinen tapaaminen *",
+    "dayHint": "Toistuu: {day}",
+    "moreDates": "Muut tapaamispäivät",
+    "addDate": "Lisää päivä",
+    "remove": "Poista",
+    "until": "Asti (valinnainen)",
+    "note": "Lisätieto (valinnainen)",
+    "notePlaceholder": "esim. tarkista muutokset Instagramista",
+    "needDates": "Lisää vähintään yksi päivä lisää.",
+    "untilBeforeStart": "Loppupäivä ei voi olla ennen ensimmäistä tapaamista."
   }
 }

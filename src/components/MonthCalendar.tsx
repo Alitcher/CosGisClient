@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { localText } from "@/lib/localText";
 import { useEventStore } from "@/lib/eventsStore";
 import Icon from "./Icon";
+import { occurrences } from "@/lib/recurrence";
 import { cityChip, cityColor, cityCountries, citiesIn, cityLabel, countryOf } from "@/lib/cities";
 
 const MONTHS = [
@@ -40,17 +41,16 @@ export default function MonthCalendar() {
   const trail = (7 - (total % 7)) % 7;
 
   // events for this month, keyed by day - multi-day events appear on every day
-  // they span (start..endDate), not just their first day.
+  // they span (start..endDate), repeating community meetups on every meeting day.
   const byDay = new Map<number, typeof events>();
+  const monthStart = `${year}-${pad(month + 1)}-01`;
+  const monthEnd = `${year}-${pad(month + 1)}-${pad(daysInMonth)}`;
   for (const e of events) {
-    const end = e.endDate && e.endDate >= e.date ? e.endDate : e.date;
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dayISO = `${year}-${pad(month + 1)}-${pad(d)}`;
-      if (e.date <= dayISO && dayISO <= end) {
-        const arr = byDay.get(d) ?? [];
-        arr.push(e);
-        byDay.set(d, arr);
-      }
+    for (const dayISO of occurrences(e, monthStart, monthEnd)) {
+      const d = Number(dayISO.slice(8, 10));
+      const arr = byDay.get(d) ?? [];
+      arr.push(e);
+      byDay.set(d, arr);
     }
   }
 
