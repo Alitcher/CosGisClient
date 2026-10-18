@@ -178,13 +178,13 @@ export default function MonthCalendar() {
 
 /**
  * Where the hover card goes: right of the label, or left when there is no room;
- * on narrow screens centred. Kept inside the window (it scrolls itself if tall).
+ * on narrow screens centred. Kept inside the window (no inner scrolling, so menus can stick out).
  */
 function peekPosition(r: DOMRect): React.CSSProperties {
   const vw = window.innerWidth, vh = window.innerHeight, w = Math.min(360, vw - 24), gap = 10;
   let left = r.right + gap;
   if (left + w > vw - 12) left = r.left - w - gap;
   if (left < 12) left = (vw - w) / 2;
-  const top = Math.max(12, Math.min(r.top - 20, vh - 12 - 440));
-  return { left, top, width: w, maxHeight: vh - top - 12 };
+  const top = Math.max(12, Math.min(r.top - 20, vh - 12 - 460));
+  return { left, top, width: w };
 }
