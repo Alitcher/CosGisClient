@@ -125,7 +125,7 @@ export default function EventsPage() {
                     <TransitBadges transit={e.transit} />
                     <div className="card-foot r-buttons">
                       <Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link>
-                      <ShareButton title={localText(e, locale).name} path={`/events/${e.id}`} />
+                      <ShareButton title={localText(e, locale).name} path={`/events/${e.id}`} event={e} />
                     </div>
                   </div>
                 </div>

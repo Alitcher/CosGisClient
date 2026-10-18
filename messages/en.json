@@ -274,7 +274,19 @@
     "share": "Share",
     "copyLink": "Copy link",
     "copied": "Link copied",
-    "pasteIn": "Link copied - paste it in {app}"
+    "pasteIn": "Link copied - paste it in {app}",
+    "picture": "Share as picture",
+    "pictureTitle": "Share as picture",
+    "story": "Story 9:16",
+    "square": "Square 1:1",
+    "wide": "Wide 16:9",
+    "light": "Light",
+    "dark": "Dark",
+    "sharePicture": "Share",
+    "download": "Download PNG",
+    "making": "Making the picture...",
+    "close": "Close",
+    "linkCopiedSticker": "Link copied. In Instagram, add it with the link sticker."
   },
   "Detail": {
     "showOnMap": "Show on map",

@@ -86,7 +86,7 @@ export default async function EventPage({ params }: Props) {
           <div className="detail-actions">
             <Link className="btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`}>{t("showOnMap")}</Link>
             {e.url && <a className="btn ghost" href={e.url} target="_blank" rel="noopener noreferrer">{t("website")}</a>}
-            <ShareButton title={txt.name} path={`/events/${e.id}`} />
+            <ShareButton title={txt.name} path={`/events/${e.id}`} event={e} />
           </div>
         </div>
       </div>

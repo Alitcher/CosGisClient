@@ -274,7 +274,19 @@
     "share": "Jaa",
     "copyLink": "Kopioi linkki",
     "copied": "Linkki kopioitu",
-    "pasteIn": "Linkki kopioitu - liitä se sovellukseen {app}"
+    "pasteIn": "Linkki kopioitu - liitä se sovellukseen {app}",
+    "picture": "Jaa kuvana",
+    "pictureTitle": "Jaa kuvana",
+    "story": "Tarina 9:16",
+    "square": "Neliö 1:1",
+    "wide": "Leveä 16:9",
+    "light": "Vaalea",
+    "dark": "Tumma",
+    "sharePicture": "Jaa",
+    "download": "Lataa PNG",
+    "making": "Tehdään kuvaa...",
+    "close": "Sulje",
+    "linkCopiedSticker": "Linkki kopioitu. Lisää se Instagramissa linkkitarralla."
   },
   "Detail": {
     "showOnMap": "Näytä kartalla",

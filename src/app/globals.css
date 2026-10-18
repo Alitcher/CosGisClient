@@ -680,6 +680,15 @@ tbody tr:hover { background: var(--surface-2); }
 .hist-undone td { opacity: 0.55; }
 .hist-current td { background: color-mix(in srgb, var(--primary-2) 6%, transparent); }
 .hist-btn { padding: 6px 12px; font-size: 13px; white-space: nowrap; }
+/* "Share as picture" dialog (ShareImageDialog): format + theme, preview, share / download. */
+.share-dialog { position: fixed; z-index: 90; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.sd-head { display: flex; justify-content: space-between; align-items: center; }
+.sd-head h3 { font-size: 20px; }
+.sd-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.sd-preview { display: grid; place-items: center; min-height: 160px; }
+.sd-preview canvas { width: auto; height: auto; max-width: 100%; max-height: 52vh; border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.sd-note { font-size: 13px; }
+.sd-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 .import-select { padding: 10px 12px; font-size: 14px; } /* admin Pending tab: import source */
 /* Home page section filters (SectionFilters): Filters button + chips, slide-in panel. */
 .sf-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -6px 0 18px; }

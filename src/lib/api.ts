@@ -18,6 +18,12 @@ const API =
 
 // The admin token is entered at the /admin login screen and read from
 // sessionStorage at call time - it is never embedded in the public bundle.
+/**
+ * An event or spot picture through the server relay (/v1/img), so a canvas may draw it and
+ * still save a PNG (most picture sites send no CORS headers). Server: image.controller.ts.
+ */
+export const imageRelayUrl = (src: string) => `${API}/v1/img?url=${encodeURIComponent(src)}`;
+
 /** While set, admin writes are one action in Admin > History (see asOneAction). */
 let historyAction: { group: string; label: string } | null = null;
 

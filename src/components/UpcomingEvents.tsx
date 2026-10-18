@@ -82,7 +82,7 @@ export default function UpcomingEvents({ kind = "convention", limit = 4, query =
             <div className="ev-meta">{e.venue} <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} height={15} />{cityLabel(e.city)}, {countryLabel(countryOf(e), locale)}</span></div>
             <TransitBadges transit={e.transit} />
             {txt.description && <p className="muted card-desc" style={{ fontSize: 13 }}>{txt.description}</p>}
-            <div className="ev-actions"><div className="tag-row"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span><AgeTag item={e} /></div><div className="flex gap-sm"><Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link><ShareButton title={txt.name} path={`/events/${e.id}`} /></div></div>
+            <div className="ev-actions"><div className="tag-row"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span><AgeTag item={e} /></div><div className="flex gap-sm"><Link className="icon-btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`} title={tc("showOnMap")}><Icon name="map" /></Link><ShareButton title={txt.name} path={`/events/${e.id}`} event={e} /></div></div>
           </div>
         );
       })}

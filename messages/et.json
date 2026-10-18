@@ -274,7 +274,19 @@
     "share": "Jaga",
     "copyLink": "Kopeeri link",
     "copied": "Link kopeeritud",
-    "pasteIn": "Link kopeeritud - kleebi see rakendusse {app}"
+    "pasteIn": "Link kopeeritud - kleebi see rakendusse {app}",
+    "picture": "Jaga pildina",
+    "pictureTitle": "Jaga pildina",
+    "story": "Lugu 9:16",
+    "square": "Ruut 1:1",
+    "wide": "Lai 16:9",
+    "light": "Hele",
+    "dark": "Tume",
+    "sharePicture": "Jaga",
+    "download": "Laadi PNG alla",
+    "making": "Teen pilti...",
+    "close": "Sulge",
+    "linkCopiedSticker": "Link kopeeritud. Lisa see Instagramis lingikleebisega."
   },
   "Detail": {
     "showOnMap": "Näita kaardil",

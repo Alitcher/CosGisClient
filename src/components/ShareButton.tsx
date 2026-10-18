@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import type { Event } from "@/types";
+import ShareImageDialog from "./ShareImageDialog";
 
 /**
  * Share button for an event or spot: opens a small menu with Facebook, Discord,
@@ -11,12 +13,16 @@ import { useLocale, useTranslations } from "next-intl";
  * Only Facebook has a web share URL. Discord and Instagram have none, so they
  * use the phone's share sheet when there is one (navigator.share), otherwise the
  * link is copied with a "paste it in ..." note.
+ *
+ * With an `event`, the menu also has "Share as picture" (ShareImageDialog): a PNG for
+ * Instagram stories and posts, which is the only way to get an event into a story.
  */
-export default function ShareButton({ title, path }: { title: string; path: string }) {
+export default function ShareButton({ title, path, event }: { title: string; path: string; event?: Event }) {
   const t = useTranslations("Share");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [picture, setPicture] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   // Close on outside click or Escape.
@@ -82,6 +88,12 @@ export default function ShareButton({ title, path }: { title: string; path: stri
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#E1306C" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="#E1306C" stroke="none" /></svg>
             Instagram
           </button>
+          {event && (
+            <button type="button" role="menuitem" onClick={() => { setOpen(false); setPicture(true); }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" /><circle cx="9" cy="10" r="2" /><path d="M21 16l-5-5-8 9" /></svg>
+              {t("picture")}
+            </button>
+          )}
           <button type="button" role="menuitem" onClick={() => copy(t("copied"))}>
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></svg>
             {t("copyLink")}
@@ -89,6 +101,7 @@ export default function ShareButton({ title, path }: { title: string; path: stri
           {note && <p className="share-note" role="status">{note}</p>}
         </div>
       )}
+      {picture && event && <ShareImageDialog event={event} url={url()} onClose={() => setPicture(false)} />}
     </div>
   );
 }
