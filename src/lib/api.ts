@@ -103,27 +103,31 @@ export async function apiApproveEvent(id: string): Promise<Event> {
   );
 }
 
-/** Summary returned by the Helsinki Linked Events import. */
+/** Summary returned by an event import (conit.fi / Oulu also send lists of unresolved rows). */
 export type SyncResult = {
   skipped?: "fresh";
   fetched: number;
   created: number;
   duplicates: number;
+  series?: number; // Linked Events: repeating meetups imported or refreshed as one community event
   ignored: number;
-  lastModified: string | null;
+  lastModified?: string | null;
 };
-/**
- * Admin: import cosplay/manga events from Helsinki's Linked Events API. They land
- * in the pending queue for approval. `force` bypasses the 12h freshness guard
- * (what an admin pressing the button wants). Server: services/linkedevents.ts.
- */
-export async function apiSyncLinkedEvents(force = true): Promise<SyncResult> {
+
+/** Event import feeds the admin can run by hand (server routes /v1/events/sync/<route>). */
+export const IMPORT_SOURCES = [
+  { route: "linkedevents", label: "Helsinki (Linked Events)" },
+  { route: "linkedevents-espoo", label: "Espoo (Linked Events)" },
+  { route: "conit", label: "conit.fi (Finnish conventions)" },
+  { route: "oulucomics", label: "Oulu Comics Center" },
+] as const;
+export type ImportRoute = (typeof IMPORT_SOURCES)[number]["route"];
+
+/** Admin: run one import feed now (force=1 skips its 12h freshness guard). New events land as pending. */
+export async function apiSyncSource(route: ImportRoute): Promise<SyncResult> {
   return jsonOrThrow(
-    await fetch(`${API}/v1/events/sync/linkedevents${force ? "?force=1" : ""}`, {
-      method: "POST",
-      headers: adminHeaders(),
-    }),
-    "POST /v1/events/sync/linkedevents",
+    await fetch(`${API}/v1/events/sync/${route}?force=1`, { method: "POST", headers: adminHeaders() }),
+    `POST /v1/events/sync/${route}`,
   );
 }
 

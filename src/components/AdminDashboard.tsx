@@ -28,7 +28,9 @@ import {
   apiApprovePlace,
   apiDeleteEvent,
   apiDeletePlace,
-  apiSyncLinkedEvents,
+  apiSyncSource,
+  IMPORT_SOURCES,
+  type ImportRoute,
 } from "@/lib/api";
 import { isPracticeType, FACILITIES, type Event, type Place, type TransitStop, type City, type Country, type Lang, type I18n, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
@@ -153,24 +155,29 @@ export default function AdminDashboard() {
       setBusy(false);
     }
   }
-  // Import cosplay/manga events from Helsinki's Linked Events API into the pending
-  // queue (server: api-service services/linkedevents.ts). Same thing the daily cron
-  // does; this is the on-demand admin button.
+  // Import events from one feed (Helsinki / Espoo Linked Events, conit.fi, Oulu Comics)
+  // or all of them into the pending queue (server: api-service services/*). Same thing
+  // the daily cron does; this is the on-demand admin control.
+  // Pick a feed (or all of them) in the dropdown, then press Import.
+  const [importFrom, setImportFrom] = useState<ImportRoute | "all">("linkedevents");
   async function runImport() {
     setBusy(true);
-    try {
-      const r = await apiSyncLinkedEvents(); // force=true: bypass the 12h freshness guard
-      await loadPending();
-      alert(
-        r.skipped
-          ? "Already up to date - nothing new from Helsinki right now."
-          : `Imported ${r.created} new event(s) from Helsinki (fetched ${r.fetched}, ${r.duplicates} already had).\nThey're in the pending queue below for approval.`,
-      );
-    } catch (err) {
-      fail("import from Helsinki", err);
-    } finally {
-      setBusy(false);
+    const routes = importFrom === "all" ? IMPORT_SOURCES.map((s) => s.route) : [importFrom];
+    const lines: string[] = [];
+    for (const route of routes) {
+      const label = IMPORT_SOURCES.find((s) => s.route === route)!.label;
+      try {
+        const r = await apiSyncSource(route); // force=1: bypass the 12h freshness guard
+        lines.push(r.skipped
+          ? `${label}: already up to date.`
+          : `${label}: ${r.created} new, ${r.series ?? 0} repeating meetup(s), ${r.duplicates} already had (fetched ${r.fetched}).`);
+      } catch (err) {
+        lines.push(`${label}: failed - ${(err as Error).message}`);
+      }
     }
+    await loadPending();
+    setBusy(false);
+    alert(`${lines.join("\n")}\nNew events are in the pending queue below for approval.`);
   }
 
   const selectedItems = () => pendingItems.filter((it) => selected.has(keyOf(it)));
@@ -417,7 +424,13 @@ export default function AdminDashboard() {
           <div className="card table-card">
             <div className="a-toolbar" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", padding: "12px 14px", borderBottom: "1px solid var(--border, #2a2a35)" }}>
               <span style={{ color: "var(--text-2)" }}>{pendingItems.length} pending | {selected.size} selected</span>
-              <button className="btn ghost" type="button" disabled={busy} title="Fetch cosplay/manga events from Helsinki's open data into the queue" onClick={runImport}>Import from Helsinki</button>
+              <div className="flex gap-sm" style={{ alignItems: "center" }}>
+                <select className="kind-select import-select" value={importFrom} disabled={busy} onChange={(e) => setImportFrom(e.target.value as ImportRoute | "all")} aria-label="Import source">
+                  {IMPORT_SOURCES.map((s) => <option key={s.route} value={s.route}>{s.label}</option>)}
+                  <option value="all">All sources</option>
+                </select>
+                <button className="btn ghost" type="button" disabled={busy} title="Fetch new events from the chosen source into the pending queue" onClick={runImport}>Import</button>
+              </div>
               <div style={{ flex: 1 }} />
               <button className="btn ghost" type="button" disabled={busy || selected.size === 0} onClick={approveSelected}>Approve selected</button>
               <button className="btn ghost" type="button" style={danger} disabled={busy || selected.size === 0} onClick={rejectSelected}>Reject selected</button>
