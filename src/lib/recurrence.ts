@@ -171,3 +171,38 @@ export function meetingSlots(e: Pick<Event, "startTime" | "endTime" | "venue" | 
 export function weekdayName(iso: string, locale: string): string {
   return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Intl.DateTimeFormat(locale, { weekday: "long" }).format(fromISO(iso)) : "";
 }
+
+/**
+ * Admin "Combine selected": several rows of the same meetup (e.g. one per date from a feed
+ * without series) -> ONE community meetup. The earliest row is kept: its date is the first
+ * meeting, every other date becomes a custom date, and different times or places become
+ * slots. Returns the update for the kept row and the ids to set to draft (not deleted).
+ */
+export function combineEvents(events: Event[]): { keepId: string; patch: Partial<Event>; draftIds: string[] } | null {
+  if (events.length < 2) return null;
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
+  const keep = sorted[0];
+  const all = sorted.flatMap((e) => [e.date, ...(e.recurrence?.freq === "custom" ? e.recurrence.dates ?? [] : [])]);
+  const dates = [...new Set(all)].filter((d) => d > keep.date).sort().slice(0, 60);
+  const slotKey = (s: { start: string; end?: string; venue?: string }) => `${s.start}|${s.end ?? ""}|${(s.venue ?? "").toLowerCase()}`;
+  const raw = sorted.flatMap((e) =>
+    e.recurrence?.slots?.length
+      ? e.recurrence.slots.map((s) => ({ ...s, venue: s.venue || e.venue }))
+      : e.startTime ? [{ start: e.startTime, ...(e.endTime ? { end: e.endTime } : {}), venue: e.venue }] : [],
+  );
+  const unique = [...new Map(raw.map((s) => [slotKey(s), s])).values()].sort((x, y) => x.start.localeCompare(y.start));
+  // A slot only names a place when it differs from the kept row's venue.
+  const slots = unique.map((s) => ({ start: s.start, ...(s.end ? { end: s.end } : {}), ...(s.venue && s.venue.toLowerCase() !== keep.venue.toLowerCase() ? { venue: s.venue } : {}) }));
+  const ends = slots.map((s) => s.end).filter((x): x is string => !!x).sort();
+  const note = keep.recurrence?.note ?? sorted.find((e) => e.recurrence?.note)?.recurrence?.note;
+  return {
+    keepId: keep.id,
+    patch: {
+      kind: "community",
+      recurrence: { freq: "custom", dates, ...(note ? { note } : {}), ...(slots.length > 1 ? { slots: slots.slice(0, 10) } : {}) },
+      ...(slots[0] ? { startTime: slots[0].start } : {}),
+      ...(ends.length ? { endTime: ends[ends.length - 1] } : {}),
+    },
+    draftIds: sorted.slice(1).map((e) => e.id),
+  };
+}

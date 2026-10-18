@@ -395,5 +395,22 @@
     "slotEnd": "Päättyy",
     "slotVenue": "Muu paikka (valinnainen)",
     "addSlot": "Lisää ryhmä"
+  },
+  "Filters": {
+    "country": "Maa",
+    "allCountries": "Kaikki maat",
+    "city": "Kaupunki",
+    "allCities": "Kaikki kaupungit",
+    "age": "Ikä",
+    "anyAge": "Kaikki iät",
+    "kids": "Lapset (alle 13)",
+    "teens": "Nuoret (13-17)",
+    "adults": "Aikuiset (18+)",
+    "price": "Hinta",
+    "anyPrice": "Kaikki hinnat",
+    "free": "Ilmainen",
+    "paid": "Maksullinen",
+    "clear": "Tyhjennä",
+    "noMatches": "Mikään ei vastaa suodattimia."
   }
 }

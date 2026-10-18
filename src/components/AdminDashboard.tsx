@@ -16,7 +16,8 @@ import TransitEditor from "./TransitEditor";
 import PriceFields from "./PriceFields";
 import AgeFields from "./AgeFields";
 import RepeatFields from "./RepeatFields";
-import { EMPTY_REPEAT, repeatError, repeatFields, repeatForm, type RepeatForm } from "@/lib/recurrence";
+import { combinePlaces } from "@/lib/combinePlaces";
+import { EMPTY_REPEAT, combineEvents, repeatError, repeatFields, repeatForm, type RepeatForm } from "@/lib/recurrence";
 import { EMPTY_AGE, ageError, ageFields, ageForm, type AgeForm } from "@/lib/age";
 import { EMPTY_PRICE, priceFields, priceForm, priceError, type PriceForm } from "@/lib/price";
 import Icon from "./Icon";
@@ -184,6 +185,43 @@ export default function AdminDashboard() {
   const approveOne = (it: PendingItem) => runOnItems([it], "approve");
   const rejectOne = (it: PendingItem) => { if (confirm(`Reject "${it.name}"? This deletes the submission.`)) runOnItems([it], "reject"); };
   const approveSelected = () => runOnItems(selectedItems(), "approve");
+  // Several rows of the same meetup (e.g. one per date from a feed without series) -> one
+  // Local community meetup with all the dates; the other rows go to draft (not deleted).
+  async function combineEventRows(evs: Event[]) {
+    const plan = combineEvents(evs);
+    if (!plan) return alert("Select at least 2 events (not spots) to combine.");
+    const keep = evs.find((e) => e.id === plan.keepId)!;
+    const count = 1 + (plan.patch.recurrence?.dates?.length ?? 0);
+    if (!confirm(`Combine ${evs.length} events into one Local community meetup "${keep.name}" with ${count} date(s)?\nThe other ${plan.draftIds.length} row(s) are set to draft (not deleted).`)) return;
+    setBusy(true);
+    try {
+      await updateEvent(plan.keepId, plan.patch);
+      for (const id of plan.draftIds) await updateEvent(id, { status: "draft" });
+      await loadPending();
+      setEventSel(new Set());
+    } catch (err) { fail("combine the events", err); }
+    finally { setBusy(false); }
+  }
+  const combineSelected = () => combineEventRows(selectedItems().flatMap((it) => (it.kind === "event" ? [it.event] : [])));
+  // Events / Spots tabs: rows ticked for "Combine selected" (ids).
+  const [eventSel, setEventSel] = useState<Set<string>>(new Set());
+  const [placeSel, setPlaceSel] = useState<Set<string>>(new Set());
+  const toggleIn = (set: Set<string>, id: string) => { const n = new Set(set); if (n.has(id)) n.delete(id); else n.add(id); return n; };
+  // The same place added twice -> one spot (themes, photos, facilities merged); the others go to draft.
+  async function combinePlaceRows() {
+    const ps = places.filter((p) => placeSel.has(p.id));
+    const plan = combinePlaces(ps);
+    if (!plan) return alert("Select at least 2 spots to combine.");
+    const keep = ps.find((p) => p.id === plan.keepId)!;
+    if (!confirm(`Combine ${ps.length} spots into "${keep.name}"? Themes, photos and missing details are merged.\nThe other ${plan.draftIds.length} spot(s) are set to draft (not deleted).`)) return;
+    setBusy(true);
+    try {
+      await updatePlace(plan.keepId, plan.patch);
+      for (const id of plan.draftIds) await updatePlace(id, { status: "draft" });
+      setPlaceSel(new Set());
+    } catch (err) { fail("combine the spots", err); }
+    finally { setBusy(false); }
+  }
   const rejectSelected = () => { const items = selectedItems(); if (items.length && confirm(`Reject ${items.length} selected? This deletes them.`)) runOnItems(items, "reject"); };
   const approveAll = () => runOnItems(pendingItems, "approve");
   const rejectAll = () => { if (pendingItems.length && confirm(`Reject ALL ${pendingItems.length} pending? This deletes them.`)) runOnItems(pendingItems, "reject"); };
@@ -364,6 +402,11 @@ export default function AdminDashboard() {
         {tab !== "pending" && (
           <div className="a-toolbar">
             <div className="a-search"><Icon name="search" size={16} /><input placeholder={`Search ${tab}...`} value={query} onChange={(e) => setQuery(e.target.value)} /></div>
+            {tab === "events" ? (
+              <button className="btn ghost" type="button" disabled={busy || eventSel.size < 2} title="Make the ticked rows of the same meetup one Local community meetup with all their dates" onClick={() => combineEventRows(events.filter((e) => eventSel.has(e.id)))}>Combine selected{eventSel.size ? ` (${eventSel.size})` : ""}</button>
+            ) : (
+              <button className="btn ghost" type="button" disabled={busy || placeSel.size < 2} title="Merge the ticked rows of the same place into one spot" onClick={combinePlaceRows}>Combine selected{placeSel.size ? ` (${placeSel.size})` : ""}</button>
+            )}
           </div>
         )}
 
@@ -371,12 +414,13 @@ export default function AdminDashboard() {
         {tab === "events" && (
           <div className="card table-card">
             <table>
-              <thead><tr><th>Event</th><th className="hide-sm">Venue</th><th className="hide-sm">Date</th><th>Status</th><th style={{ textAlign: "right" }}>Actions</th></tr></thead>
+              <thead><tr><th style={{ width: 36 }} /><th>Event</th><th className="hide-sm">Venue</th><th className="hide-sm">Date</th><th>Status</th><th style={{ textAlign: "right" }}>Actions</th></tr></thead>
               <tbody>
                 {visEvents.map((e) => {
                   return (
                     <tr key={e.id}>
-                      <td><div className="ev-name-cell"><EventThumb event={e} size={36} /><div><div className="ev-name">{e.name}</div><div className="ev-sub">{cityLabel(e.city)}</div></div></div></td>
+                      <td><input type="checkbox" checked={eventSel.has(e.id)} onChange={() => setEventSel((s) => toggleIn(s, e.id))} aria-label={`Select ${e.name}`} /></td>
+                      <td><div className="ev-name-cell"><EventThumb event={e} size={36} /><div><div className="ev-name">{e.name}</div><div className="ev-sub">{cityLabel(e.city)}{e.kind === "community" ? " | local community" : ""}</div></div></div></td>
                       <td className="hide-sm">{e.venue}</td>
                       <td className="hide-sm">{fmtRange(e.date, e.endDate)}</td>
                       <td><span className={`status ${e.status}`}>{e.status === "live" ? "Live" : e.status === "draft" ? "Draft" : "Pending"}</span></td>
@@ -388,7 +432,7 @@ export default function AdminDashboard() {
                     </tr>
                   );
                 })}
-                {visEvents.length === 0 && <tr><td colSpan={5} style={{ textAlign: "center", color: "var(--text-2)" }}>No events.</td></tr>}
+                {visEvents.length === 0 && <tr><td colSpan={6} style={{ textAlign: "center", color: "var(--text-2)" }}>No events.</td></tr>}
               </tbody>
             </table>
           </div>
@@ -398,10 +442,11 @@ export default function AdminDashboard() {
         {tab === "spots" && (
           <div className="card table-card">
             <table>
-              <thead><tr><th>Spot</th><th className="hide-sm">Type</th><th className="hide-sm">City</th><th>Status</th><th style={{ textAlign: "right" }}>Actions</th></tr></thead>
+              <thead><tr><th style={{ width: 36 }} /><th>Spot</th><th className="hide-sm">Type</th><th className="hide-sm">City</th><th>Status</th><th style={{ textAlign: "right" }}>Actions</th></tr></thead>
               <tbody>
                 {visPlaces.map((p) => (
                   <tr key={p.id}>
+                    <td><input type="checkbox" checked={placeSel.has(p.id)} onChange={() => setPlaceSel((s) => toggleIn(s, p.id))} aria-label={`Select ${p.name}`} /></td>
                     <td><div className="ev-name">{p.name}</div><div className="ev-sub">{p.address ?? p.city}</div></td>
                     <td className="hide-sm">{placeTypeLabel[p.type]}</td>
                     <td className="hide-sm">{cityLabel(p.city)}</td>
@@ -413,7 +458,7 @@ export default function AdminDashboard() {
                     </div></td>
                   </tr>
                 ))}
-                {visPlaces.length === 0 && <tr><td colSpan={5} style={{ textAlign: "center", color: "var(--text-2)" }}>No spots.</td></tr>}
+                {visPlaces.length === 0 && <tr><td colSpan={6} style={{ textAlign: "center", color: "var(--text-2)" }}>No spots.</td></tr>}
               </tbody>
             </table>
           </div>
@@ -432,6 +477,7 @@ export default function AdminDashboard() {
                 <button className="btn ghost" type="button" disabled={busy} title="Fetch new events from the chosen source into the pending queue" onClick={runImport}>Import</button>
               </div>
               <div style={{ flex: 1 }} />
+              <button className="btn ghost" type="button" disabled={busy || selected.size < 2} title="Make the selected rows of the same meetup one Local community meetup with all their dates" onClick={combineSelected}>Combine selected</button>
               <button className="btn ghost" type="button" disabled={busy || selected.size === 0} onClick={approveSelected}>Approve selected</button>
               <button className="btn ghost" type="button" style={danger} disabled={busy || selected.size === 0} onClick={rejectSelected}>Reject selected</button>
               <button className="btn" type="button" disabled={busy || pendingItems.length === 0} onClick={approveAll}>Approve all</button>

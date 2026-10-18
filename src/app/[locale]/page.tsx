@@ -74,7 +74,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <Link className="btn ghost" href="/events">{t("seeAllEvents")}</Link>
           </div>
         </div>
-        <UpcomingEvents />
+        <UpcomingEvents filters />
       </section>
 
       {/* Repeating local meetups (cosplay cafes, workshops, library clubs), kept apart from the cons. */}
@@ -88,7 +88,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <Link className="btn ghost" href="/community">{t("seeAllCommunity")}</Link>
           </div>
         </div>
-        <UpcomingEvents kind="community" />
+        <UpcomingEvents kind="community" filters />
       </section>
 
       <section className="upcoming hot-spots shell">

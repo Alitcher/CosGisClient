@@ -676,6 +676,11 @@ tbody tr:hover { background: var(--surface-2); }
 /* Admin Pending tab: event / local community dropdown. */
 .kind-select { padding: 6px 8px; border-radius: 8px; border: 2px solid var(--border); background: var(--surface); color: var(--text-0); font-family: inherit; font-size: 13px; }
 .import-select { padding: 10px 12px; font-size: 14px; } /* admin Pending tab: import source */
+/* Filter row above a home page section (SectionFilters): country, city, age, price. */
+.section-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -6px 0 18px; }
+.section-filters select { padding: 8px 12px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); color: var(--text-0); font-family: inherit; font-size: 14px; max-width: 100%; }
+.section-filters .btn { padding: 7px 14px; font-size: 14px; }
+@media (max-width: 640px) { .section-filters select { flex: 1 1 calc(50% - 8px); min-width: 0; } }
 /* Checkbox + text on one line inside a .field (e.g. "All ages"). */
 .field .check-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 400; font-size: 14px; margin-bottom: 0; cursor: pointer; }
 .field .check-label input { width: 16px; height: 16px; padding: 0; margin: 0; flex: none; }
