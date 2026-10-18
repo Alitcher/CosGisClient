@@ -521,15 +521,17 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .repeat-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 6px 0 2px; font-size: 13px; }
 .repeat-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--primary); background: color-mix(in srgb, var(--primary-2) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--primary-2) 35%, transparent); padding: 3px 10px; border-radius: 2px; white-space: nowrap; }
 .list-item .repeat-tag { font-size: 11.5px; padding: 1px 7px; margin-top: 4px; }
-/* All meetings of a community meetup this year (YearSchedule): Month | Date | Notes, Jan..Dec. */
+/* All meetings of a community meetup this year (YearSchedule): Month | Date | Time | Location | Notes. */
+.ys-scroll { overflow-x: auto; } /* 5 columns: on narrow phones the table scrolls sideways, not the page */
 .year-schedule h2 { font-size: 18px; margin-bottom: 8px; }
 .year-schedule table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .year-schedule th, .year-schedule td { padding: 8px 10px; border: 1px solid var(--border); text-align: left; vertical-align: middle; }
 .year-schedule thead th { background: var(--surface-2); color: var(--text-0); font-weight: 700; }
 .year-schedule tbody th { font-weight: 600; color: var(--text-0); }
-/* Month and date columns only as wide as their text; notes take the rest. */
-.year-schedule th:first-child, .year-schedule td:nth-child(2) { width: 1%; white-space: nowrap; }
-.year-schedule td:nth-child(2) { min-width: 64px; }
+/* Month, date and time columns only as wide as their text; location and notes take the rest. */
+.year-schedule table { min-width: 560px; }
+.year-schedule tbody th { vertical-align: top; }
+.year-schedule thead th:nth-child(-n+3), .year-schedule tbody th, .year-schedule td:first-of-type, .year-schedule td:nth-of-type(2) { width: 1%; white-space: nowrap; }
 @media (max-width: 640px) { .year-schedule th, .year-schedule td { padding: 7px 8px; font-size: 13px; } }
 .year-schedule tbody tr:last-child td { border-bottom: 1px solid var(--border); } /* the global table rule drops it */
 .ys-none { color: var(--text-2); }

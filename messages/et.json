@@ -360,7 +360,9 @@
     "colNotes": "Märkused",
     "noteNext": "Järgmine kohtumine",
     "notePast": "Toimunud",
-    "noteNone": "Kohtumist pole"
+    "noteNone": "Kohtumist pole",
+    "colTime": "Aeg",
+    "colLocation": "Koht"
   },
   "EventKind": {
     "kindLabel": "Mis see on?",
@@ -386,6 +388,12 @@
     "note": "Märkus (valikuline)",
     "notePlaceholder": "nt vaata muudatusi Instagramis",
     "needDates": "Lisa vähemalt üks kuupäev veel.",
-    "untilBeforeStart": "Lõppkuupäev ei saa olla enne esimest kohtumist."
+    "untilBeforeStart": "Lõppkuupäev ei saa olla enne esimest kohtumist.",
+    "slots": "Grupid / ajad (valikuline)",
+    "slotsHint": "Lisa iga grupi kohta üks, kui samal päeval on mitu aega või kohta.",
+    "slotStart": "Algus",
+    "slotEnd": "Lõpp",
+    "slotVenue": "Muu koht (valikuline)",
+    "addSlot": "Lisa grupp"
   }
 }

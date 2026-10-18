@@ -15,6 +15,7 @@ export default function RepeatFields({ value: v, onChange, date }: { value: Repe
   // Monthly without a choice yet: the nth weekday the first date falls on (a 5th one counts as last).
   const autoNth = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? (nthOfMonth(date) >= 5 ? "-1" : String(nthOfMonth(date))) : "1";
   const setDate = (i: number, d: string) => onChange({ dates: v.dates.map((x, j) => (j === i ? d : x)) });
+  const setSlot = (i: number, patch: Partial<RepeatForm["slots"][number]>) => onChange({ slots: v.slots.map((s, j) => (j === i ? { ...s, ...patch } : s)) });
   return (
     <>
       <div className="field">
@@ -59,6 +60,19 @@ export default function RepeatFields({ value: v, onChange, date }: { value: Repe
               <button type="button" className="btn ghost" onClick={() => onChange({ dates: [...v.dates, ""] })}>{t("addDate")}</button>
             </div>
           )}
+          <div className="field">
+            <label>{t("slots")}</label>
+            <p className="field-note muted" style={{ marginTop: 0, marginBottom: 8 }}>{t("slotsHint")}</p>
+            {v.slots.map((s, i) => (
+              <div className="flex gap-sm" key={i} style={{ marginBottom: 8, flexWrap: "wrap" }}>
+                <input type="time" value={s.start} onChange={(e) => setSlot(i, { start: e.target.value })} aria-label={t("slotStart")} style={{ maxWidth: 130 }} />
+                <input type="time" value={s.end} onChange={(e) => setSlot(i, { end: e.target.value })} aria-label={t("slotEnd")} style={{ maxWidth: 130 }} />
+                <input value={s.venue} maxLength={120} onChange={(e) => setSlot(i, { venue: e.target.value })} placeholder={t("slotVenue")} style={{ flex: 1, minWidth: 140 }} />
+                <button type="button" className="btn ghost" onClick={() => onChange({ slots: v.slots.filter((_, j) => j !== i) })}>{t("remove")}</button>
+              </div>
+            ))}
+            <button type="button" className="btn ghost" onClick={() => onChange({ slots: [...v.slots, { start: "", end: "", venue: "" }] })}>{t("addSlot")}</button>
+          </div>
           <div className="field-row">
             <div className="field"><label>{t("until")}</label><input type="date" value={v.until} onChange={(e) => onChange({ until: e.target.value })} /></div>
             <div className="field"><label>{t("note")}</label><input value={v.note} maxLength={160} onChange={(e) => onChange({ note: e.target.value })} placeholder={t("notePlaceholder")} /></div>

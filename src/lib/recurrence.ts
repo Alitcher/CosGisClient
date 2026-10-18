@@ -121,8 +121,9 @@ export type RepeatForm = {
   dates: string[]; // custom only
   until: string;
   note: string;
+  slots: { start: string; end: string; venue: string }[]; // extra groups; empty = one group at the event's time
 };
-export const EMPTY_REPEAT: RepeatForm = { kind: "convention", freq: "weekly", nth: "", dates: [], until: "", note: "" };
+export const EMPTY_REPEAT: RepeatForm = { kind: "convention", freq: "weekly", nth: "", dates: [], until: "", note: "", slots: [] };
 
 /** API fields -> form. */
 export function repeatForm(e: Pick<Event, "kind" | "recurrence">): RepeatForm {
@@ -134,6 +135,7 @@ export function repeatForm(e: Pick<Event, "kind" | "recurrence">): RepeatForm {
     dates: r?.dates ?? [],
     until: r?.until ?? "",
     note: r?.note ?? "",
+    slots: (r?.slots ?? []).map((s) => ({ start: s.start, end: s.end ?? "", venue: s.venue ?? "" })),
   };
 }
 
@@ -145,6 +147,8 @@ export function repeatFields(f: RepeatForm): { kind: RepeatForm["kind"]; recurre
   if (f.freq === "custom") r.dates = [...new Set(f.dates.filter(Boolean))].sort();
   if (f.until) r.until = f.until;
   if (f.note.trim()) r.note = f.note.trim();
+  const slots = f.slots.filter((s) => s.start).map((s) => ({ start: s.start, ...(s.end ? { end: s.end } : {}), ...(s.venue.trim() ? { venue: s.venue.trim() } : {}) }));
+  if (slots.length) r.slots = slots.sort((x, y) => x.start.localeCompare(y.start));
   return { kind: "community", recurrence: r };
 }
 
@@ -154,6 +158,13 @@ export function repeatError(f: RepeatForm, firstDate: string): "needDates" | "un
   if (f.freq === "custom" && !f.dates.some((d) => d && d !== firstDate)) return "needDates";
   if (f.until && firstDate && f.until < firstDate) return "untilBeforeStart";
   return null;
+}
+
+/** The groups of each meeting: the slots, or one group at the event's own time and venue. */
+export function meetingSlots(e: Pick<Event, "startTime" | "endTime" | "venue" | "recurrence">): { start?: string; end?: string; venue: string }[] {
+  const slots = e.recurrence?.slots;
+  if (slots?.length) return slots.map((s) => ({ start: s.start, end: s.end, venue: s.venue || e.venue }));
+  return [{ start: e.startTime, end: e.endTime, venue: e.venue }];
 }
 
 /** Weekday name of a 'YYYY-MM-DD' date in the UI language ("" when no date yet). */

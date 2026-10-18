@@ -42,6 +42,8 @@ export type Recurrence = {
   dates?: string[];
   until?: string; // last possible day, 'YYYY-MM-DD'
   note?: string;
+  /** Groups on each meeting day (e.g. 14:30-15:30 and 15:30-16:30), optionally elsewhere. Missing = the event's own time and venue. */
+  slots?: { start: string; end?: string; venue?: string }[];
 };
 /** Kind of public transport stop (server TransitKindEnum). */
 export type TransitKind = 'metro' | 'train' | 'tram' | 'bus';

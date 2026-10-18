@@ -360,7 +360,9 @@
     "colNotes": "Notes",
     "noteNext": "Next meeting",
     "notePast": "Done",
-    "noteNone": "No meeting"
+    "noteNone": "No meeting",
+    "colTime": "Time",
+    "colLocation": "Location"
   },
   "EventKind": {
     "kindLabel": "What is it?",
@@ -386,6 +388,12 @@
     "note": "Note (optional)",
     "notePlaceholder": "e.g. Check Instagram for changes",
     "needDates": "Add at least one more date for custom repeats.",
-    "untilBeforeStart": "'Until' can't be before the first meeting."
+    "untilBeforeStart": "'Until' can't be before the first meeting.",
+    "slots": "Groups / times (optional)",
+    "slotsHint": "Add one per group if there are several times or places on the same day.",
+    "slotStart": "Start",
+    "slotEnd": "End",
+    "slotVenue": "Other place (optional)",
+    "addSlot": "Add group"
   }
 }

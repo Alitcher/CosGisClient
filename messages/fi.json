@@ -360,7 +360,9 @@
     "colNotes": "Huomiot",
     "noteNext": "Seuraava tapaaminen",
     "notePast": "Pidetty",
-    "noteNone": "Ei tapaamista"
+    "noteNone": "Ei tapaamista",
+    "colTime": "Aika",
+    "colLocation": "Paikka"
   },
   "EventKind": {
     "kindLabel": "Mikä tämä on?",
@@ -386,6 +388,12 @@
     "note": "Lisätieto (valinnainen)",
     "notePlaceholder": "esim. tarkista muutokset Instagramista",
     "needDates": "Lisää vähintään yksi päivä lisää.",
-    "untilBeforeStart": "Loppupäivä ei voi olla ennen ensimmäistä tapaamista."
+    "untilBeforeStart": "Loppupäivä ei voi olla ennen ensimmäistä tapaamista.",
+    "slots": "Ryhmät / ajat (valinnainen)",
+    "slotsHint": "Lisää yksi jokaista ryhmää kohden, jos samana päivänä on useita aikoja tai paikkoja.",
+    "slotStart": "Alkaa",
+    "slotEnd": "Päättyy",
+    "slotVenue": "Muu paikka (valinnainen)",
+    "addSlot": "Lisää ryhmä"
   }
 }
