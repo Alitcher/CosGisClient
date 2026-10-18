@@ -352,7 +352,15 @@
     "monthly4": "4th {day} of the month",
     "monthlyLast": "Last {day} of the month",
     "custom": "On selected dates",
-    "next": "Next: {date}"
+    "next": "Next: {date}",
+    "yearTitle": "Meetings in {year}",
+    "yearCount": "{count, plural, one {# meeting} other {# meetings}} this year",
+    "colMonth": "Month",
+    "colDate": "Date",
+    "colNotes": "Notes",
+    "noteNext": "Next meeting",
+    "notePast": "Done",
+    "noteNone": "No meeting"
   },
   "EventKind": {
     "kindLabel": "What is it?",

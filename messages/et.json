@@ -352,7 +352,15 @@
     "monthly4": "Kuu 4. {day}",
     "monthlyLast": "Kuu viimane {day}",
     "custom": "Valitud kuupäevadel",
-    "next": "Järgmine: {date}"
+    "next": "Järgmine: {date}",
+    "yearTitle": "Kohtumised aastal {year}",
+    "yearCount": "{count, plural, one {# kohtumine} other {# kohtumist}} sel aastal",
+    "colMonth": "Kuu",
+    "colDate": "Kuupäev",
+    "colNotes": "Märkused",
+    "noteNext": "Järgmine kohtumine",
+    "notePast": "Toimunud",
+    "noteNone": "Kohtumist pole"
   },
   "EventKind": {
     "kindLabel": "Mis see on?",

@@ -352,7 +352,15 @@
     "monthly4": "Kuukauden 4. {day}",
     "monthlyLast": "Kuukauden viimeinen {day}",
     "custom": "Valittuina päivinä",
-    "next": "Seuraava: {date}"
+    "next": "Seuraava: {date}",
+    "yearTitle": "Tapaamiset vuonna {year}",
+    "yearCount": "{count, plural, one {# tapaaminen} other {# tapaamista}} tänä vuonna",
+    "colMonth": "Kuukausi",
+    "colDate": "Päivä",
+    "colNotes": "Huomiot",
+    "noteNext": "Seuraava tapaaminen",
+    "notePast": "Pidetty",
+    "noteNone": "Ei tapaamista"
   },
   "EventKind": {
     "kindLabel": "Mikä tämä on?",

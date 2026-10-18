@@ -352,7 +352,15 @@
     "monthly4": "{day}ที่ 4 ของเดือน",
     "monthlyLast": "{day}สุดท้ายของเดือน",
     "custom": "ตามวันที่กำหนด",
-    "next": "ครั้งถัดไป: {date}"
+    "next": "ครั้งถัดไป: {date}",
+    "yearTitle": "นัดพบในปี {year}",
+    "yearCount": "ปีนี้มีนัดพบ {count} ครั้ง",
+    "colMonth": "เดือน",
+    "colDate": "วันที่",
+    "colNotes": "หมายเหตุ",
+    "noteNext": "นัดถัดไป",
+    "notePast": "จัดไปแล้ว",
+    "noteNone": "ไม่มีนัด"
   },
   "EventKind": {
     "kindLabel": "นี่คืออะไร",

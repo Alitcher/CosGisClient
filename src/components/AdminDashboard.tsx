@@ -201,6 +201,19 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   const editPending = (it: PendingItem) => (it.kind === "event" ? editEvent(it.event) : editPlace(it.place));
+  // Pending tab "Kind" dropdown: convention or local community meetup. A meetup needs a
+  // repeat, so one without it opens in the drawer with "community" picked.
+  async function setPendingKind(e: Event, kind: RepeatForm["kind"]) {
+    if (kind === "community" && !e.recurrence) {
+      editEvent(e);
+      setEventForm((f) => ({ ...f, repeat: { ...f.repeat, kind: "community" } }));
+      return;
+    }
+    try {
+      await updateEvent(e.id, kind === "community" ? { kind } : { kind, recurrence: null });
+      await loadPending();
+    } catch (err) { fail("change the kind", err); }
+  }
   // A pending item keeps "Pending" as an option in the drawer, so an admin can fix a
   // submission and leave it in the queue, or set it Live to approve in one go.
   const isPendingId = (id: string | null) => !!id && pendingItems.some((it) => it.id === id);
@@ -422,8 +435,15 @@ export default function AdminDashboard() {
                   return (
                     <tr key={k}>
                       <td><input type="checkbox" checked={selected.has(k)} onChange={() => toggleSelect(k)} aria-label={`Select ${it.name}`} /></td>
-                      <td><div className="ev-name">{it.name}</div><div className="ev-sub">{it.kind === "event" ? "event" : "spot"}</div></td>
-                      <td className="hide-sm">{it.kind === "event" ? "Event" : "Spot"}</td>
+                      <td><div className="ev-name">{it.name}</div><div className="ev-sub">{it.kind === "event" ? (it.event.kind === "community" ? "local community" : "event") : "spot"}</div></td>
+                      <td className="hide-sm">
+                        {it.kind === "event" ? (
+                          <select className="kind-select" value={it.event.kind ?? "convention"} disabled={busy} onChange={(ev) => setPendingKind(it.event, ev.target.value as RepeatForm["kind"])} aria-label={`Kind of ${it.name}`}>
+                            <option value="convention">Event</option>
+                            <option value="community">Local community</option>
+                          </select>
+                        ) : "Spot"}
+                      </td>
                       <td className="hide-sm">{it.meta}</td>
                       <td><div className="row-actions" style={{ justifyContent: "flex-end" }}>
                         <a className="mini-btn" href={`/map?lng=${it.lng}&lat=${it.lat}&z=16`} target="_blank" rel="noopener noreferrer" title="Show on map"><Icon name="map" /></a>

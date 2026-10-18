@@ -12,6 +12,7 @@ import TransitBadges from "@/components/TransitBadges";
 import { priceLabel, isFree } from "@/lib/price";
 import AgeTag from "@/components/AgeTag";
 import RepeatTag from "@/components/RepeatTag";
+import YearSchedule from "@/components/YearSchedule";
 import { nextOccurrence } from "@/lib/recurrence";
 import { getEvent, SITE_URL } from "@/lib/serverData";
 import { alternatesFor, localePath, eventJsonLd, jsonLdString } from "@/lib/seo";
@@ -54,7 +55,8 @@ export default async function EventPage({ params }: Props) {
   const price = priceLabel(e, tp);
   const chip = cityChip(e.city, countryOf(e));
   // Repeating meetup: show the next meeting (Helsinki date decides "today").
-  const next = e.recurrence ? nextOccurrence(e, new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Helsinki" }).format(new Date())) : null;
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Helsinki" }).format(new Date());
+  const next = e.recurrence ? nextOccurrence(e, today) : null;
   const tr = await getTranslations("Repeat");
 
   return (
@@ -79,6 +81,7 @@ export default async function EventPage({ params }: Props) {
           </div>
           <TransitBadges transit={e.transit} />
           {txt.description && <p className="detail-text">{txt.description}</p>}
+          <YearSchedule event={e} today={today} />
           <p className="detail-price"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{price}</span><AgeTag item={e} />{e.priceNote && <span className="muted">{e.priceNote}</span>}</p>
           <div className="detail-actions">
             <Link className="btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`}>{t("showOnMap")}</Link>
