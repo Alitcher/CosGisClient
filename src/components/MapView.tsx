@@ -17,6 +17,7 @@ import { isPracticeType } from "@/types";
 
 export default function MapView() {
   const t = useTranslations("Map");
+  const tCal = useTranslations("Calendar");
   const locale = useLocale();
   const { events } = useEventStore();
   const { places } = usePlaceStore();
@@ -87,13 +88,18 @@ export default function MapView() {
         <div className="list">
           {list.map((e) => {
             const { day, mon } = splitDate(e.date);
+            const isToday = e.date <= today && eventEndsOn(e) >= today;
             return (
               <div
                 key={e.id}
-                className={`list-item${e.id === selectedId ? " active" : ""}`}
+                className={`list-item${isToday ? " is-today" : ""}${e.id === selectedId ? " active" : ""}`}
                 aria-current={e.id === selectedId || undefined}
                 onClick={() => { setSelectedId(e.id); post({ type: "focus", lng: e.lng, lat: e.lat }); }}
               >
+                {isToday && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <span className="today-badge"><img src="/today.svg" width={26} height={26} alt="" /><span>{tCal("today")}</span></span>
+                )}
                 <div className="li-date"><div className="d">{day}</div><div className="m">{mon}</div></div>
                 <EventThumb event={e} size={36} />
                 <div className="li-body">

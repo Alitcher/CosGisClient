@@ -29,7 +29,7 @@
 
 /* ---------- LIGHT ---------- */
 :root[data-theme="light"] {
-  --bg-0: #f3f7fc;
+  --bg-0: #ffffff;
   --bg-1: #ffffff;
   --bg-2: #e6eef9;
   --surface: #ffffff;
@@ -71,6 +71,8 @@ body {
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
+/* Light mode: pure white page, no colour glows. */
+:root[data-theme="light"] body::before { display: none; }
 /* Soft colour glows, fixed to the screen so they stay put while the page scrolls.
    A fixed layer instead of background-attachment: fixed, which iPhones ignore. */
 body::before {
@@ -264,7 +266,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* upcoming */
 .upcoming { padding-top: 40px; padding-bottom: 10px; }
 /* Thin line above each section (home + about), content width, inside the side padding. */
-.upcoming::before, .stack::before, .how::before, .credits::before, .cta-band::before { content: ""; display: block; height: 1px; background: var(--border); margin-bottom: 40px; }
+.upcoming::before, .credits::before, .cta-band::before { content: ""; display: block; height: 1px; background: var(--border); margin-bottom: 40px; }
 .hot-spots { padding-bottom: 50px; } /* last section before the footer */
 .up-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
 .up-grid { grid-template-columns: repeat(3, 1fr); }
@@ -321,9 +323,16 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* Thin line between items, in the middle of the 4px gap. */
 .list-item:not(:last-child)::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: -5px; height: 1px; background: var(--border); }
 /* No line touching a boxed (hovered / selected) item, or it doubles up with the box border. */
-.list-item:is(:hover, .active)::after,
-.list-item:has(+ .list-item:is(:hover, .active))::after { display: none; }
+.list-item:is(:hover, .active, .is-today)::after,
+.list-item:has(+ .list-item:is(:hover, .active, .is-today))::after { display: none; }
 .list-item:hover { background: var(--surface); border-color: var(--border); }
+/* An event that is on today: same yellow as the today cards on the home and events pages. */
+.list-item.is-today, .list-item.is-today:hover { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 28%, var(--surface)); }
+:root[data-theme="dark"] .list-item.is-today { background: color-mix(in srgb, var(--gold) 14%, var(--surface)); }
+/* Smaller today badge on the map list; extra top space so it does not cover the item above. */
+.list-item.is-today { margin-top: 10px; padding-top: 24px; } /* text starts below the badge */
+.list-item .today-badge { top: -10px; left: -8px; }
+.list-item .today-badge span { margin-left: -12px; padding: 2px 6px 2px 16px; font-size: 10.5px; }
 .list-item.active { background: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--border-strong); }
 .li-date { text-align: center; min-width: 42px; }
 .li-date .d { font-size: 21px; font-weight: 900; line-height: 1; }
@@ -450,6 +459,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .month-divider:first-child { margin-top: 0; }
 /* Same-width box for every thumbnail, so the text column starts at the same place on each row. */
 .r-thumb { flex: none; width: 180px; height: 96px; display: flex; align-items: center; justify-content: center; }
+.r-text { min-width: 0; }
 .r-thumb .ev-logo { max-width: 100% !important; object-fit: contain; }
 .icon-btn { width: 38px; height: 38px; border-radius: 11px; border: 2px solid var(--border); background: var(--surface); color: var(--text-0); display: grid; place-items: center; font-size: 16px; }
 .icon-btn:hover { background: color-mix(in srgb, var(--primary-2) 18%, transparent); }
@@ -531,18 +541,6 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .about-hero h1 { font-size: clamp(30px, 5vw, 48px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
 .about-hero h1 .grad { background: linear-gradient(120deg, var(--primary), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .about-hero p { margin-top: 18px; font-size: 17px; color: var(--text-1); }
-.stack { padding-top: 40px; padding-bottom: 10px; }
-.stack-grid { grid-template-columns: repeat(4, 1fr); }
-.tech { padding: 20px; text-align: center; transition: transform .16s ease; }
-.tech:hover { transform: translateY(-4px); }
-.tech h4 { font-size: 15px; }
-.tech p { font-size: 12px; color: var(--text-2); margin-top: 3px; }
-.how { padding-top: 40px; padding-bottom: 40px; }
-.steps { grid-template-columns: repeat(3, 1fr); margin-top: 26px; }
-.step { padding: 24px; position: relative; }
-.step .n { font-size: 13px; font-weight: 900; color: #fff; width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--btn-grad); margin-bottom: 14px; }
-.step h3 { font-size: 16px; margin-bottom: 6px; }
-.step p { font-size: 13.5px; color: var(--text-2); }
 /* About page credits: one card per thing made by someone else (icons, data). */
 .credits { padding-top: 40px; padding-bottom: 40px; }
 .credits-lead { color: var(--text-2); margin-top: 10px; font-size: 15px; }
@@ -704,8 +702,8 @@ tbody tr:hover { background: var(--surface-2); }
   .hero-stats { margin-top: 22px; }
   .hero p.lead { max-width: none; } /* one column: the intro uses the full width */
   .hero-visual { height: 380px; }
-  .up-grid, .spots-grid, .stack-grid { grid-template-columns: repeat(2, 1fr); }
-  .steps, .tiers-grid, .credits-grid { grid-template-columns: 1fr; }
+  .up-grid, .spots-grid { grid-template-columns: repeat(2, 1fr); }
+  .tiers-grid, .credits-grid { grid-template-columns: 1fr; }
   .tiers-grid { max-width: 520px; margin-left: auto; margin-right: auto; }
 
   /* Map: narrower list; the legend sits under the filter button so it can't
@@ -720,6 +718,11 @@ tbody tr:hover { background: var(--surface-2); }
 
 /* Tablet only */
 @media (min-width: 701px) and (max-width: 1024px) {
+  /* Events list on a tablet: a smaller picture box so the text keeps room. */
+  .r-thumb { width: 120px; height: 72px; }
+  .r-with-thumb .ev-logo { height: 72px !important; }
+  .r-with-thumb .ev-thumb { width: 72px !important; height: 72px !important; font-size: 32px !important; }
+  .row { gap: 14px; }
   .home-4 > :nth-child(4) { display: flex; }
 }
 
@@ -753,28 +756,35 @@ tbody tr:hover { background: var(--surface-2); }
   .hero-stats { gap: 24px; margin-top: 18px; }
   .hero-visual { height: 300px; border-radius: 18px; }
   .upcoming { padding-top: 28px; }
-  .upcoming::before, .stack::before, .how::before, .credits::before, .cta-band::before { margin-bottom: 28px; }
+  .upcoming::before, .credits::before, .cta-band::before { margin-bottom: 28px; }
   .up-grid, .spots-grid, .tiers-grid { grid-template-columns: 1fr; }
   .up-head { margin-bottom: 16px; }
   /* Section buttons: full row, shared evenly */
   .up-head > .flex, .ev-top > .flex { width: 100%; flex-wrap: wrap; }
   .up-head > .flex > .btn, .ev-top > .flex > .btn { flex: 1 1 auto; justify-content: center; }
   .ev-card { padding: 18px; }
-  .ev-card:hover, .spot:hover, .row:hover, .tech:hover, .tier:hover { transform: none; }
+  .ev-card:hover, .spot:hover, .row:hover, .tier:hover { transform: none; }
 
   /* Events list */
   .ev-shell, .spots-shell { padding-top: 22px; }
   .ev-top h1 { font-size: 26px; }
   .search { min-width: 0; flex-basis: 100%; }
   .divider { margin: 16px 0; }
-  .row { grid-template-columns: 56px 1fr; gap: 12px; padding: 14px; }
-  .r-cta { grid-column: 1 / -1; justify-content: flex-end; }
-  .r-date { padding-right: 10px; }
-  .r-with-thumb { align-items: flex-start; }
-  .r-thumb { width: 96px; height: 64px; }
-  .r-with-thumb .ev-logo { height: 64px !important; } /* thumbnail size is inline; smaller on phones */
-  .r-with-thumb .ev-thumb { width: 64px !important; height: 64px !important; font-size: 28px !important; }
-  .r-main h3 { font-size: 19px; }
+  /* Event row on a phone: date | picture | price on top, then name, place, transit and buttons
+     full width below. .r-main is flattened (display: contents) so its picture and text join this grid. */
+  .row { grid-template-columns: auto auto 1fr; grid-template-areas: "date thumb price" "text text text"; gap: 12px 14px; padding: 14px; align-items: center; }
+  .row:hover { transform: none; }
+  .r-date { grid-area: date; padding-right: 12px; }
+  .r-main.r-with-thumb { display: contents; }
+  .r-thumb { grid-area: thumb; width: 104px; height: 68px; justify-content: flex-start; }
+  .r-with-thumb .ev-logo { height: 68px !important; } /* thumbnail size is inline; smaller on phones */
+  .r-with-thumb .ev-thumb { width: 68px !important; height: 68px !important; font-size: 30px !important; }
+  .r-cta { grid-area: price; justify-self: end; }
+  .r-cta .price-tag { font-size: 14px; padding: 4px 9px; }
+  .r-text { grid-area: text; border-top: 1px solid var(--border); padding-top: 12px; }
+  .r-main h3 { font-size: 20px; }
+  .r-main .meta { gap: 6px 10px; font-size: 15px; }
+  .r-buttons { margin-top: 4px; }
 
   /* Calendar: 7 narrow columns */
   .cal-shell { padding-top: 18px; }
@@ -801,7 +811,7 @@ tbody tr:hover { background: var(--surface-2); }
   .d-hero { padding-top: 36px; }
   .bmc { font-size: 17px; padding: 14px 22px; }
   .why-card { padding: 24px 20px; }
-  .tier, .step { padding: 22px; }
+  .tier { padding: 22px; }
 
   /* Admin */
   .admin-shell { padding-top: 20px; }
