@@ -40,6 +40,7 @@ export default function ShareImageDialog({ event: e, url, onClose }: { event: Ev
   const [theme, setTheme] = useState<ShareTheme>(() => currentTheme());
   const [pics, setPics] = useState<{ logo: HTMLImageElement | null; img: HTMLImageElement | null } | null>(null);
   const [note, setNote] = useState("");
+  const [saveView, setSaveView] = useState<string | null>(null); // phones: the PNG full screen, to long-press and save
 
   // Everything on the picture, in the UI language. A repeating meetup shows its next meeting.
   const today = new Date().toLocaleDateString("en-CA");
@@ -118,17 +119,20 @@ export default function ShareImageDialog({ event: e, url, onClose }: { event: Ev
     }
   }
   /**
-   * Save the PNG. Phones and tablets (touch, no mouse) get the system share sheet, whose
-   * "Save Image" / "Save to Files" is the only reliable way there: a download link on a
-   * generated picture does nothing on iPhones. Computers get a normal download; if the
-   * browser can't download, the picture opens in a new tab to save by hand.
+   * Save the PNG. Phones and tablets (touch, no mouse): the picture opens full screen to
+   * press and hold, then "Save image" / "Add to Photos" - that works on every phone, while
+   * download links do nothing on iPhones and Android share menus often have no save option.
+   * Computers get a normal download; if the browser can't download, the picture opens in
+   * a new tab to save by hand.
    */
   function download() {
     const f = fileRef.current;
     if (!f) return;
-    const touchOnly = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-    if (touchOnly && navigator.canShare?.({ files: [f] })) {
-      navigator.share({ files: [f] }).catch(() => { /* cancelled */ });
+    if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+      // The picture alone in a new browser tab: nothing of the site on top, and holding it
+      // gives the phone's own Save / Download image. Popup blocked = show it full screen here.
+      const tab = window.open(URL.createObjectURL(f), "_blank");
+      if (!tab) setSaveView(canvasRef.current?.toDataURL("image/png") ?? null);
       return;
     }
     const href = URL.createObjectURL(f);
@@ -145,8 +149,9 @@ export default function ShareImageDialog({ event: e, url, onClose }: { event: Ev
   // Rendered on <body>: a card moving on hover (transform) would otherwise trap the fixed dialog inside it.
   return createPortal(
     <>
-      <div className="overlay" onClick={onClose} />
-      <div className="share-dialog card" role="dialog" aria-modal="true" aria-label={t("pictureTitle")}>
+      <div className="overlay" onClick={onClose} style={saveView ? { visibility: "hidden" } : undefined} />
+      {/* hidden (kept, so the preview stays drawn) while the picture is shown full screen */}
+      <div className="share-dialog card" role="dialog" aria-modal="true" aria-label={t("pictureTitle")} style={saveView ? { visibility: "hidden" } : undefined}>
         <div className="sd-head">
           <h3>{t("pictureTitle")}</h3>
           <button type="button" className="icon-btn" onClick={onClose} aria-label={t("close")}>
@@ -171,6 +176,14 @@ export default function ShareImageDialog({ event: e, url, onClose }: { event: Ev
           <button type="button" className="btn" disabled={!ready} onClick={share}>{t("sharePicture")}</button>
         </div>
       </div>
+      {saveView && (
+        <div className="sd-save" role="dialog" aria-modal="true" aria-label={t("download")}>
+          <p>{t("longPressSave")}</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={saveView} alt={cardData.name} />
+          <button type="button" className="btn" onClick={() => setSaveView(null)}>{t("done")}</button>
+        </div>
+      )}
     </>,
     document.body,
   );

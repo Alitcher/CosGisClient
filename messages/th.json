@@ -130,7 +130,9 @@
     "mapTitle": "แผนที่คอสเพลย์",
     "legendSpots": "จุดคอสเพลย์",
     "legendCity": "งานคอนใน{city}",
-    "legendPractice": "สถานที่ซ้อม"
+    "legendPractice": "สถานที่ซ้อม",
+    "legend": "คำอธิบายสี",
+    "hideLegend": "ซ่อนคำอธิบายสี"
   },
   "MapFilters": {
     "filters": "ตัวกรอง",
@@ -160,7 +162,9 @@
     },
     "from": "ตั้งแต่",
     "to": "ถึง",
-    "reset": "ล้างตัวกรอง"
+    "reset": "ล้างตัวกรอง",
+    "close": "ปิด",
+    "showResults": "แสดง {count} งาน"
   },
   "MiniCalendar": {
     "conDay": "จุด = วันมีงานคอน",
@@ -288,7 +292,9 @@
     "download": "ดาวน์โหลด PNG",
     "making": "กำลังสร้างรูป...",
     "close": "ปิด",
-    "linkCopiedSticker": "คัดลอกลิงก์แล้ว ใน Instagram ให้เพิ่มด้วยสติกเกอร์ลิงก์"
+    "linkCopiedSticker": "คัดลอกลิงก์แล้ว ใน Instagram ให้เพิ่มด้วยสติกเกอร์ลิงก์",
+    "longPressSave": "กดค้างที่รูป แล้วเลือก บันทึกรูปภาพ (หรือ เพิ่มลงในรูปภาพ)",
+    "done": "เสร็จ"
   },
   "Detail": {
     "showOnMap": "ดูบนแผนที่",

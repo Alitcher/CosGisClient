@@ -16,6 +16,8 @@ import MapFilters from "./MapFilters";
 import { isPracticeType, type Event } from "@/types";
 import { asNext } from "@/lib/recurrence";
 import RepeatTag from "./RepeatTag";
+import Icon from "./Icon";
+import { setFolded, useFoldOpen } from "@/lib/foldState";
 
 export default function MapView() {
   const t = useTranslations("Map");
@@ -27,6 +29,7 @@ export default function MapView() {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [ready, setReady] = useState(false);
+  const legendOpen = useFoldOpen("mapLegendOpen"); // colour legend folds to a small button
   const [selectedId, setSelectedId] = useState<string | null>(null); // event clicked in the list
 
   function post(msg: unknown) {
@@ -140,7 +143,13 @@ export default function MapView() {
           cityCountry={cityCountries(optionItems)}
           resultCount={list.length}
         />
+        {!legendOpen ? (
+          <button type="button" className="map-legend-toggle" onClick={() => setFolded("mapLegendOpen", true)} aria-expanded={false}>
+            <span className="sw" style={{ background: "#0057B8" }} /><span className="sw" style={{ background: "#9e3039" }} />{t("legend")}
+          </button>
+        ) : (
         <div className="map-legend">
+          <button type="button" className="map-legend-hide" onClick={() => setFolded("mapLegendOpen", false)} aria-label={t("hideLegend")} title={t("hideLegend")}><Icon name="close" size={12} /></button>
           {shownPlaces.some((p) => !isPracticeType(p.type)) && (
             <div className="legend-row"><span className="sw" style={{ background: "#9e3039", borderRadius: 3 }} /> {t("legendSpots")}</div>
           )}
@@ -151,6 +160,7 @@ export default function MapView() {
             <div className="legend-row" key={c}><span className="sw" style={{ background: cityColor(c, legendCountry.get(c)) }} /> {t("legendCity", { city: cityLabel(c) })}</div>
           ))}
         </div>
+        )}
         <MiniCalendar />
       </div>
     </div>

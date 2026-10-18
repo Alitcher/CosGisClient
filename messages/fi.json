@@ -130,7 +130,9 @@
     "mapTitle": "Cosplay-kartta",
     "legendSpots": "Cosplay-paikat",
     "legendCity": "Conit: {city}",
-    "legendPractice": "Treenipaikat"
+    "legendPractice": "Treenipaikat",
+    "legend": "Selitteet",
+    "hideLegend": "Piilota selitteet"
   },
   "MapFilters": {
     "filters": "Suodattimet",
@@ -160,7 +162,9 @@
     },
     "from": "Alkaen",
     "to": "Asti",
-    "reset": "Tyhjennä suodattimet"
+    "reset": "Tyhjennä suodattimet",
+    "close": "Sulje",
+    "showResults": "{count, plural, one {Näytä # tapahtuma} other {Näytä # tapahtumaa}}"
   },
   "MiniCalendar": {
     "conDay": "Piste = con-päivä",
@@ -288,7 +292,9 @@
     "download": "Lataa PNG",
     "making": "Tehdään kuvaa...",
     "close": "Sulje",
-    "linkCopiedSticker": "Linkki kopioitu. Lisää se Instagramissa linkkitarralla."
+    "linkCopiedSticker": "Linkki kopioitu. Lisää se Instagramissa linkkitarralla.",
+    "longPressSave": "Paina kuvaa pitkään ja valitse Tallenna kuva (tai Lisää kuviin).",
+    "done": "Valmis"
   },
   "Detail": {
     "showOnMap": "Näytä kartalla",

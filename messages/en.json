@@ -130,7 +130,9 @@
     "mapTitle": "Cosplay map",
     "legendSpots": "Cosplay spots",
     "legendCity": "{city} cons",
-    "legendPractice": "Practice places"
+    "legendPractice": "Practice places",
+    "legend": "Legend",
+    "hideLegend": "Hide legend"
   },
   "MapFilters": {
     "filters": "Filters",
@@ -160,7 +162,9 @@
     },
     "from": "From",
     "to": "To",
-    "reset": "Reset filters"
+    "reset": "Reset filters",
+    "close": "Close",
+    "showResults": "{count, plural, one {Show # event} other {Show # events}}"
   },
   "MiniCalendar": {
     "conDay": "Dot = con day",
@@ -288,7 +292,9 @@
     "download": "Download PNG",
     "making": "Making the picture...",
     "close": "Close",
-    "linkCopiedSticker": "Link copied. In Instagram, add it with the link sticker."
+    "linkCopiedSticker": "Link copied. In Instagram, add it with the link sticker.",
+    "longPressSave": "Press and hold the picture, then choose Save image (or Add to Photos).",
+    "done": "Done"
   },
   "Detail": {
     "showOnMap": "Show on map",

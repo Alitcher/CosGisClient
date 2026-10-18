@@ -130,7 +130,9 @@
     "mapTitle": "Cosplay-kaart",
     "legendSpots": "Cosplay-kohad",
     "legendCity": "Conid: {city}",
-    "legendPractice": "Harjutuskohad"
+    "legendPractice": "Harjutuskohad",
+    "legend": "Legend",
+    "hideLegend": "Peida legend"
   },
   "MapFilters": {
     "filters": "Filtrid",
@@ -160,7 +162,9 @@
     },
     "from": "Alates",
     "to": "Kuni",
-    "reset": "Lähtesta filtrid"
+    "reset": "Lähtesta filtrid",
+    "close": "Sulge",
+    "showResults": "{count, plural, one {Näita # üritust} other {Näita # üritust}}"
   },
   "MiniCalendar": {
     "conDay": "Punkt = con-päev",
@@ -288,7 +292,9 @@
     "download": "Laadi PNG alla",
     "making": "Teen pilti...",
     "close": "Sulge",
-    "linkCopiedSticker": "Link kopeeritud. Lisa see Instagramis lingikleebisega."
+    "linkCopiedSticker": "Link kopeeritud. Lisa see Instagramis lingikleebisega.",
+    "longPressSave": "Vajuta pildile pikalt ja vali Salvesta pilt (või Lisa fotodesse).",
+    "done": "Valmis"
   },
   "Detail": {
     "showOnMap": "Näita kaardil",

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLocale, useTranslations } from "next-intl";
 import { EVENT_CATEGORIES, type City } from "@/types";
 import { cityLabel, countryLabel, type Country } from "@/lib/cities";
@@ -23,7 +24,11 @@ interface Props {
   resultCount: number;
 }
 
-/** Collapsible filter panel at the top of the map sidebar. */
+/**
+ * Map filters, same look as the home page sections: a small "Filters" pill (with the
+ * number of active filters) floating on the map, opening a slide-in panel. Changes
+ * apply right away; "Show N events" just closes the panel.
+ */
 export default function MapFilters({ value: f, onChange, countries, cities, cityCountry, resultCount }: Props) {
   const t = useTranslations("MapFilters");
   const locale = useLocale();
@@ -42,19 +47,28 @@ export default function MapFilters({ value: f, onChange, countries, cities, city
     set({ countries: next, cities: keep });
   }
 
+  // Escape closes the panel.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (ev: KeyboardEvent) => { if (ev.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <div className="mf">
-      <button type="button" className="mf-toggle" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <span className="mf-title">
-          {t("filters")}
-          {active > 0 && <span className="mf-badge">{active}</span>}
-        </span>
-        <span className="mf-count">{t("results", { count: resultCount })}</span>
-        <span className={`mf-caret${open ? " up" : ""}`} aria-hidden><Icon name="chevron-down" size={14} /></span>
+      <button type="button" className="sf-pill mf-pill" aria-expanded={open} onClick={() => setOpen(true)}>
+        <Icon name="filter" size={16} />{t("filters")}{active > 0 && <span className="sf-count">{active}</span>}
       </button>
 
-      {open && (
-        <div className="mf-panel">
+      {open && createPortal(<>
+        <div className="overlay" onClick={() => setOpen(false)} />
+        <aside className="sf-drawer open" aria-label={t("filters")}>
+        <div className="sf-head">
+          <h3>{t("filters")}</h3>
+          <button type="button" className="sf-x" onClick={() => setOpen(false)} aria-label={t("close")}><Icon name="close" size={22} /></button>
+        </div>
+        <div className="sf-body mf-panel">
           <section>
             <h5>{t("show")}</h5>
             <div className="mf-chips">
@@ -157,13 +171,13 @@ export default function MapFilters({ value: f, onChange, countries, cities, city
             )}
           </section>
 
-          {active > 0 && (
-            <button type="button" className="mf-reset" onClick={() => onChange(DEFAULT_FILTERS)}>
-              {t("reset")}
-            </button>
-          )}
         </div>
-      )}
+        <div className="sf-foot">
+          <button type="button" className="btn ghost" disabled={active === 0} onClick={() => onChange(DEFAULT_FILTERS)}>{t("reset")}</button>
+          <button type="button" className="btn" onClick={() => setOpen(false)}>{t("showResults", { count: resultCount })}</button>
+        </div>
+        </aside>
+      </>, document.body)}
     </div>
   );
 }
