@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import Icon from "./Icon";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useEventStore } from "@/lib/eventsStore";
@@ -19,7 +20,33 @@ function Chevron({ dir }: { dir: "left" | "right" }) {
 }
 
 /**
- * Compact calendar docked inside the map. Starts on the current month; the
+ * Open / folded state of the mini calendar, remembered in this browser. First visit:
+ * open on wide screens, folded on phones and small tablets (it covers too much map there).
+ */
+const KEY = "miniCalOpen";
+const listeners = new Set<() => void>();
+function readOpen(): boolean {
+  try {
+    const v = localStorage.getItem(KEY);
+    if (v === "1" || v === "0") return v === "1";
+  } catch { /* storage blocked */ }
+  return window.matchMedia("(min-width: 1025px)").matches;
+}
+function setOpen(open: boolean) {
+  try { localStorage.setItem(KEY, open ? "1" : "0"); } catch { /* storage blocked: only this visit */ }
+  memo = open;
+  listeners.forEach((l) => l());
+}
+let memo: boolean | null = null;
+const useOpen = () =>
+  useSyncExternalStore(
+    (l) => { listeners.add(l); return () => { listeners.delete(l); }; },
+    () => (memo ??= readOpen()),
+    () => false, // server render: folded
+  );
+
+/**
+ * Compact calendar docked inside the map. Folds to a small button (see useOpen). Starts on the current month; the
  * arrows move back and forward. Days with an event (every day of a multi-day
  * event) get a dot; today is highlighted.
  */
@@ -28,6 +55,7 @@ export default function MiniCalendar() {
   const tc = useTranslations("Common");
   const locale = useLocale();
   const { events } = useEventStore();
+  const open = useOpen();
 
   const now = new Date();
   const today = iso(now.getFullYear(), now.getMonth(), now.getDate());
@@ -67,6 +95,13 @@ export default function MiniCalendar() {
     cells.push({ key: `d${d}`, label: d, cls });
   }
 
+  if (!open) {
+    return (
+      <button type="button" className="mini-cal-toggle" onClick={() => setOpen(true)} aria-expanded={false} title={t("show")}>
+        <Icon name="calendar" size={16} />{title}
+      </button>
+    );
+  }
   return (
     <div className="mini-cal">
       <div className="mc-head">
@@ -74,6 +109,7 @@ export default function MiniCalendar() {
         <div className="mc-nav">
           <button type="button" aria-label={tc("previousMonth")} onClick={() => move(-1)}><Chevron dir="left" /></button>
           <button type="button" aria-label={tc("nextMonth")} onClick={() => move(1)}><Chevron dir="right" /></button>
+          <button type="button" aria-label={t("hide")} title={t("hide")} aria-expanded onClick={() => setOpen(false)}><Icon name="chevron-down" size={14} /></button>
         </div>
       </div>
       <div className="mc-grid">

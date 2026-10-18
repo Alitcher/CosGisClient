@@ -348,6 +348,10 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
   background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px);
   border: 2px solid var(--border); border-radius: var(--radius);
 }
+/* Folded mini calendar: a small button in the same corner (MiniCalendar). */
+.mini-cal-toggle { position: absolute; right: 18px; bottom: 18px; z-index: 5; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; font: 700 13px var(--font); color: var(--text-0); background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px); border: 2px solid var(--border); border-radius: 999px; cursor: pointer; }
+.mini-cal-toggle:hover { border-color: var(--border-strong); }
+@media (max-width: 1024px) { .mini-cal-toggle { right: 12px; bottom: 12px; } }
 .mini-cal .mc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .mini-cal .mc-head .mc-title { font-size: 14px; font-weight: 800; }
 .mc-nav { display: flex; gap: 6px; }
@@ -412,6 +416,8 @@ button.ev { width: 100%; text-align: left; border-top: 0; border-right: 0; borde
 /* keep the floating card short enough for phones: long descriptions cut to 4 lines */
 .cal-peek .card-desc { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .cal-peek .ev-card { margin: 0; }
+/* hidden (not removed) while its share window is open: removing it would close that window */
+body:has(.share-dialog) .cal-peek { visibility: hidden; }
 .cal-peek .ev-card:hover { transform: none; }
 .ev.helsinki { background: linear-gradient(90deg, rgba(0,87,184,0.9), rgba(0,87,184,0.6)); }
 .ev.vantaa { background: linear-gradient(90deg, rgba(254,204,2,0.9), rgba(254,204,2,0.5)); color: #0b1f3f; }

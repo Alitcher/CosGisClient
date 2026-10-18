@@ -74,42 +74,72 @@ export default function ShareImageDialog({ event: e, url, onClose }: { event: Ev
     return () => { alive = false; };
   }, [e.image]);
 
+  // The PNG is made right after each redraw and kept ready: phones (iPhone Safari) only open
+  // the share / save sheet straight from a tap, and waiting for the PNG inside the tap
+  // handler made them refuse silently.
+  const fileRef = useRef<File | null>(null);
+  const [ready, setReady] = useState(false);
+  const fileName = `cosoverhere-${e.id.slice(0, 8)}-${format}.png`;
   useEffect(() => {
-    if (pics && canvasRef.current) drawSharePicture(canvasRef.current, format, JSON.parse(key) as ShareCard, pics, theme);
-  }, [pics, format, theme, key]);
+    const canvas = canvasRef.current;
+    if (!pics || !canvas) return;
+    drawSharePicture(canvas, format, JSON.parse(key) as ShareCard, pics, theme);
+    fileRef.current = null;
+    setReady(false);
+    let alive = true;
+    canvas.toBlob((b) => {
+      if (!alive || !b) return;
+      fileRef.current = new File([b], fileName, { type: "image/png" });
+      setReady(true);
+    }, "image/png");
+    return () => { alive = false; };
+  }, [pics, format, theme, key, fileName]);
 
-  // Escape closes.
+  // Escape closes. Closing tells the page (e.g. the calendar's hover card) to close too.
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => { if (ev.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+    };
   }, [onClose]);
+  useEffect(() => () => { window.dispatchEvent(new Event("share-picture-closed")); }, []);
 
-  const fileName = `cosoverhere-${e.id.slice(0, 8)}-${format}.png`;
-  const toFile = () =>
-    new Promise<File | null>((ok) => canvasRef.current?.toBlob((b) => ok(b ? new File([b], fileName, { type: "image/png" }) : null), "image/png") ?? ok(null));
-
-  async function copyLink() {
-    try { await navigator.clipboard.writeText(url); setNote(t("linkCopiedSticker")); } catch { /* clipboard blocked: skip */ }
-  }
-  async function share() {
-    const file = await toFile();
+  // No awaits before navigator.share below: it must run in the same tap.
+  function share() {
+    const file = fileRef.current;
     if (!file) return;
-    await copyLink(); // for Instagram's link sticker
+    // link for Instagram's link sticker, copied in the same tap
+    navigator.clipboard?.writeText(url).then(() => setNote(t("linkCopiedSticker")), () => {});
     if (navigator.canShare?.({ files: [file] })) {
-      try { await navigator.share({ files: [file], title: cardData.name }); } catch { /* cancelled */ }
+      navigator.share({ files: [file], title: cardData.name }).catch(() => { /* cancelled */ });
     } else {
-      download(file);
+      download();
     }
   }
-  function download(file?: File | null) {
-    const go = (f: File | null) => {
-      if (!f) return;
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(f); a.download = f.name; a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    };
-    if (file) go(file); else void toFile().then(go);
+  /**
+   * Save the PNG. Phones and tablets (touch, no mouse) get the system share sheet, whose
+   * "Save Image" / "Save to Files" is the only reliable way there: a download link on a
+   * generated picture does nothing on iPhones. Computers get a normal download; if the
+   * browser can't download, the picture opens in a new tab to save by hand.
+   */
+  function download() {
+    const f = fileRef.current;
+    if (!f) return;
+    const touchOnly = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    if (touchOnly && navigator.canShare?.({ files: [f] })) {
+      navigator.share({ files: [f] }).catch(() => { /* cancelled */ });
+      return;
+    }
+    const href = URL.createObjectURL(f);
+    const a = document.createElement("a");
+    if ("download" in a) {
+      a.href = href; a.download = f.name; a.style.display = "none";
+      document.body.appendChild(a); a.click(); a.remove(); // some browsers only follow links in the page
+    } else {
+      window.open(href, "_blank");
+    }
+    setTimeout(() => URL.revokeObjectURL(href), 60_000); // long enough for slow saves
   }
 
   // Rendered on <body>: a card moving on hover (transform) would otherwise trap the fixed dialog inside it.
@@ -137,8 +167,8 @@ export default function ShareImageDialog({ event: e, url, onClose }: { event: Ev
         </div>
         {note && <p className="muted sd-note">{note}</p>}
         <div className="sd-actions">
-          <button type="button" className="btn ghost" disabled={!pics} onClick={() => download()}>{t("download")}</button>
-          <button type="button" className="btn" disabled={!pics} onClick={share}>{t("sharePicture")}</button>
+          <button type="button" className="btn ghost" disabled={!ready} onClick={download}>{t("download")}</button>
+          <button type="button" className="btn" disabled={!ready} onClick={share}>{t("sharePicture")}</button>
         </div>
       </div>
     </>,

@@ -4,7 +4,7 @@
  */
 export type IconName =
   | "map" | "edit" | "trash" | "close" | "check" | "search"
-  | "moon" | "sun" | "chevron-down" | "chevron-left" | "chevron-right" | "cup" | "repeat" | "filter";
+  | "moon" | "sun" | "chevron-down" | "chevron-left" | "chevron-right" | "cup" | "repeat" | "filter" | "calendar";
 
 const PATHS: Record<IconName, string> = {
   map: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14",
@@ -21,6 +21,7 @@ const PATHS: Record<IconName, string> = {
   cup: "M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8zM16 10h2a2.5 2.5 0 0 1 0 5h-2M7 2.5v2.5M10 2.5v2.5M13 2.5v2.5",
   repeat: "M4 12a8 8 0 0 1 13.7-5.7L20 8.5M20 4v4.5h-4.5M20 12a8 8 0 0 1-13.7 5.7L4 15.5M4 20v-4.5h4.5",
   filter: "M4 5h16l-6 8v5l-4 2v-7L4 5z",
+  calendar: "M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zM4 10h16M8 3v4M16 3v4",
 };
 
 export default function Icon({ name, size = 18, className }: { name: IconName; size?: number; className?: string }) {

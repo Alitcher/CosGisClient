@@ -45,6 +45,12 @@ export default function MonthCalendar() {
     openedAtScroll.current = window.scrollY;
     setPeek({ event: e.recurrence ? { ...e, date: dayISO, endDate: undefined } : e, rect: el.getBoundingClientRect() });
   }
+  // Closing the share window (opened from the card) closes the card too.
+  useEffect(() => {
+    const close = () => setPeek(null);
+    window.addEventListener("share-picture-closed", close);
+    return () => window.removeEventListener("share-picture-closed", close);
+  }, []);
   // Tap outside or Escape closes it (phones have no "mouse leave").
   useEffect(() => {
     if (!peek) return;

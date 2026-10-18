@@ -164,7 +164,9 @@
   },
   "MiniCalendar": {
     "conDay": "Punkt = con-päev",
-    "fullCalendar": "Täielik kalender ->"
+    "fullCalendar": "Täielik kalender ->",
+    "show": "Näita kalendrit",
+    "hide": "Peida kalender"
   },
   "Calendar": {
     "today": "Täna",

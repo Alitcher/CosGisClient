@@ -164,7 +164,9 @@
   },
   "MiniCalendar": {
     "conDay": "จุด = วันมีงานคอน",
-    "fullCalendar": "ปฏิทินเต็ม ->"
+    "fullCalendar": "ปฏิทินเต็ม ->",
+    "show": "แสดงปฏิทิน",
+    "hide": "ซ่อนปฏิทิน"
   },
   "Calendar": {
     "today": "วันนี้",

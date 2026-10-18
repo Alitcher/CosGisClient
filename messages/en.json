@@ -164,7 +164,9 @@
   },
   "MiniCalendar": {
     "conDay": "Dot = con day",
-    "fullCalendar": "Full calendar ->"
+    "fullCalendar": "Full calendar ->",
+    "show": "Show calendar",
+    "hide": "Hide calendar"
   },
   "Calendar": {
     "today": "Today",

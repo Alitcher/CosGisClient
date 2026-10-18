@@ -164,7 +164,9 @@
   },
   "MiniCalendar": {
     "conDay": "Piste = con-päivä",
-    "fullCalendar": "Koko kalenteri ->"
+    "fullCalendar": "Koko kalenteri ->",
+    "show": "Näytä kalenteri",
+    "hide": "Piilota kalenteri"
   },
   "Calendar": {
     "today": "Tänään",
