@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import EventCard from "./EventCard";
+import type { Event } from "@/types";
 import { useLocale, useTranslations } from "next-intl";
 import { localText } from "@/lib/localText";
 import { useEventStore } from "@/lib/eventsStore";
@@ -21,6 +24,36 @@ export default function MonthCalendar() {
   const { events } = useEventStore();
   const today = new Date();
   const [view, setView] = useState({ year: today.getFullYear(), month: today.getMonth() });
+  const todayISO = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+
+  // Hover card: the full event card next to a label (hover or keyboard focus; tap on phones).
+  // It stays while the pointer moves onto it, so its map and share buttons can be used.
+  const [peek, setPeek] = useState<{ event: Event; rect: DOMRect } | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const keepOpen = () => { if (closeTimer.current) clearTimeout(closeTimer.current); };
+  // Not while a share window opened from the card is up (closing the card would close it too).
+  const sharing = () => !!document.querySelector(".share-dialog");
+  const closeSoon = () => { keepOpen(); closeTimer.current = setTimeout(() => { if (sharing()) closeSoon(); else setPeek(null); }, 180); };
+  function show(e: Event, dayISO: string, el: HTMLElement) {
+    keepOpen();
+    // a repeating meetup shows the meeting on this day
+    setPeek({ event: e.recurrence ? { ...e, date: dayISO, endDate: undefined } : e, rect: el.getBoundingClientRect() });
+  }
+  // Tap outside or Escape closes it (phones have no "mouse leave").
+  useEffect(() => {
+    if (!peek) return;
+    const onDown = (ev: PointerEvent) => {
+      const target = ev.target as HTMLElement;
+      if (!cardRef.current?.contains(target) && !target.closest(".ev, .share-dialog, .overlay")) setPeek(null);
+    };
+    const onKey = (ev: KeyboardEvent) => { if (ev.key === "Escape" && !sharing()) setPeek(null); };
+    const onScroll = () => { if (!sharing()) setPeek(null); };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { document.removeEventListener("pointerdown", onDown); document.removeEventListener("keydown", onKey); window.removeEventListener("scroll", onScroll); };
+  }, [peek]);
 
   function shift(delta: number) {
     setView((v) => {
@@ -86,12 +119,20 @@ export default function MonthCalendar() {
             return (
               <div key={`d${d}`} className={`cell${weekend ? " weekend" : ""}${isToday(d) ? " today" : ""}`}>
                 <div className="num">{d}</div>
-                {list.slice(0, 2).map((e) => (
-                  <span key={e.id} className={`ev ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}>
-                    <span className="dot" />
-                    {localText(e, locale).name}
-                  </span>
-                ))}
+                {list.slice(0, 2).map((e) => {
+                  const dayISO = `${year}-${pad(month + 1)}-${pad(d)}`;
+                  return (
+                    <button
+                      type="button" key={e.id} className={`ev ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}
+                      onMouseEnter={(ev) => show(e, dayISO, ev.currentTarget)} onMouseLeave={closeSoon}
+                      onFocus={(ev) => show(e, dayISO, ev.currentTarget)} onBlur={closeSoon}
+                      onClick={(ev) => show(e, dayISO, ev.currentTarget)}
+                    >
+                      <span className="dot" />
+                      {localText(e, locale).name}
+                    </button>
+                  );
+                })}
                 {list.length > 2 && <div className="ev-more">{t("more", { count: list.length - 2 })}</div>}
               </div>
             );
@@ -103,6 +144,19 @@ export default function MonthCalendar() {
         </div>
       </div>
 
+      {peek && typeof document !== "undefined" && createPortal(
+        <div
+          ref={cardRef}
+          className="cal-peek"
+          style={peekPosition(peek.rect)}
+          onMouseEnter={keepOpen}
+          onMouseLeave={closeSoon}
+        >
+          <EventCard event={peek.event} todayISO={todayISO} />
+        </div>,
+        document.body,
+      )}
+
       <div className="cal-foot">
         {citiesIn(events).map((c) => (
           <div className="lg" key={c}><span className="sw" style={{ background: cityColor(c, cityCountries(events).get(c)) }} /> {cityLabel(c)}</div>
@@ -113,4 +167,17 @@ export default function MonthCalendar() {
       </div>
     </div>
   );
+}
+
+/**
+ * Where the hover card goes: right of the label, or left when there is no room;
+ * on narrow screens centred. Kept inside the window (it scrolls itself if tall).
+ */
+function peekPosition(r: DOMRect): React.CSSProperties {
+  const vw = window.innerWidth, vh = window.innerHeight, w = Math.min(360, vw - 24), gap = 10;
+  let left = r.right + gap;
+  if (left + w > vw - 12) left = r.left - w - gap;
+  if (left < 12) left = (vw - w) / 2;
+  const top = Math.max(12, Math.min(r.top - 20, vh - 12 - 440));
+  return { left, top, width: w, maxHeight: vh - top - 12 };
 }
