@@ -12,14 +12,15 @@ import { EMPTY_SECTION_FILTER, matchesSection } from "@/lib/sectionFilter";
  * The home page's top photo spots (3, or 4 on tablets). There's no rating or popularity data yet,
  * so "top" means the most complete listings: ones with a photo first, then the
  * most themes, then the longest description. Practice places are left out.
- * The filter row (country / city / age / price) narrows them first.
+ * The Filters panel (country / city / age / price) narrows them first.
  */
 export default function HotSpots() {
   const t = useTranslations("Filters");
   const [filter, setFilter] = useState(EMPTY_SECTION_FILTER);
   const all = usePlaceStore().places.filter((p) => !isPracticeType(p.type));
   // A spot is free unless marked paid (same as the price tag on its card).
-  const places = all.filter((p) => matchesSection(p, filter, p.price !== "paid"));
+  const filterable = (p: (typeof all)[number]) => ({ ...p, free: p.price !== "paid" });
+  const places = all.filter((p) => matchesSection(filterable(p), filter));
   const score = (p: (typeof places)[number]) => [
     p.photos.length > 0 ? 1 : 0,
     p.themes.length,
@@ -36,7 +37,7 @@ export default function HotSpots() {
 
   return (
     <>
-      {all.length > 0 && <SectionFilters value={filter} onChange={setFilter} items={all} />}
+      {all.length > 0 && <SectionFilters value={filter} onChange={setFilter} items={all.map(filterable)} />}
       {top.length === 0 && all.length > 0 ? (
         <div className="card" style={{ padding: 30, textAlign: "center", color: "var(--text-2)" }}>{t("noMatches")}</div>
       ) : (

@@ -398,19 +398,21 @@
   },
   "Filters": {
     "country": "Country",
-    "allCountries": "All countries",
     "city": "City",
-    "allCities": "All cities",
     "age": "Age",
-    "anyAge": "Any age",
     "kids": "Kids (under 13)",
     "teens": "Teens (13-17)",
     "adults": "Adults (18+)",
     "price": "Price",
-    "anyPrice": "Any price",
     "free": "Free",
     "paid": "Paid",
-    "clear": "Clear",
-    "noMatches": "Nothing matches these filters."
+    "noMatches": "Nothing matches these filters.",
+    "filters": "Filters",
+    "remove": "Remove {name}",
+    "close": "Close",
+    "viewMore": "View more",
+    "viewLess": "View less",
+    "reset": "Reset",
+    "showResults": "{count, plural, one {Show # result} other {Show # results}}"
   }
 }

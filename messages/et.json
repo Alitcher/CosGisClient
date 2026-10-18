@@ -398,19 +398,21 @@
   },
   "Filters": {
     "country": "Riik",
-    "allCountries": "Kõik riigid",
     "city": "Linn",
-    "allCities": "Kõik linnad",
     "age": "Vanus",
-    "anyAge": "Iga vanus",
     "kids": "Lapsed (alla 13)",
     "teens": "Noored (13-17)",
     "adults": "Täiskasvanud (18+)",
     "price": "Hind",
-    "anyPrice": "Iga hind",
     "free": "Tasuta",
     "paid": "Tasuline",
-    "clear": "Tühjenda",
-    "noMatches": "Filtritele ei vasta midagi."
+    "noMatches": "Filtritele ei vasta midagi.",
+    "filters": "Filtrid",
+    "remove": "Eemalda {name}",
+    "close": "Sulge",
+    "viewMore": "Näita rohkem",
+    "viewLess": "Näita vähem",
+    "reset": "Lähtesta",
+    "showResults": "{count, plural, one {Näita # tulemust} other {Näita # tulemust}}"
   }
 }
