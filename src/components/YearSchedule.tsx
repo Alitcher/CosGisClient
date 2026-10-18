@@ -1,6 +1,5 @@
 "use client";
 
-import { Fragment } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { meetingSlots, occurrences } from "@/lib/recurrence";
 import { fmtTimes } from "@/lib/data";
@@ -29,6 +28,36 @@ export default function YearSchedule({ event, today }: { event: Pick<Event, "dat
   const at = (iso: string) => new Date(`${iso}T12:00:00`);
   const months = Array.from({ length: 12 }, (_, i) => `${year}-${String(i + 1).padStart(2, "0")}`);
 
+  // One row per meeting date and group; a month without meetings gets one "-" row.
+  // monthRows > 0 on a month's first row = how many rows its month cell spans.
+  const cells = months.flatMap((month) => {
+    const rows = dates.filter((d) => d.startsWith(month)).flatMap((d) => slots.map((s) => ({ d, s })));
+    if (rows.length === 0) return [{ month, monthRows: 1, d: "", date: "-", time: "-", venue: "-", note: t("noteNone") }];
+    return rows.map(({ d, s }, i) => ({
+      month,
+      monthRows: i === 0 ? rows.length : 0,
+      d,
+      date: dayFmt.format(at(d)),
+      time: fmtTimes(s.start, s.end) || "-",
+      venue: s.venue,
+      note: d === next ? t("noteNext") : d < today ? t("notePast") : "",
+    }));
+  });
+  // Same value in a run of rows = one merged cell, also across months (e.g. one place all
+  // year). span(k, i) = rows the cell starting at row i covers; 0 = covered by a cell above.
+  type Col = "date" | "time" | "venue" | "note";
+  const span = (k: Col, i: number) => {
+    if (i > 0 && cells[i][k] === cells[i - 1][k]) return 0;
+    let n = 1;
+    while (i + n < cells.length && cells[i + n][k] === cells[i][k]) n++;
+    return n;
+  };
+  const cell = (k: Col, i: number, className?: string) => {
+    const n = span(k, i);
+    const none = cells[i][k] === "-" ? " ys-none" : "";
+    return n === 0 ? null : <td rowSpan={n > 1 ? n : undefined} className={`${className ?? ""}${none}`.trim() || undefined}>{cells[i][k]}</td>;
+  };
+
   return (
     <div className="year-schedule">
       <h2>{t("yearTitle", { year })}</h2>
@@ -41,51 +70,15 @@ export default function YearSchedule({ event, today }: { event: Pick<Event, "dat
             </tr>
           </thead>
           <tbody>
-            {months.map((m) => {
-              const month = <th scope="row">{monthFmt.format(at(`${m}-15`))}</th>;
-              const rows = dates.filter((d) => d.startsWith(m)).flatMap((d) => slots.map((s) => ({ d, s })));
-              if (rows.length === 0) {
-                return (
-                  <tr key={m}>
-                    {month}<td className="ys-none ys-narrow">-</td><td className="ys-none ys-narrow">-</td><td className="ys-none">-</td>
-                    <td className="muted">{t("noteNone")}</td>
-                  </tr>
-                );
-              }
-              const cells = rows.map(({ d, s }) => ({
-                date: dayFmt.format(at(d)),
-                time: fmtTimes(s.start, s.end) || "-",
-                venue: s.venue,
-                note: d === next ? t("noteNext") : d < today ? t("notePast") : "",
-                d,
-              }));
-              // Same value in a run of rows (e.g. one place all month) = one merged cell.
-              // span(k, i) = how many rows the cell starting at row i covers, 0 = covered by a cell above.
-              const span = (k: "date" | "time" | "venue" | "note", i: number) => {
-                const same = (a: number, b: number) => cells[a][k] === cells[b][k];
-                if (i > 0 && same(i, i - 1)) return 0;
-                let n = 1;
-                while (i + n < cells.length && same(i + n, i)) n++;
-                return n;
-              };
-              const cell = (k: "date" | "time" | "venue" | "note", i: number, className?: string) => {
-                const n = span(k, i);
-                return n === 0 ? null : <td rowSpan={n > 1 ? n : undefined} className={className}>{cells[i][k]}</td>;
-              };
-              return (
-                <Fragment key={m}>
-                  {cells.map((c, i) => (
-                    <tr key={`${c.d}-${i}`}>
-                      {i === 0 && <th scope="row" rowSpan={rows.length}>{monthFmt.format(at(`${m}-15`))}</th>}
-                      {cell("date", i, "ys-narrow")}
-                      {cell("time", i, "ys-narrow")}
-                      {cell("venue", i)}
-                      {cell("note", i, "muted")}
-                    </tr>
-                  ))}
-                </Fragment>
-              );
-            })}
+            {cells.map((c, i) => (
+              <tr key={`${c.month}-${c.d}-${i}`}>
+                {c.monthRows > 0 && <th scope="row" rowSpan={c.monthRows > 1 ? c.monthRows : undefined}>{monthFmt.format(at(`${c.month}-15`))}</th>}
+                {cell("date", i, "ys-narrow")}
+                {cell("time", i, "ys-narrow")}
+                {cell("venue", i)}
+                {cell("note", i, "muted")}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
