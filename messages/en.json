@@ -132,7 +132,9 @@
     "legendCity": "{city} cons",
     "legendPractice": "Practice places",
     "legend": "Legend",
-    "hideLegend": "Hide legend"
+    "hideLegend": "Hide legend",
+    "list": "List",
+    "hideList": "Close list"
   },
   "MapFilters": {
     "filters": "Filters",

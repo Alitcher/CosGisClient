@@ -132,7 +132,9 @@
     "legendCity": "งานคอนใน{city}",
     "legendPractice": "สถานที่ซ้อม",
     "legend": "คำอธิบายสี",
-    "hideLegend": "ซ่อนคำอธิบายสี"
+    "hideLegend": "ซ่อนคำอธิบายสี",
+    "list": "รายการ",
+    "hideList": "ปิดรายการ"
   },
   "MapFilters": {
     "filters": "ตัวกรอง",

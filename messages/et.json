@@ -132,7 +132,9 @@
     "legendCity": "Conid: {city}",
     "legendPractice": "Harjutuskohad",
     "legend": "Legend",
-    "hideLegend": "Peida legend"
+    "hideLegend": "Peida legend",
+    "list": "Nimekiri",
+    "hideList": "Sulge nimekiri"
   },
   "MapFilters": {
     "filters": "Filtrid",

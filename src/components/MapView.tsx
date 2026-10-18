@@ -30,6 +30,16 @@ export default function MapView() {
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [ready, setReady] = useState(false);
   const legendOpen = useFoldOpen("mapLegendOpen"); // colour legend folds to a small button
+  const [listOpen, setListOpen] = useState(false); // phones: the event list slides in from the left
+  // Swipe on the edge tab or the list: right opens, left closes.
+  const swipeX = useRef<number | null>(null);
+  const onSwipeStart = (ev: React.TouchEvent) => { swipeX.current = ev.touches[0]?.clientX ?? null; };
+  const onSwipeEnd = (ev: React.TouchEvent) => {
+    const start = swipeX.current, end = ev.changedTouches[0]?.clientX;
+    swipeX.current = null;
+    if (start == null || end == null || Math.abs(end - start) < 40) return;
+    setListOpen(end > start);
+  };
   const [selectedId, setSelectedId] = useState<string | null>(null); // event clicked in the list
 
   function post(msg: unknown) {
@@ -85,7 +95,14 @@ export default function MapView() {
 
   return (
     <div className="map-layout">
-      <aside className="side">
+      {/* Wide screens: list on the left. Phones: slides in from the left with the edge tab (> / <) or a swipe. */}
+      <aside className={`side${listOpen ? " open" : ""}`} onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
+        <button
+          type="button" className="side-tab" onClick={() => setListOpen((o) => !o)}
+          aria-expanded={listOpen} aria-label={listOpen ? t("hideList") : t("list")}
+        >
+          <Icon name={listOpen ? "chevron-left" : "chevron-right"} size={18} />
+        </button>
         <div className="side-head">
           <h2>{t("title")}</h2>
           <p>{t("subtitle")}</p>
@@ -99,7 +116,7 @@ export default function MapView() {
                 key={e.id}
                 className={`list-item${isToday ? " is-today" : ""}${e.id === selectedId ? " active" : ""}`}
                 aria-current={e.id === selectedId || undefined}
-                onClick={() => { setSelectedId(e.id); post({ type: "focus", lng: e.lng, lat: e.lat }); }}
+                onClick={() => { setSelectedId(e.id); setListOpen(false); post({ type: "focus", lng: e.lng, lat: e.lat }); }}
               >
                 {isToday && (
                   // eslint-disable-next-line @next/next/no-img-element

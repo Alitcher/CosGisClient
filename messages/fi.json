@@ -132,7 +132,9 @@
     "legendCity": "Conit: {city}",
     "legendPractice": "Treenipaikat",
     "legend": "Selitteet",
-    "hideLegend": "Piilota selitteet"
+    "hideLegend": "Piilota selitteet",
+    "list": "Lista",
+    "hideList": "Sulje lista"
   },
   "MapFilters": {
     "filters": "Suodattimet",
