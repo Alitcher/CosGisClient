@@ -344,14 +344,14 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .map-canvas { position: absolute; inset: 0; }
 
 .mini-cal {
-  position: absolute; right: 18px; bottom: 18px; z-index: 5; width: 290px; padding: 16px;
+  position: absolute; right: 18px; bottom: 44px; z-index: 5; width: 290px; padding: 16px; /* 44px: above the map credit line */
   background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px);
   border: 2px solid var(--border); border-radius: var(--radius);
 }
 /* Folded mini calendar: a small button in the same corner (MiniCalendar). */
-.mini-cal-toggle { position: absolute; right: 18px; bottom: 18px; z-index: 5; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; font: 700 13px var(--font); color: var(--text-0); background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px); border: 2px solid var(--border); border-radius: 999px; cursor: pointer; }
+.mini-cal-toggle { position: absolute; right: 18px; bottom: 44px; z-index: 5; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; font: 700 13px var(--font); color: var(--text-0); background: color-mix(in srgb, var(--surface) 90%, transparent); backdrop-filter: blur(16px); border: 2px solid var(--border); border-radius: 999px; cursor: pointer; }
 .mini-cal-toggle:hover { border-color: var(--border-strong); }
-@media (max-width: 1024px) { .mini-cal-toggle { right: 12px; bottom: 12px; } }
+@media (max-width: 1024px) { .mini-cal-toggle { right: 12px; bottom: 40px; } }
 .mini-cal .mc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .mini-cal .mc-head .mc-title { font-size: 14px; font-weight: 800; }
 .mc-nav { display: flex; gap: 6px; }
@@ -792,7 +792,7 @@ tbody tr:hover { background: var(--surface-2); }
   /* Map: narrower list; the legend sits under the filter button so it can't
      collide with the mini calendar at the bottom. */
   .map-layout { grid-template-columns: 280px 1fr; }
-  .mini-cal { width: 240px; right: 12px; bottom: 12px; }
+  .mini-cal { width: 240px; right: 12px; bottom: 40px; }
   .mf { left: 12px; top: 12px; max-width: calc(100% - 24px); }
   .map-legend { left: 12px; top: 66px; bottom: auto; }
 

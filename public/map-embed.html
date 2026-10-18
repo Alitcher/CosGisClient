@@ -172,7 +172,13 @@
       '</div></div>';
   }
 
-  var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/liberty', center: [24.945, 60.2], zoom: 10.5 });
+  // attribution as the small (i) button, folded by default; tap it to read the map credits
+  var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/liberty', center: [24.945, 60.2], zoom: 10.5, attributionControl: { compact: true } });
+  map.once('load', function () {
+    document.querySelectorAll('.maplibregl-ctrl-attrib').forEach(function (el) {
+      el.removeAttribute('open'); el.classList.remove('maplibregl-compact-show');
+    });
+  });
   // Keep the zoom buttons but drop the stock compass - we add our own below.
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
 
