@@ -295,8 +295,8 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .side-head { padding: 18px 18px 12px; border-bottom: 2px solid var(--border); }
 .side-head h2 { font-size: 18px; }
 .side-head p { font-size: 12.5px; color: var(--text-2); margin-top: 3px; }
-/* Phone-only edge tab of the map list (shown in the max-width: 700px block) */
-.side-tab { display: none; }
+/* Phone-only edge tab and swipe strip of the map list (shown in the max-width: 700px block) */
+.side-tab, .side-swipe { display: none; }
 .fchip { padding: 6px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; background: var(--surface); border: 2px solid var(--border); color: var(--text-1); }
 .fchip.on { color: #fff; background: var(--btn-grad); border-color: transparent; }
 
@@ -897,6 +897,8 @@ tbody tr:hover { background: var(--surface-2); }
   .side { position: absolute; top: 0; bottom: 0; left: 0; width: min(340px, 86vw); z-index: 20; overflow: visible; transform: translateX(-100%); transition: transform 0.25s ease; }
   .side.open { transform: none; box-shadow: 12px 0 40px rgba(2, 8, 20, 0.3); }
   .side .list { overflow-y: auto; }
+  .side-swipe { display: block; position: absolute; top: 0; bottom: 0; left: 0; width: 34px; z-index: 19; touch-action: none; }
+  .side { touch-action: pan-y; } /* sideways swipes on the list are ours (close), up/down still scrolls */
   .side-tab { display: grid; place-items: center; position: absolute; top: 50%; right: -30px; transform: translateY(-50%); width: 30px; height: 64px; padding: 0; border: 2px solid var(--border); border-left: 0; border-radius: 0 12px 12px 0; background: var(--surface); color: var(--text-0); cursor: pointer; box-shadow: 4px 0 12px rgba(2, 8, 20, 0.15); }
   .mini-cal { width: 230px; padding: 12px; }
 

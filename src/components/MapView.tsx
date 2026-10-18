@@ -37,7 +37,7 @@ export default function MapView() {
   const onSwipeEnd = (ev: React.TouchEvent) => {
     const start = swipeX.current, end = ev.changedTouches[0]?.clientX;
     swipeX.current = null;
-    if (start == null || end == null || Math.abs(end - start) < 40) return;
+    if (start == null || end == null || Math.abs(end - start) < 30) return;
     setListOpen(end > start);
   };
   const [selectedId, setSelectedId] = useState<string | null>(null); // event clicked in the list
@@ -95,6 +95,9 @@ export default function MapView() {
 
   return (
     <div className="map-layout">
+      {/* Phones: the map takes every touch, so a swipe that starts on it never reaches the list.
+          This invisible strip on the map's left edge catches a swipe to the right instead. */}
+      {!listOpen && <div className="side-swipe" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd} aria-hidden />}
       {/* Wide screens: list on the left. Phones: slides in from the left with the edge tab (> / <) or a swipe. */}
       <aside className={`side${listOpen ? " open" : ""}`} onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
         <button
