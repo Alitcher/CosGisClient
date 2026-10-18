@@ -47,20 +47,40 @@ export default function YearSchedule({ event, today }: { event: Pick<Event, "dat
               if (rows.length === 0) {
                 return (
                   <tr key={m}>
-                    {month}<td className="ys-none">-</td><td className="ys-none">-</td><td className="ys-none">-</td>
+                    {month}<td className="ys-none ys-narrow">-</td><td className="ys-none ys-narrow">-</td><td className="ys-none">-</td>
                     <td className="muted">{t("noteNone")}</td>
                   </tr>
                 );
               }
+              const cells = rows.map(({ d, s }) => ({
+                date: dayFmt.format(at(d)),
+                time: fmtTimes(s.start, s.end) || "-",
+                venue: s.venue,
+                note: d === next ? t("noteNext") : d < today ? t("notePast") : "",
+                d,
+              }));
+              // Same value in a run of rows (e.g. one place all month) = one merged cell.
+              // span(k, i) = how many rows the cell starting at row i covers, 0 = covered by a cell above.
+              const span = (k: "date" | "time" | "venue" | "note", i: number) => {
+                const same = (a: number, b: number) => cells[a][k] === cells[b][k];
+                if (i > 0 && same(i, i - 1)) return 0;
+                let n = 1;
+                while (i + n < cells.length && same(i + n, i)) n++;
+                return n;
+              };
+              const cell = (k: "date" | "time" | "venue" | "note", i: number, className?: string) => {
+                const n = span(k, i);
+                return n === 0 ? null : <td rowSpan={n > 1 ? n : undefined} className={className}>{cells[i][k]}</td>;
+              };
               return (
                 <Fragment key={m}>
-                  {rows.map(({ d, s }, i) => (
-                    <tr key={`${d}-${s.start ?? ""}-${s.venue}`}>
+                  {cells.map((c, i) => (
+                    <tr key={`${c.d}-${i}`}>
                       {i === 0 && <th scope="row" rowSpan={rows.length}>{monthFmt.format(at(`${m}-15`))}</th>}
-                      <td>{dayFmt.format(at(d))}</td>
-                      <td>{fmtTimes(s.start, s.end) || "-"}</td>
-                      <td>{s.venue}</td>
-                      <td className="muted">{d === next ? t("noteNext") : d < today ? t("notePast") : ""}</td>
+                      {cell("date", i, "ys-narrow")}
+                      {cell("time", i, "ys-narrow")}
+                      {cell("venue", i)}
+                      {cell("note", i, "muted")}
                     </tr>
                   ))}
                 </Fragment>
