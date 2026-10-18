@@ -7,6 +7,8 @@ import { geocode } from "@/lib/geocode";
 import { useCityFromCoords } from "@/lib/useCityFromCoords";
 import AddressAutocomplete from "./AddressAutocomplete";
 import CitySelect from "./CitySelect";
+import AgeFields from "./AgeFields";
+import { EMPTY_AGE, ageError, ageFields, type AgeForm } from "@/lib/age";
 import Icon from "./Icon";
 import { PHOTO_TYPES, PRACTICE_TYPES, FACILITIES, type City, type Country, type Lang, type PlaceType, type Booking, type Price, type Facility } from "@/types";
 
@@ -24,8 +26,9 @@ type Form = {
   lng: string; lat: string; themes: string; photo: string;
   description: string; openingHours: string; submittedBy: string;
   booking: Booking | ""; price: Price | ""; priceNote: string; facilities: Facility[]; bookingUrl: string;
+  age: AgeForm; // suggested ages, "from" required
 };
-const EMPTY: Form = { name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", submittedBy: "", booking: "", price: "", priceNote: "", facilities: [], bookingUrl: "" };
+const EMPTY: Form = { name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", submittedBy: "", booking: "", price: "", priceNote: "", facilities: [], bookingUrl: "", age: EMPTY_AGE };
 
 export default function SubmitSpotDialog({ className = "btn", label, purpose = "photo" }: { className?: string; label?: string; purpose?: "photo" | "practice" }) {
   const practice = purpose === "practice";
@@ -34,6 +37,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
   const tp = useTranslations("SubmitPractice");
   const tPr = useTranslations("Practice");
   const tf = useTranslations("SubmitForm");
+  const ta = useTranslations("Age");
   const tc = useTranslations("Common");
   const tType = useTranslations("PlaceTypes");
   const types = practice ? PRACTICE_TYPES : PHOTO_TYPES;
@@ -59,6 +63,8 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
       if (!city && hit.city) city = hit.city;
     }
     if (!city) return alert(tf("needCity"));
+    const ae = ageError(f.age);
+    if (ae) return alert(ta(ae));
     setBusy(true);
     try {
       await apiSubmitPlace({
@@ -69,6 +75,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
         photos: f.photo.trim() ? [{ url: f.photo.trim() }] : [],
         description: f.description.trim() || undefined,
         openingHours: f.openingHours.trim() || undefined,
+        ...ageFields(f.age),
         submittedBy: f.submittedBy.trim() || undefined,
         ...(practice && {
           booking: f.booking || undefined,
@@ -128,6 +135,7 @@ export default function SubmitSpotDialog({ className = "btn", label, purpose = "
               </div>
               <CitySelect country={f.country} city={f.city} onCountry={(c) => set("country", c)} onCity={(c) => set("city", c)} detect={cityDetect} />
               <div className="field"><label>{practice ? tp("genres") : t("themes")}</label><input value={f.themes} onChange={(e) => set("themes", e.target.value)} placeholder={practice ? tp("genresPlaceholder") : t("themesPlaceholder")} /></div>
+              <AgeFields value={f.age} onChange={(p) => set("age", { ...f.age, ...p })} />
               {practice && (
                 <>
                   <div className="field-row">

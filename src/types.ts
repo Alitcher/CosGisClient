@@ -63,6 +63,8 @@ export interface Event {
   priceMin?: number; // EUR; one price = priceMin only
   priceMax?: number; // EUR
   priceNote?: string; // e.g. "Day ticket 15, weekend 25"
+  ageMin?: number | null; // suggested ages, e.g. 7-17 (see ageLabel in lib/age); null clears on update
+  ageMax?: number | null;
   startTime?: string; // local 'HH:MM' on `date`
   endTime?: string; // local 'HH:MM' on `endDate` (or `date`)
   transit?: TransitStop[]; // nearby stops, set by an admin (missing = never checked, [] = none close)
@@ -93,6 +95,8 @@ export interface Place {
   photos: Photo[];
   description?: string;
   openingHours?: string;
+  ageMin?: number | null; // suggested ages, e.g. 7-17 (see ageLabel in lib/age); null clears on update
+  ageMax?: number | null;
   // ---- practice places only (dance-studio / practice-space) ----
   booking?: Booking;
   price?: Price;

@@ -299,6 +299,19 @@
     "badNumber": "Hinnad peavad olema numbrid, nt 15 või 12,5.",
     "badRange": "Kuni-hind ei saa olla väiksem kui alates-hind."
   },
+  "Age": {
+    "title": "Soovitatav vanus",
+    "range": "Vanus {min}-{max}",
+    "exact": "Vanus {min}",
+    "plus": "Vanus {min}+",
+    "upTo": "Kuni {max}-aastastele",
+    "allAges": "Igas vanuses",
+    "from": "Soovitatav vanus alates",
+    "to": "Soovitatav vanus kuni (valikuline)",
+    "needMin": "Lisa soovitatav alampiir või vali Igas vanuses.",
+    "badNumber": "Vanus peab olema täisarv, nt 7 või 17.",
+    "badRange": "Ülempiir ei saa olla väiksem kui alampiir."
+  },
   "Seo": {
     "homeTitle": "CosOverHere - Animeüritused ja cosplay-üritused Soomes, Põhjamaades ja Baltikumis",
     "homeDescription": "Leia animekonverentsid, cosplay-kohtumised ja cosplay-sõbralikud pildistamiskohad Tallinnas, Helsingis, Tamperes ja üle Põhjamaade ning Baltikumi. Kuupäevad, hinnad, kaardid ja lähimad ühistranspordi peatused.",

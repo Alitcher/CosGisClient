@@ -299,6 +299,19 @@
     "badNumber": "Hintojen pitää olla numeroita, esim. 15 tai 12,5.",
     "badRange": "Enimmäishinta ei voi olla pienempi kuin alkaen-hinta."
   },
+  "Age": {
+    "title": "Ikäsuositus",
+    "range": "{min}-{max}-vuotiaille",
+    "exact": "{min}-vuotiaille",
+    "plus": "{min}-vuotiaista ylöspäin",
+    "upTo": "Enintään {max}-vuotiaille",
+    "allAges": "Kaikenikäisille",
+    "from": "Ikäsuositus alkaen",
+    "to": "Ikäsuositus asti (valinnainen)",
+    "needMin": "Lisää ikäsuosituksen alaraja tai valitse Kaikenikäisille.",
+    "badNumber": "Iän pitää olla kokonaisluku, esim. 7 tai 17.",
+    "badRange": "Yläraja ei voi olla pienempi kuin alaraja."
+  },
   "Seo": {
     "homeTitle": "CosOverHere - Animetapahtumat ja cosplay-tapahtumat Suomessa, Pohjoismaissa ja Baltiassa",
     "homeDescription": "Löydä animeconit, cosplay-tapaamiset ja cosplay-ystävälliset kuvauspaikat Helsingissä, Tampereella, Tallinnassa ja koko Pohjolassa. Päivät, hinnat, kartat ja lähimmät julkisen liikenteen pysäkit.",

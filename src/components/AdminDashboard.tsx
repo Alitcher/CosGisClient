@@ -14,6 +14,8 @@ import AddressAutocomplete from "./AddressAutocomplete";
 import TranslationsEditor from "./TranslationsEditor";
 import TransitEditor from "./TransitEditor";
 import PriceFields from "./PriceFields";
+import AgeFields from "./AgeFields";
+import { EMPTY_AGE, ageError, ageFields, ageForm, type AgeForm } from "@/lib/age";
 import { EMPTY_PRICE, priceFields, priceForm, priceError, type PriceForm } from "@/lib/price";
 import Icon from "./Icon";
 import EventThumb from "./EventThumb";
@@ -45,6 +47,7 @@ type EventForm = {
   lang: Lang | ""; i18n: I18n; // original language + translations (TranslationsEditor)
   transit: TransitStop[] | null; // null = never checked (TransitEditor)
   price: PriceForm; // entry + price range (PriceFields)
+  age: AgeForm; // suggested ages (AgeFields), "from" required
 };
 type PlaceForm = {
   id: string | null;
@@ -53,13 +56,14 @@ type PlaceForm = {
   lang: Lang | ""; i18n: I18n; // original language + translations (TranslationsEditor)
   transit: TransitStop[] | null; // null = never checked (TransitEditor)
   description: string; openingHours: string; status: Status;
+  age: AgeForm; // suggested ages (AgeFields), "from" required
   // practice places only
   booking: Booking | ""; price: Price | ""; priceNote: string; facilities: Facility[];
   youthFriendly: "" | "yes" | "no"; bookingUrl: string;
 };
 
-const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null, price: EMPTY_PRICE };
-const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "", lang: "", i18n: {}, transit: null };
+const EMPTY_EVENT: EventForm = { id: null, name: "", venue: "", country: "FI", city: "", date: "", endDate: "", startTime: "", endTime: "", lng: "", lat: "", description: "", url: "", image: "", status: "live", lang: "", i18n: {}, transit: null, price: EMPTY_PRICE, age: EMPTY_AGE };
+const EMPTY_PLACE: PlaceForm = { id: null, name: "", type: "cafe", country: "FI", city: "", address: "", lng: "", lat: "", themes: "", photo: "", description: "", openingHours: "", status: "live", booking: "", price: "", priceNote: "", facilities: [], youthFriendly: "", bookingUrl: "", lang: "", i18n: {}, transit: null, age: EMPTY_AGE };
 
 /** Transit to save: rows without a name are dropped; never checked (null) sends nothing. */
 function transitField(t: TransitStop[] | null): { transit?: TransitStop[] } {
@@ -182,12 +186,12 @@ export default function AdminDashboard() {
     setOpen(true);
   }
   function editEvent(e: Event) {
-    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null, price: priceForm(e) });
+    setEventForm({ id: e.id, name: e.name, venue: e.venue, country: countryOf(e), city: e.city, date: e.date, endDate: e.endDate ?? "", startTime: e.startTime ?? "", endTime: e.endTime ?? "", lng: String(e.lng), lat: String(e.lat), description: e.description ?? "", url: e.url ?? "", image: e.image ?? "", status: e.status, lang: e.lang ?? "", i18n: e.i18n ?? {}, transit: e.transit ?? null, price: priceForm(e), age: ageForm(e) });
     setDrawerKind("events");
     setOpen(true);
   }
   function editPlace(p: Place) {
-    setPlaceForm({ id: p.id, name: p.name, type: p.type, country: countryOf(p), city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status, lang: p.lang ?? "", i18n: p.i18n ?? {}, transit: p.transit ?? null,
+    setPlaceForm({ id: p.id, name: p.name, type: p.type, country: countryOf(p), city: p.city, address: p.address ?? "", lng: String(p.lng), lat: String(p.lat), themes: p.themes.join(", "), photo: p.photos[0]?.url ?? "", description: p.description ?? "", openingHours: p.openingHours ?? "", status: p.status, lang: p.lang ?? "", i18n: p.i18n ?? {}, transit: p.transit ?? null, age: ageForm(p),
       booking: p.booking ?? "", price: p.price ?? "", priceNote: p.priceNote ?? "", facilities: p.facilities ?? [],
       youthFriendly: p.youthFriendly == null ? "" : p.youthFriendly ? "yes" : "no", bookingUrl: p.bookingUrl ?? "" });
     setDrawerKind("spots");
@@ -207,12 +211,15 @@ export default function AdminDashboard() {
     if (!f.city.trim()) return alert("City is required.");
     const pe = priceError(f.price);
     if (pe) return alert(pe === "badRange" ? "The 'to' price can't be lower than the 'from' price." : "Prices must be numbers, e.g. 15 or 12.5.");
+    const ae = ageError(f.age);
+    if (ae) return alert(ae === "needMin" ? "Suggested age from is required, or tick All ages." : ae === "badRange" ? "The 'to' age can't be lower than the 'from' age." : "Ages must be whole numbers, e.g. 7 or 17.");
     const data = {
       name: f.name.trim(), venue: f.venue.trim(), ...(f.lang ? { lang: f.lang } : {}), i18n: f.i18n, country: f.country, city: f.city.trim(), date: f.date, lng: Number(f.lng) || 0, lat: Number(f.lat) || 0, description: f.description.trim(),
       ...(f.endDate ? { endDate: f.endDate } : {}), ...(f.startTime ? { startTime: f.startTime } : {}), ...(f.endTime ? { endTime: f.endTime } : {}),
       ...(f.url.trim() ? { url: f.url.trim() } : {}), ...(f.image.trim() ? { image: f.image.trim() } : {}),
       ...transitField(f.transit),
       ...priceFields(f.price),
+      ...ageFields(f.age),
     };
     try {
       if (f.id) await updateEvent(f.id, { ...data, status: f.status });
@@ -225,12 +232,15 @@ export default function AdminDashboard() {
     const f = placeForm;
     if (!f.name.trim()) return alert("Name is required.");
     if (!f.city.trim()) return alert("City is required.");
+    const ae = ageError(f.age);
+    if (ae) return alert(ae === "needMin" ? "Suggested age from is required, or tick All ages." : ae === "badRange" ? "The 'to' age can't be lower than the 'from' age." : "Ages must be whole numbers, e.g. 7 or 17.");
     const data = {
       name: f.name.trim(), type: f.type, ...(f.lang ? { lang: f.lang } : {}), i18n: f.i18n, country: f.country, city: f.city.trim(), address: f.address.trim(),
       lng: Number(f.lng) || 0, lat: Number(f.lat) || 0,
       themes: f.themes.split(",").map((t) => t.trim()).filter(Boolean),
       photos: f.photo.trim() ? [{ url: f.photo.trim() }] : [],
       description: f.description.trim(), openingHours: f.openingHours.trim(),
+      ...ageFields(f.age),
       ...transitField(f.transit),
       // Empty selects are sent as "not given" (undefined), so the API leaves the saved value as is.
       ...(isPracticeType(f.type) && {
@@ -464,6 +474,7 @@ export default function AdminDashboard() {
               <TransitEditor value={eventForm.transit} onChange={(v) => setE("transit", v)} lat={eventForm.lat} lng={eventForm.lng} />
               <TranslationsEditor lang={eventForm.lang} i18n={eventForm.i18n} name={eventForm.name} nameLabel="Event name" onLang={(l) => setE("lang", l)} onI18n={(v) => setE("i18n", v)} />
               <PriceFields value={eventForm.price} onChange={(p) => setE("price", { ...eventForm.price, ...p })} />
+              <AgeFields value={eventForm.age} onChange={(p) => setE("age", { ...eventForm.age, ...p })} />
               <div className="field"><label>Link (optional)</label><input type="url" value={eventForm.url} onChange={(e) => setE("url", e.target.value)} placeholder="https://... event page" /></div>
               <div className="field">
                 <label>Thumbnail / logo URL (optional)</label>
@@ -504,6 +515,7 @@ export default function AdminDashboard() {
               <div className="field"><label>Themes (comma-separated)</label><input value={placeForm.themes} onChange={(e) => setP("themes", e.target.value)} placeholder="pastel, kawaii, neon" /></div>
               <div className="field"><label>Photo URL</label><input value={placeForm.photo} onChange={(e) => setP("photo", e.target.value)} placeholder="https://..." /></div>
               <div className="field"><label>Opening hours</label><input value={placeForm.openingHours} onChange={(e) => setP("openingHours", e.target.value)} placeholder="10:00-20:00" /></div>
+              <AgeFields value={placeForm.age} onChange={(p) => setP("age", { ...placeForm.age, ...p })} />
               <div className="field"><label>Description</label><textarea rows={3} value={placeForm.description} onChange={(e) => setP("description", e.target.value)} /></div>
               <TransitEditor value={placeForm.transit} onChange={(v) => setP("transit", v)} lat={placeForm.lat} lng={placeForm.lng} />
               <TranslationsEditor lang={placeForm.lang} i18n={placeForm.i18n} name={placeForm.name} nameLabel="Spot name" onLang={(l) => setP("lang", l)} onI18n={(v) => setP("i18n", v)} />

@@ -17,6 +17,7 @@ import EventThumb from "@/components/EventThumb";
 import TransitBadges from "@/components/TransitBadges";
 import Icon from "@/components/Icon";
 import { priceLabel, isFree } from "@/lib/price";
+import AgeTag from "@/components/AgeTag";
 import type { City } from "@/types";
 import TicketIcon from "@/components/TicketIcon";
 
@@ -128,6 +129,7 @@ export default function EventsPage() {
                 </div>
                 <div className="r-cta">
                   <span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{priceLabel(e, tp)}</span>
+                  <AgeTag item={e} />
                 </div>
               </div>
               </Fragment>

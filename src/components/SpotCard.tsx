@@ -9,6 +9,7 @@ import Icon from "./Icon";
 import { isPracticeType, type Place } from "@/types";
 import TicketIcon from "@/components/TicketIcon";
 import CountryFlag from "./CountryFlag";
+import AgeTag from "./AgeTag";
 import { cityChip, cityLabel, countryLabel, countryOf } from "@/lib/cities";
 
 /** Booking / price / facilities rows for practice places (Practice tab). */
@@ -69,7 +70,7 @@ export default function SpotCard({ place: p }: { place: Place }) {
           ))}
         </div>
         {/* Entry, bottom-left: "Paid" only when marked paid, otherwise free (the default). */}
-        <div className="card-foot"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}><TicketIcon size={20} />{p.price === "paid" ? tp("paid") : tp("free")}</span></div>
+        <div className="card-foot tag-row"><span className={`price-tag${p.price === "paid" ? "" : " free"}`}><TicketIcon size={20} />{p.price === "paid" ? tp("paid") : tp("free")}</span><AgeTag item={p} /></div>
       </div>
     </div>
   );

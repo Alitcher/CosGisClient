@@ -10,6 +10,7 @@ import CountryFlag from "@/components/CountryFlag";
 import ShareButton from "@/components/ShareButton";
 import TransitBadges from "@/components/TransitBadges";
 import { priceLabel, isFree } from "@/lib/price";
+import AgeTag from "@/components/AgeTag";
 import { getEvent, SITE_URL } from "@/lib/serverData";
 import { alternatesFor, localePath, eventJsonLd, jsonLdString } from "@/lib/seo";
 import { localText } from "@/lib/localText";
@@ -72,7 +73,7 @@ export default async function EventPage({ params }: Props) {
           </div>
           <TransitBadges transit={e.transit} />
           {txt.description && <p className="detail-text">{txt.description}</p>}
-          <p className="detail-price"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{price}</span>{e.priceNote && <span className="muted">{e.priceNote}</span>}</p>
+          <p className="detail-price"><span className={`price-tag${isFree(e) ? " free" : ""}`}><TicketIcon size={20} />{price}</span><AgeTag item={e} />{e.priceNote && <span className="muted">{e.priceNote}</span>}</p>
           <div className="detail-actions">
             <Link className="btn" href={`/map?lng=${e.lng}&lat=${e.lat}&z=16`}>{t("showOnMap")}</Link>
             {e.url && <a className="btn ghost" href={e.url} target="_blank" rel="noopener noreferrer">{t("website")}</a>}

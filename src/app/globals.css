@@ -514,6 +514,11 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 /* Event price, e.g. "Free", "10-25 EUR". */
 .price-tag { display: inline-flex; align-items: center; gap: 7px; font-size: 16px; font-weight: 800; color: var(--primary); background: color-mix(in srgb, var(--primary-2) 10%, transparent); border: 1px solid color-mix(in srgb, var(--primary-2) 35%, transparent); padding: 5px 12px; border-radius: 2px; white-space: nowrap; }
 .ticket-icon { flex: none; display: block; }
+/* Suggested ages (AgeTag), e.g. "Ages 7-17". */
+/* Sits next to the price tag, same height, gray. */
+.age-tag { display: inline-flex; align-items: center; font-size: 15px; font-weight: 700; color: var(--text-1); background: var(--surface-2); border: 1px solid var(--border-strong); padding: 6px 12px; border-radius: 2px; white-space: nowrap; }
+/* Price tag + age tag side by side. */
+.tag-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .price-tag.free { color: #00704a; background: color-mix(in srgb, var(--green) 14%, transparent); border-color: color-mix(in srgb, var(--green) 45%, transparent); }
 :root[data-theme="dark"] .price-tag.free { color: var(--green); }
 .detail-price { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; font-size: 14px; }
@@ -649,6 +654,9 @@ tbody tr:hover { background: var(--surface-2); }
 .field-row .field { flex: 1; min-width: 0; } /* min-width: date/time inputs won't shrink otherwise */
 .field-note { font-size: 12px; margin-top: 6px; }
 .field-note.warn { color: #e5484d; }
+/* Checkbox + text on one line inside a .field (e.g. "All ages"). */
+.field .check-label { display: inline-flex; align-items: center; gap: 8px; font-weight: 400; font-size: 14px; margin-bottom: 0; cursor: pointer; }
+.field .check-label input { width: 16px; height: 16px; padding: 0; margin: 0; flex: none; }
 /* Admin: nearby public transport rows (TransitEditor). */
 .transit-edit { display: flex; flex-direction: column; gap: 6px; }
 .transit-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 76px auto auto; gap: 6px; align-items: center; }
@@ -780,7 +788,9 @@ tbody tr:hover { background: var(--surface-2); }
   .r-with-thumb .ev-logo { height: 68px !important; } /* thumbnail size is inline; smaller on phones */
   .r-with-thumb .ev-thumb { width: 68px !important; height: 68px !important; font-size: 30px !important; }
   .r-cta { grid-area: price; justify-self: end; }
+  .r-cta { flex-direction: column; align-items: flex-end; gap: 6px; }
   .r-cta .price-tag { font-size: 14px; padding: 4px 9px; }
+  .r-cta .age-tag { font-size: 13px; padding: 4px 9px; }
   .r-text { grid-area: text; border-top: 1px solid var(--border); padding-top: 12px; }
   .r-main h3 { font-size: 20px; }
   .r-main .meta { gap: 6px 10px; font-size: 15px; }

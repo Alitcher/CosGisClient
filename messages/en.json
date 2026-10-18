@@ -299,6 +299,19 @@
     "badNumber": "Prices must be numbers, e.g. 15 or 12.5.",
     "badRange": "The 'to' price can't be lower than the 'from' price."
   },
+  "Age": {
+    "title": "Suggested age",
+    "range": "Ages {min}-{max}",
+    "exact": "Age {min}",
+    "plus": "Ages {min}+",
+    "upTo": "Up to age {max}",
+    "allAges": "All ages",
+    "from": "Suggested age from",
+    "to": "Suggested age to (optional)",
+    "needMin": "Please add the youngest suggested age, or tick All ages.",
+    "badNumber": "Ages must be whole numbers, e.g. 7 or 17.",
+    "badRange": "The 'to' age can't be lower than the 'from' age."
+  },
   "Seo": {
     "homeTitle": "CosOverHere - Anime conventions & cosplay events in Finland, the Nordics and Baltics",
     "homeDescription": "Find anime conventions, cosplay meetups and cosplay-friendly photo spots in Helsinki, Tampere, Tallinn and across the Nordics and Baltics. Dates, prices, maps and nearby public transport.",
