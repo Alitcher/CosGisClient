@@ -933,3 +933,25 @@ tbody tr:hover { background: var(--surface-2); }
 
   .hide-sm { display: none; }
 }
+
+/* ---------- Ad slots (MOCKUP placeholders, see components/AdSlot.tsx) ---------- */
+.ad-slot { display: flex; justify-content: center; margin: 24px auto; padding: 0 16px; max-width: 100%; }
+.ad-box {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  width: 100%; border: 2px dashed var(--border-strong); border-radius: var(--radius);
+  background: repeating-linear-gradient(45deg, var(--surface-2), var(--surface-2) 10px, var(--surface) 10px, var(--surface) 20px);
+  color: var(--text-2); font-size: 12px; text-align: center;
+}
+.ad-box b { color: var(--text-1); font-size: 13px; }
+.ad-tag { position: absolute; top: 4px; left: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+.ad-leaderboard .ad-box { max-width: 728px; height: 90px; }
+.ad-billboard .ad-box { max-width: 970px; height: 250px; }
+.ad-rect .ad-box { max-width: 300px; height: 250px; }
+.ad-small .ad-box { max-width: 300px; height: 100px; }
+.ad-slot.in-grid { margin: 0; padding: 0; } /* sits as one card in a grid */
+.ad-slot.in-list { margin: 10px 0; padding: 0; }
+@media (max-width: 700px) {
+  .ad-leaderboard .ad-box { max-width: 320px; height: 50px; }
+  .ad-leaderboard .ad-box b { display: none; }
+  .ad-billboard .ad-box { max-width: 300px; height: 250px; }
+}

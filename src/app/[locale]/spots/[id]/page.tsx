@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import SpotCard from "@/components/SpotCard";
 import { getPlace, SITE_URL } from "@/lib/serverData";
@@ -47,6 +48,7 @@ export default async function SpotPage({ params }: Props) {
       {/* Place details for search engines (schema.org). */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(placeJsonLd(p, localText(p, locale).name, localText(p, locale).description, SITE_URL + localePath(locale, `/spots/${p.id}`))) }} />
       <Nav />
+      <AdSlot page="spot-detail" size="leaderboard" name="Top banner (under menu)" />
       <div className="spots-shell detail">
         <Link className="detail-back" href={practice ? "/practice" : "/spots"}>{t("allSpots")}</Link>
         <div className="detail-spot">
@@ -55,8 +57,9 @@ export default async function SpotPage({ params }: Props) {
             <p className="detail-text"><b>{t("openingHours")}:</b> {p.openingHours}</p>
           )}
         </div>
+        <AdSlot page="spot-detail" size="rect" name="Under the card" />
       </div>
-      <Footer />
+      <Footer page="spot-detail" />
     </>
   );
 }

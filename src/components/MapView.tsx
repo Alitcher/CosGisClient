@@ -17,6 +17,7 @@ import { isPracticeType, type Event } from "@/types";
 import { asNext } from "@/lib/recurrence";
 import RepeatTag from "./RepeatTag";
 import Icon from "./Icon";
+import AdSlot from "./AdSlot";
 import { setFolded, useFoldOpen } from "@/lib/foldState";
 
 export default function MapView() {
@@ -141,6 +142,7 @@ export default function MapView() {
               {t("noMatches")}
             </div>
           )}
+          <AdSlot page="map" size="small" name="End of the side list" className="in-list" />
         </div>
       </aside>
 

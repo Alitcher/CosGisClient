@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import EventThumb from "@/components/EventThumb";
 import CountryFlag from "@/components/CountryFlag";
@@ -64,6 +65,7 @@ export default async function EventPage({ params }: Props) {
       {/* Event details for Google's event results (schema.org). */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(eventJsonLd(e, txt.name, txt.description, SITE_URL + localePath(locale, `/events/${e.id}`))) }} />
       <Nav />
+      <AdSlot page="event-detail" size="leaderboard" name="Top banner (under menu)" />
       <div className="ev-shell detail">
         <Link className="detail-back" href="/events">{t("allEvents")}</Link>
         <div className="card detail-card">
@@ -89,8 +91,9 @@ export default async function EventPage({ params }: Props) {
             <ShareButton title={txt.name} path={`/events/${e.id}`} event={e} />
           </div>
         </div>
+        <AdSlot page="event-detail" size="rect" name="Under the card" />
       </div>
-      <Footer />
+      <Footer page="event-detail" />
     </>
   );
 }

@@ -3,6 +3,7 @@ import { pageMetadata } from "@/lib/seo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import HeroMap from "@/components/HeroMap";
 import UpcomingEvents from "@/components/UpcomingEvents";
@@ -37,6 +38,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   return (
     <>
       <Nav />
+      <AdSlot page="home" size="leaderboard" name="Top banner (under menu)" />
 
       <section className="hero shell">
         <div className="hero-grid">
@@ -64,6 +66,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
+      <AdSlot page="home" size="billboard" name="Under the hero map" />
       <section className="upcoming shell">
         <div className="up-head">
           <div>
@@ -78,6 +81,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
 
       {/* Repeating local meetups (cosplay cafes, workshops, library clubs), kept apart from the cons. */}
+      <AdSlot page="home" size="billboard" name="Between events and meetups" />
       <section className="upcoming community shell">
         <div className="up-head">
           <div>
@@ -91,6 +95,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
+      <AdSlot page="home" size="billboard" name="Between meetups and spots" />
       <section className="upcoming hot-spots shell">
         <div className="up-head">
           <div>
@@ -104,7 +109,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <Footer />
+      <Footer page="home" />
     </>
   );
 }

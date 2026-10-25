@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useTranslations } from "next-intl";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import { usePlaceStore } from "@/lib/placesStore";
 import { placeMatches } from "@/lib/search";
@@ -26,6 +27,7 @@ export default function PracticePage() {
   return (
     <>
       <Nav />
+      <AdSlot page="practice" size="leaderboard" name="Top banner (under menu)" />
       <div className="spots-shell">
         <h1 className="section-title">{t("title")}</h1>
         <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>{t("intro")}</p>
@@ -38,7 +40,12 @@ export default function PracticePage() {
         </div>
 
         <div className="grid spots-grid">
-          {places.map((p) => <SpotCard key={p.id} place={p} />)}
+          {places.map((p, i) => (
+            <Fragment key={p.id}>
+              <SpotCard place={p} />
+              {i === 5 && <AdSlot page="practice" size="rect" name="In the grid (after 6 cards)" className="in-grid" />}
+            </Fragment>
+          ))}
           {places.length === 0 && (
             <div className="card" style={{ padding: 30, textAlign: "center", color: "var(--text-2)" }}>
               {all.length === 0 ? t("empty") : t("noMatches")}
@@ -46,7 +53,7 @@ export default function PracticePage() {
           )}
         </div>
       </div>
-      <Footer />
+      <Footer page="practice" />
     </>
   );
 }

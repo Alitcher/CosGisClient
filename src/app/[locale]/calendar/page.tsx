@@ -2,6 +2,7 @@ import type { Locale } from "next-intl";
 import { pageMetadata } from "@/lib/seo";
 import { setRequestLocale } from "next-intl/server";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import MonthCalendar from "@/components/MonthCalendar";
 
@@ -17,8 +18,9 @@ export default async function CalendarPage({ params }: { params: Promise<{ local
   return (
     <>
       <Nav />
+      <AdSlot page="calendar" size="leaderboard" name="Top banner (under menu)" />
       <MonthCalendar />
-      <Footer />
+      <Footer page="calendar" />
     </>
   );
 }

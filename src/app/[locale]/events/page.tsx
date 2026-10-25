@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { localText } from "@/lib/localText";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
 import { cityChip, citiesIn, cityLabel, countryLabel, countryOf } from "@/lib/cities";
@@ -58,6 +59,7 @@ export default function EventsPage() {
   return (
     <>
       <Nav />
+      <AdSlot page="events" size="leaderboard" name="Top banner (under menu)" />
       <div className="ev-shell">
         <div className="ev-top">
           <div>
@@ -134,6 +136,7 @@ export default function EventsPage() {
                   <AgeTag item={e} />
                 </div>
               </div>
+              {i % 5 === 4 && i < list.length - 1 && <AdSlot page="events" size="leaderboard" name="In the list (every 5 events)" className="in-list" />}
               </Fragment>
             );
           })}
@@ -144,7 +147,7 @@ export default function EventsPage() {
           )}
         </div>
       </div>
-      <Footer />
+      <Footer page="events" />
     </>
   );
 }

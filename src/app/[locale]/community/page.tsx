@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import SubmitEventDialog from "@/components/SubmitEventDialog";
 import SearchBox from "@/components/SearchBox";
@@ -21,6 +22,7 @@ export default function CommunityPage() {
   return (
     <>
       <Nav />
+      <AdSlot page="meetups" size="leaderboard" name="Top banner (under menu)" />
       <div className="spots-shell">
         <h1 className="section-title">{t("title")}</h1>
         <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>{t("intro")}</p>
@@ -31,9 +33,10 @@ export default function CommunityPage() {
         <div className="search-row">
           <SearchBox value={q} onChange={setQ} placeholder={t("search")} />
         </div>
+        <AdSlot page="meetups" size="leaderboard" name="Above the list" className="in-list" />
         <UpcomingEvents kind="community" limit={0} query={q} />
       </div>
-      <Footer />
+      <Footer page="meetups" />
     </>
   );
 }

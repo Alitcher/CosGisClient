@@ -4,6 +4,7 @@ import { pageMetadata } from "@/lib/seo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
+import AdSlot from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import TicketIcon from "@/components/TicketIcon";
 
@@ -25,6 +26,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   return (
     <>
       <Nav />
+      <AdSlot page="about" size="leaderboard" name="Top banner (under menu)" />
 
       <section className="about-hero shell">
         <h1>
@@ -66,6 +68,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </div>
       </section>
 
+      <AdSlot page="about" size="billboard" name="Before the last section" />
       <section className="cta-band shell">
         <h2>{t("ctaTitle")}</h2>
         <p>{t("ctaText")}</p>
@@ -75,7 +78,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </div>
       </section>
 
-      <Footer />
+      <Footer page="about" />
     </>
   );
 }
