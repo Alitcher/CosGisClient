@@ -7,6 +7,10 @@ import { Link, usePathname } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 
+// Megaphone bar on top of the header (text: Nav.notice in messages/). Hidden for now;
+// set to true to show it again.
+const SHOW_NOTICE = false;
+
 type NavKey = keyof Messages["Nav"];
 type Page = readonly [href: string, key: NavKey];
 type Item = { page: Page } | { group: NavKey; pages: readonly Page[] };
@@ -67,6 +71,7 @@ export default function Nav() {
 
   return (
     <nav className="nav" ref={navRef}>
+      {SHOW_NOTICE && <div className="nav-notice">{t("notice")}</div>}
       <div className="nav-inner">
         <Link className="brand" href="/">
           <Image className="brand-logo" src="/logo.svg" alt="" width={42} height={42} unoptimized priority />
