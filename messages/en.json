@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "CosOverHere - Nordic & Baltic",
-    "description": "Find every anime con near you, plus the cafés, malls and photo spots that welcome cosplayers - across Helsinki, Vantaa & Espoo."
+    "description": "Welcome to the site! Over here, you can find conventions related to Cosplay, Anime, Manga, Western comics, J-POP and K-POP events near you, plus the cafés, malls and photospot locations that welcome cosplayers and those who are interested in pop culture across Nordic and Baltic areas. Hope the website provides what you need ;)."
   },
   "Nav": {
     "menu": "Menu",
@@ -45,16 +45,19 @@
   },
   "Home": {
     "title": "<grad>Cos</grad>play <grad>Over Here</grad> \n\n  Nordic & Baltic",
-    "lead": "Find every event near you - plus the cafés, malls and photo spots that welcome cosplayers, with pics and themes so you know exactly where to shoot.",
+    "lead": "Welcome! You can find conventions related to Cosplay, Anime, Manga, and other pop-culture events near you across Nordic and Baltic areas. Hope the website provides what you need :). ",
     "statConventions": "Conventions",
     "statVenues": "Venues",
     "statCities": "Cities",
     "mapTitle": "Map of cosplay venues",
-    "upcomingTitle": "Upcoming conventions",
+    "upcomingTitle": "Upcoming events",
+    "upcomingDesc": "Check and plan your next cosplays. All events are listed with dates, venues and links to the official pages. Some events aren't advertised widely, so check the list to find hidden gems.",
     "seeAllEvents": "See all",
-    "hotSpotsTitle": "Cosplay hot spots",
+    "hotSpotsTitle": "Cosplay hotspots",
+    "hotSpotsDesc": "Cafes, malls and photo spots that welcome cosplayers or content creators. Most places are already used by cosplayers. Each spot has a theme and photos that might match your character.",
     "seeAllSpots": "See all",
     "communityTitle": "Local community",
+    "communityDesc": "Regular meetups, workshops and library clubs to join. This is a great way to meet other cosplayers, share tips and get help with your cosplay plan. Some meetups are weekly, some monthly, and some are one-time events.",
     "seeAllCommunity": "See all"
   },
   "About": {

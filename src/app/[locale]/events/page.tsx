@@ -7,7 +7,7 @@ import { Link } from "@/i18n/navigation";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { splitDate, fmtRange, fmtTimes, eventEndsOn } from "@/lib/data";
-import { cityChip, citiesIn, cityLabel, countryLabel, countryOf } from "@/lib/cities";
+import { cityChip, cityLabel, countryLabel, countryOf } from "@/lib/cities";
 import CountryFlag from "@/components/CountryFlag";
 import SearchBox from "@/components/SearchBox";
 import ShareButton from "@/components/ShareButton";
@@ -19,7 +19,8 @@ import Icon from "@/components/Icon";
 import { priceLabel, isFree } from "@/lib/price";
 import AgeTag from "@/components/AgeTag";
 import { isCommunity } from "@/lib/recurrence";
-import type { City } from "@/types";
+import SectionFilters from "@/components/SectionFilters";
+import { EMPTY_SECTION_FILTER, matchesSection } from "@/lib/sectionFilter";
 import TicketIcon from "@/components/TicketIcon";
 
 const WHENS = ["Upcoming", "Past", "All"] as const;
@@ -31,21 +32,23 @@ export default function EventsPage() {
   // Gregorian calendar also in Thai (the default there is the Buddhist year).
   const monthFmt = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", calendar: "gregory" });
   const tc = useTranslations("Common");
+  const th = useTranslations("Home"); // same description as the home page section
   const tp = useTranslations("Price");
   // Repeating local meetups have their own page (/community).
   const events = useEventStore().events.filter((e) => !isCommunity(e));
-  const [city, setCity] = useState<City | "All cities">("All cities");
-  // Only offer cities that actually have events, so nine empty chips don't pile up.
-  const cityOptions: (City | "All cities")[] = ["All cities", ...citiesIn(events)];
+  // Same Filters button and panel (country / city / age / price) as the home page sections.
+  const [filter, setFilter] = useState(EMPTY_SECTION_FILTER);
   const [when, setWhen] = useState<(typeof WHENS)[number]>("Upcoming");
   const [q, setQ] = useState("");
 
   const now = new Date();
   const todayISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
-  const list = events
-    .filter((e) => (when === "All" ? true : when === "Upcoming" ? eventEndsOn(e) >= todayISO : eventEndsOn(e) < todayISO))
-    .filter((e) => (city === "All cities" ? true : e.city === city))
+  // "Free" also matches free entry with paid extras (same as the home page).
+  const filterable = (e: (typeof events)[number]) => ({ ...e, free: isFree(e) || e.admission === "mixed" });
+  const inWhen = events.filter((e) => (when === "All" ? true : when === "Upcoming" ? eventEndsOn(e) >= todayISO : eventEndsOn(e) < todayISO));
+  const list = inWhen
+    .filter((e) => matchesSection(filterable(e), filter))
     .filter(
       (e) =>
         e.name.toLowerCase().includes(q.toLowerCase()) ||
@@ -62,6 +65,7 @@ export default function EventsPage() {
         <div className="ev-top">
           <div>
             <h1>{t("title")}</h1>
+            <p className="section-desc muted">{th("upcomingDesc")}</p>
             <p>{t("count", { count: list.length })}</p>
           </div>
         </div>
@@ -69,20 +73,14 @@ export default function EventsPage() {
         {/* Buttons, a line, the filters, then the search (same order on Spots / Practice) */}
         <div className="page-actions">
           <div className="flex gap-sm">
-            <SubmitEventDialog className="btn ghost" label={tc("submitEvent")} />
+            <SubmitEventDialog className="btn" label={tc("submitEvent")} />
             <Link className="btn ghost" href="/calendar">{t("calendarView")}</Link>
           </div>
         </div>
         <hr className="divider" />
 
+        <SectionFilters value={filter} onChange={setFilter} items={inWhen.map(filterable)} />
         <div className="toolbar">
-          <div className="seg">
-            {cityOptions.map((c) => (
-              <button key={c} className={city === c ? "on" : ""} type="button" onClick={() => setCity(c)}>
-                {c === "All cities" ? t("allCities") : cityLabel(c)}
-              </button>
-            ))}
-          </div>
           <div className="seg">
             {WHENS.map((w) => (
               <button key={w} className={when === w ? "on" : ""} type="button" onClick={() => setWhen(w)}>

@@ -6,8 +6,6 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import HeroMap from "@/components/HeroMap";
 import UpcomingEvents from "@/components/UpcomingEvents";
-import SubmitEventDialog from "@/components/SubmitEventDialog";
-import SubmitSpotDialog from "@/components/SubmitSpotDialog";
 import HotSpots from "@/components/HotSpots";
 import { listLiveEvents } from "@/lib/serverData";
 import { eventEndsOn } from "@/lib/data";
@@ -22,7 +20,6 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   const { locale } = await params;
   setRequestLocale(locale as Locale);
   const t = await getTranslations("Home");
-  const tc = await getTranslations("Common");
 
   // Hero numbers from the real data: upcoming live events, their venues and cities.
   // (The event list is cached for an hour; Helsinki date decides what "upcoming" is.)
@@ -68,13 +65,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="up-head">
           <div>
             <h2 className="section-title">{t("upcomingTitle")}</h2>
+            {t("upcomingDesc") && <p className="section-desc muted">{t("upcomingDesc")}</p>}
           </div>
         </div>
-        <UpcomingEvents filters />
-        <div className="flex gap-sm up-actions">
-          <SubmitEventDialog className="btn" label={tc("submitEvent")} />
-          <Link className="btn ghost" href="/events">{t("seeAllEvents")}</Link>
-        </div>
+        <UpcomingEvents filters seeAll={<Link className="see-all" href="/events">{t("seeAllEvents")}</Link>} />
       </section>
 
       {/* Repeating local meetups (cosplay cafes, workshops, library clubs), kept apart from the cons. */}
@@ -82,26 +76,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <div className="up-head">
           <div>
             <h2 className="section-title">{t("communityTitle")}</h2>
+            {t("communityDesc") && <p className="section-desc muted">{t("communityDesc")}</p>}
           </div>
         </div>
-        <UpcomingEvents kind="community" filters />
-        <div className="flex gap-sm up-actions">
-          <SubmitEventDialog className="btn" label={tc("submitMeetup")} kind="community" />
-          <Link className="btn ghost" href="/community">{t("seeAllCommunity")}</Link>
-        </div>
+        <UpcomingEvents kind="community" filters seeAll={<Link className="see-all" href="/community">{t("seeAllCommunity")}</Link>} />
       </section>
 
       <section className="upcoming hot-spots shell">
         <div className="up-head">
           <div>
             <h2 className="section-title">{t("hotSpotsTitle")}</h2>
+            {t("hotSpotsDesc") && <p className="section-desc muted">{t("hotSpotsDesc")}</p>}
           </div>
         </div>
-        <HotSpots />
-        <div className="flex gap-sm up-actions">
-          <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
-          <Link className="btn ghost" href="/spots">{t("seeAllSpots")}</Link>
-        </div>
+        <HotSpots seeAll={<Link className="see-all" href="/spots">{t("seeAllSpots")}</Link>} />
       </section>
 
       <Footer />

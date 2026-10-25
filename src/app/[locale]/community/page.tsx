@@ -16,6 +16,7 @@ import UpcomingEvents from "@/components/UpcomingEvents";
 export default function CommunityPage() {
   const t = useTranslations("Community");
   const tc = useTranslations("Common");
+  const th = useTranslations("Home"); // same description as the home page section
   const [q, setQ] = useState("");
 
   return (
@@ -23,7 +24,7 @@ export default function CommunityPage() {
       <Nav />
       <div className="spots-shell">
         <h1 className="section-title">{t("title")}</h1>
-        <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>{t("intro")}</p>
+        <p className="section-desc muted">{th("communityDesc")}</p>
         <div className="page-actions">
           <SubmitEventDialog className="btn" label={tc("submitMeetup")} kind="community" />
         </div>

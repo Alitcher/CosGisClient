@@ -51,10 +51,13 @@
     "statCities": "Kaupungit",
     "mapTitle": "Cosplay-paikkojen kartta",
     "upcomingTitle": "Tulevat tapahtumat",
+    "upcomingDesc": "Tarkista ja suunnittele seuraavat cosplaysi. Kaikki tapahtumat on listattu päivämäärineen, tapahtumapaikkoineen ja linkkeineen virallisille sivuille. Kaikkia tapahtumia ei mainosteta laajasti, joten selaa listaa ja löydä piilotettuja helmiä.",
     "seeAllEvents": "Kaikki tapahtumat ->",
     "hotSpotsTitle": "Cosplay-kuumat paikat",
+    "hotSpotsDesc": "Kahvilat, kauppakeskukset ja kuvauspaikat, joissa cosplayerit ja sisällöntuottajat ovat tervetulleita. Useimmat paikat ovat jo cosplayereiden käytössä. Jokaisella paikalla on teema ja kuvia, jotka voivat sopia hahmollesi.",
     "seeAllSpots": "Kaikki paikat ->",
     "communityTitle": "Paikallinen yhteisö",
+    "communityDesc": "Säännöllisiä tapaamisia, työpajoja ja kirjastokerhoja, joihin voit liittyä. Se on loistava tapa tavata muita cosplayereita, jakaa vinkkejä ja saada apua cosplay-suunnitelmaasi. Osa tapaamisista on viikoittain, osa kuukausittain ja osa kertaluonteisia.",
     "seeAllCommunity": "Näytä kaikki"
   },
   "About": {

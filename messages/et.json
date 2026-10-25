@@ -51,10 +51,13 @@
     "statCities": "Linnad",
     "mapTitle": "Cosplay-kohtade kaart",
     "upcomingTitle": "Tulevased üritused",
+    "upcomingDesc": "Vaata üle ja planeeri oma järgmised cosplayd. Kõik üritused on loetletud koos kuupäevade, toimumiskohtade ja linkidega ametlikele lehtedele. Mõnda üritust ei reklaamita laialt, nii et sirvi nimekirja ja leia peidetud pärleid.",
     "seeAllEvents": "Kõik üritused ->",
     "hotSpotsTitle": "Cosplay kuumad kohad",
+    "hotSpotsDesc": "Kohvikud, kaubanduskeskused ja pildistamiskohad, kus cosplayerid ja sisuloojad on oodatud. Enamikku kohti kasutavad cosplayerid juba praegu. Igal kohal on teema ja fotod, mis võivad sinu tegelasega sobida.",
     "seeAllSpots": "Kõik kohad ->",
     "communityTitle": "Kohalik kogukond",
+    "communityDesc": "Regulaarsed kokkusaamised, töötoad ja raamatukoguklubid, millega liituda. See on suurepärane viis kohtuda teiste cosplayeritega, jagada nippe ja saada abi oma cosplay plaaniga. Mõned kokkusaamised toimuvad iga nädal, mõned iga kuu ja mõned on ühekordsed.",
     "seeAllCommunity": "Vaata kõiki"
   },
   "About": {

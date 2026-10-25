@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { citiesIn, cityLabel, countriesIn, countryLabel, countryOf } from "@/lib/cities";
 import {
@@ -16,8 +16,9 @@ const CITY_LIMIT = 4; // cities shown before "View more"
  * removable chips, and the slide-in Filters panel: Country, City, Age, Price with round
  * checkmarks and a count per option. Choices only apply when "Show N results" is pressed.
  * Options come from the section's own items, so nothing empty is offered.
+ * `end` (e.g. the section's "See all" link) sits at the right end of the same row.
  */
-export default function SectionFilters({ value, onChange, items }: { value: SectionFilter; onChange: (f: SectionFilter) => void; items: Filterable[] }) {
+export default function SectionFilters({ value, onChange, items, end }: { value: SectionFilter; onChange: (f: SectionFilter) => void; items: Filterable[]; end?: ReactNode }) {
   const t = useTranslations("Filters");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
@@ -53,6 +54,7 @@ export default function SectionFilters({ value, onChange, items }: { value: Sect
             {label(g.key, o)}<Icon name="close" size={12} />
           </button>
         )))}
+        {end && <div className="sf-end">{end}</div>}
       </div>
 
       {open && <div className="overlay" onClick={() => setOpen(false)} />}

@@ -14,6 +14,7 @@ import { isPracticeType } from "@/types";
 export default function SpotsPage() {
   const t = useTranslations("Spots");
   const tc = useTranslations("Common");
+  const th = useTranslations("Home"); // same description as the home page section
   const [q, setQ] = useState("");
   // Photo-shoot spots only; dance studios and practice spaces live on /practice.
   const all = usePlaceStore().places.filter((p) => !isPracticeType(p.type));
@@ -24,7 +25,7 @@ export default function SpotsPage() {
       <Nav />
       <div className="spots-shell">
         <h1 className="section-title">{t("title")}</h1>
-        <p className="muted" style={{ marginTop: 8, maxWidth: 560 }}>{t("intro")}</p>
+        <p className="section-desc muted">{th("hotSpotsDesc")}</p>
         <div className="page-actions">
           <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
         </div>

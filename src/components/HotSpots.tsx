@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { usePlaceStore } from "@/lib/placesStore";
 import { isPracticeType } from "@/types";
@@ -12,9 +12,9 @@ import { EMPTY_SECTION_FILTER, matchesSection } from "@/lib/sectionFilter";
  * The home page's top photo spots (3, or 4 on tablets). There's no rating or popularity data yet,
  * so "top" means the most complete listings: ones with a photo first, then the
  * most themes, then the longest description. Practice places are left out.
- * The Filters panel (country / city / age / price) narrows them first.
+ * The Filters panel (country / city / age / price) narrows them first; `seeAll` sits on its row.
  */
-export default function HotSpots() {
+export default function HotSpots({ seeAll }: { seeAll?: ReactNode }) {
   const t = useTranslations("Filters");
   const [filter, setFilter] = useState(EMPTY_SECTION_FILTER);
   const all = usePlaceStore().places.filter((p) => !isPracticeType(p.type));
@@ -37,7 +37,9 @@ export default function HotSpots() {
 
   return (
     <>
-      {all.length > 0 && <SectionFilters value={filter} onChange={setFilter} items={all.map(filterable)} />}
+      {all.length > 0
+        ? <SectionFilters value={filter} onChange={setFilter} items={all.map(filterable)} end={seeAll} />
+        : seeAll && <div className="sf-bar"><div className="sf-end">{seeAll}</div></div>}
       {top.length === 0 && all.length > 0 ? (
         <div className="card" style={{ padding: 30, textAlign: "center", color: "var(--text-2)" }}>{t("noMatches")}</div>
       ) : (
