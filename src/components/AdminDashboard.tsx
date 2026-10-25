@@ -33,6 +33,10 @@ import {
   IMPORT_SOURCES,
   type ImportRoute,
   asOneAction,
+  apiIsLocal,
+  getWriteTarget,
+  setWriteTarget,
+  type WriteTarget,
 } from "@/lib/api";
 import AdminHistory from "./AdminHistory";
 import { isPracticeType, FACILITIES, type Event, type Place, type TransitStop, type City, type Country, type Lang, type I18n, type Status, type PlaceType, type Booking, type Price, type Facility } from "@/types";
@@ -88,6 +92,13 @@ export default function AdminDashboard() {
   const { places, addPlace, updatePlace, deletePlace, refreshPlaces } = usePlaceStore();
 
   const [tab, setTab] = useState<Tab>("events");
+  // Local admin: save to this computer only (default) or also to the live site.
+  const [writeTarget, setTarget] = useState<WriteTarget>(() => (typeof window === "undefined" ? "local" : getWriteTarget()));
+  function chooseTarget(target: WriteTarget) {
+    if (target === "both" && !confirm("Save to the live website too? Every change you make here will also change the live site.")) return;
+    setWriteTarget(target);
+    setTarget(target);
+  }
   const [open, setOpen] = useState(false);
   const [drawerKind, setDrawerKind] = useState<Exclude<Tab, "pending">>("events");
   const [eventForm, setEventForm] = useState<EventForm>(EMPTY_EVENT);
@@ -380,6 +391,17 @@ export default function AdminDashboard() {
               : tab === "history"
               ? "Every admin change, newest first. Undo or redo a change, or jump back to any point."
               : `Add, edit and remove ${tab === "events" ? "conventions" : "cosplay-friendly places"}. Saved to the server database.`}</p>
+            {apiIsLocal && (
+              // Only when the admin runs on this computer: choose whether saves also reach the live site.
+              <div className="write-target">
+                <span>Save to:</span>
+                <div className="seg">
+                  <button type="button" className={writeTarget === "local" ? "on" : ""} onClick={() => chooseTarget("local")}>This computer only</button>
+                  <button type="button" className={writeTarget === "both" ? "on" : ""} onClick={() => chooseTarget("both")}>This computer + live site</button>
+                </div>
+                {writeTarget === "both" && <span className="write-target-warn">Changes here also change the live website.</span>}
+              </div>
+            )}
           </div>
           {(tab === "events" || tab === "spots") && <button className="btn" type="button" onClick={addNew}>+ Add {tab === "events" ? "event" : "spot"}</button>}
         </div>

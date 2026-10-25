@@ -24,6 +24,21 @@ const API =
  */
 export const imageRelayUrl = (src: string) => `${API}/v1/img?url=${encodeURIComponent(src)}`;
 
+/**
+ * Local admin only (API on localhost): where saves go. "local" = this computer only,
+ * "both" = this computer + the live site (the server mirrors writes to production, see
+ * server repositories/mirror.ts). Remembered in this browser; default "local".
+ */
+export type WriteTarget = "local" | "both";
+export const apiIsLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(API);
+const WRITE_TARGET_KEY = "adminWriteTarget";
+export function getWriteTarget(): WriteTarget {
+  try { return localStorage.getItem(WRITE_TARGET_KEY) === "both" ? "both" : "local"; } catch { return "local"; }
+}
+export function setWriteTarget(target: WriteTarget): void {
+  try { localStorage.setItem(WRITE_TARGET_KEY, target); } catch { /* storage blocked: stays "local" */ }
+}
+
 /** While set, admin writes are one action in Admin > History (see asOneAction). */
 let historyAction: { group: string; label: string } | null = null;
 
@@ -32,6 +47,7 @@ function adminHeaders(): HeadersInit {
     "Content-Type": "application/json",
     Authorization: `Bearer ${getAdminToken()}`,
     ...(historyAction ? { "X-History-Group": historyAction.group, "X-History-Label": encodeURIComponent(historyAction.label) } : {}),
+    ...(apiIsLocal ? { "X-Write-Target": getWriteTarget() } : {}),
   };
 }
 
