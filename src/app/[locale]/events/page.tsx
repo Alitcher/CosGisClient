@@ -20,7 +20,8 @@ import { priceLabel, isFree } from "@/lib/price";
 import AgeTag from "@/components/AgeTag";
 import { isCommunity } from "@/lib/recurrence";
 import SectionFilters from "@/components/SectionFilters";
-import { EMPTY_SECTION_FILTER, matchesSection } from "@/lib/sectionFilter";
+import { matchesSection } from "@/lib/sectionFilter";
+import { useVisitorCountryFilter } from "@/lib/visitorCountry";
 import TicketIcon from "@/components/TicketIcon";
 
 const WHENS = ["Upcoming", "Past", "All"] as const;
@@ -36,8 +37,9 @@ export default function EventsPage() {
   const tp = useTranslations("Price");
   // Repeating local meetups have their own page (/community).
   const events = useEventStore().events.filter((e) => !isCommunity(e));
-  // Same Filters button and panel (country / city / age / price) as the home page sections.
-  const [filter, setFilter] = useState(EMPTY_SECTION_FILTER);
+  // Same Filters button and panel (country / city / age / price) as the home page sections;
+  // starts on the visitor's country when it has events there (lib/visitorCountry), else all.
+  const [filter, setFilter] = useVisitorCountryFilter(events);
   const [when, setWhen] = useState<(typeof WHENS)[number]>("Upcoming");
   const [q, setQ] = useState("");
 

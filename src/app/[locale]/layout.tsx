@@ -59,7 +59,7 @@ export default async function RootLayout({ children, params }: Props) {
         {/* Hands this language's messages to the client components ("use client"). */}
         <NextIntlClientProvider>
           <ThemeSync />
-          {children}
+          <div className="page">{children}</div>
         </NextIntlClientProvider>
       </body>
     </html>
