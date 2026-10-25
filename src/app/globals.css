@@ -185,10 +185,10 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
   margin-left: 6px; width: 42px; height: 42px; border-radius: 13px;
   border: 2px solid var(--border); background: var(--surface);
   display: grid; place-items: center; font-size: 18px; color: var(--text-0);
-  box-shadow: 0 3px 0 var(--hard); transition: transform .14s ease;
+  transition: transform .14s ease;
 }
 .theme-toggle:hover { transform: translateY(-2px) rotate(8deg); }
-.theme-toggle:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--hard); }
+.theme-toggle:active { transform: translateY(1px); }
 .theme-toggle .sun { display: none; }
 .theme-toggle .moon { display: block; }
 :root[data-theme="light"] .theme-toggle .sun { display: block; }
