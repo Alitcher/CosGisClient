@@ -97,7 +97,7 @@ export default function EventsPage() {
 
         <div className="ev-rows">
           {list.map((e, i) => {
-            const { day, mon, year } = splitDate(e.date);
+            const { day, mon, year } = splitDate(e.date, locale);
             const times = fmtTimes(e.startTime, e.endTime);
             // A "November 2026" divider before the first event of each month.
             const newMonth = i === 0 || list[i - 1]!.date.slice(0, 7) !== e.date.slice(0, 7);
@@ -120,7 +120,7 @@ export default function EventsPage() {
                     <div className="meta">
                       <span><b>{e.venue}</b></span>
                       <span className={`chip ${cityChip(e.city, countryOf(e)).className}`} style={cityChip(e.city, countryOf(e)).style}><CountryFlag country={countryOf(e)} height={15} />{cityLabel(e.city)}, {countryLabel(countryOf(e), locale)}</span>
-                      {e.endDate && e.endDate > e.date && <span>{fmtRange(e.date, e.endDate)}</span>}
+                      {e.endDate && e.endDate > e.date && <span>{fmtRange(e.date, e.endDate, locale)}</span>}
                     </div>
                     <TransitBadges transit={e.transit} />
                     <div className="card-foot r-buttons">

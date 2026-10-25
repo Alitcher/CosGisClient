@@ -284,7 +284,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .ev-date { display: flex; align-items: baseline; gap: 8px; }
 .ev-time { margin-top: 2px; font-size: 13px; font-weight: 700; color: var(--text-1); }
 .ev-date .d { font-size: 30px; font-weight: 900; letter-spacing: -0.03em; }
-.ev-date .m { font-size: 13px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; }
+.ev-date .m { font-size: 20px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; }
 .ev-card h4 { font-size: 22px; line-height: 1.2; } /* the name is the biggest text on the card */
 .ev-meta { font-size: 16px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 
@@ -336,7 +336,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .list-item.active { background: color-mix(in srgb, var(--primary) 10%, transparent); border-color: var(--border-strong); }
 .li-date { text-align: center; min-width: 42px; }
 .li-date .d { font-size: 21px; font-weight: 900; line-height: 1; }
-.li-date .m { font-size: 10.5px; font-weight: 700; color: var(--red); text-transform: uppercase; }
+.li-date .m { font-size: 16px; font-weight: 700; color: var(--red); text-transform: uppercase; }
 .li-body h4 { font-size: 14.5px; }
 .li-body .meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
 
@@ -464,7 +464,7 @@ body:has(.share-dialog) .cal-peek { visibility: hidden; }
 :root[data-theme="dark"] .card.is-today { background: color-mix(in srgb, var(--gold) 14%, var(--surface)); }
 .r-date { text-align: center; border-right: 2px solid var(--border); padding-right: 16px; }
 .r-date .d { font-size: 26px; font-weight: 900; line-height: 1; letter-spacing: -0.02em; }
-.r-date .m { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; }
+.r-date .m { font-size: 17px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.08em; }
 .r-date .y { font-size: 11px; color: var(--text-2); }
 .r-date .t { margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--text-1); white-space: nowrap; }
 .r-with-thumb { display: flex; align-items: center; gap: 14px; min-width: 0; }

@@ -171,13 +171,14 @@ export const places: Place[] = [
   },
 ];
 
-/** Format an ISO date (YYYY-MM-DD) into { day, mon, year }. */
-export function splitDate(iso: string) {
+/**
+ * Format an ISO date (YYYY-MM-DD) into { day, mon, year }. `mon` is the standard short
+ * month in the UI language: "Nov", "marras", "nov", "พ.ย.". Gregorian year, also in Thai.
+ */
+export function splitDate(iso: string, locale = "en") {
   const [y, m, d] = iso.split("-");
-  const mon = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-  ][Number(m) - 1];
+  const mon = new Intl.DateTimeFormat(locale, { month: "short", calendar: "gregory", timeZone: "UTC" })
+    .format(new Date(Date.UTC(Number(y), Number(m) - 1, 15)));
   return { day: d, mon, year: y };
 }
 
@@ -186,10 +187,10 @@ export function splitDate(iso: string) {
  * same month -> "11-13 Jul 2026", same year -> "30 Aug - 1 Sep 2026",
  * else -> "30 Dec 2026 - 2 Jan 2027".
  */
-export function fmtRange(start: string, end?: string): string {
-  const s = splitDate(start);
+export function fmtRange(start: string, end?: string, locale = "en"): string {
+  const s = splitDate(start, locale);
   if (!end || end <= start) return `${s.day} ${s.mon} ${s.year}`;
-  const e = splitDate(end);
+  const e = splitDate(end, locale);
   if (s.year === e.year && s.mon === e.mon) return `${s.day}-${e.day} ${s.mon} ${s.year}`;
   if (s.year === e.year) return `${s.day} ${s.mon} - ${e.day} ${e.mon} ${s.year}`;
   return `${s.day} ${s.mon} ${s.year} - ${e.day} ${e.mon} ${e.year}`;

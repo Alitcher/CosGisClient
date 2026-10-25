@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const e = await getEvent(id);
   if (!e) return {};
   const txt = localText(e, locale);
-  const when = fmtRange(e.date, e.endDate);
+  const when = fmtRange(e.date, e.endDate, locale);
   const description = [`${when} - ${e.venue}, ${cityLabel(e.city)}`, txt.description].filter(Boolean).join(". ").slice(0, 300);
   return {
     title: txt.name,
@@ -71,7 +71,7 @@ export default async function EventPage({ params }: Props) {
             <EventThumb event={e} size={72} />
             <div>
               <h1>{txt.name}</h1>
-              <p className="detail-when">{e.recurrence ? (next ? tr("next", { date: fmtRange(next) }) : fmtRange(e.date)) : fmtRange(e.date, e.endDate)}{times && ` | ${times}`}</p>
+              <p className="detail-when">{e.recurrence ? (next ? tr("next", { date: fmtRange(next, undefined, locale) }) : fmtRange(e.date, undefined, locale)) : fmtRange(e.date, e.endDate, locale)}{times && ` | ${times}`}</p>
               {e.recurrence && <div className="repeat-row"><RepeatTag event={e} />{e.recurrence.note && <span className="muted">{e.recurrence.note}</span>}</div>}
             </div>
           </div>

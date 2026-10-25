@@ -112,7 +112,7 @@ export default function MapView() {
         </div>
         <div className="list">
           {list.map((e) => {
-            const { day, mon } = splitDate(e.date);
+            const { day, mon } = splitDate(e.date, locale);
             const isToday = e.date <= today && eventEndsOn(e) >= today;
             return (
               <div
