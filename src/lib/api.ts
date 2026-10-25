@@ -31,7 +31,7 @@ function adminHeaders(): HeadersInit {
   return {
     "Content-Type": "application/json",
     Authorization: `Bearer ${getAdminToken()}`,
-    ...(historyAction ? { "X-History-Group": historyAction.group, "X-History-Label": historyAction.label } : {}),
+    ...(historyAction ? { "X-History-Group": historyAction.group, "X-History-Label": encodeURIComponent(historyAction.label) } : {}),
   };
 }
 
