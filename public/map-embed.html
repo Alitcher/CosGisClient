@@ -172,11 +172,11 @@
       '</div></div>';
   }
 
-  // attribution as the small (i) button, folded by default; tap it to read the map credits
+  // attribution as the small (i) button, opened by default; tap it to fold the map credits
   var map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/liberty', center: [24.945, 60.2], zoom: 10.5, attributionControl: { compact: true } });
   map.once('load', function () {
     document.querySelectorAll('.maplibregl-ctrl-attrib').forEach(function (el) {
-      el.removeAttribute('open'); el.classList.remove('maplibregl-compact-show');
+      el.setAttribute('open', ''); el.classList.add('maplibregl-compact-show');
     });
   });
   // Keep the zoom buttons but drop the stock compass - we add our own below.
