@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { eventEndsOn } from "@/lib/data";
 import { useEventStore } from "@/lib/eventsStore";
@@ -9,7 +9,8 @@ import { asNext, isCommunity } from "@/lib/recurrence";
 import type { Event } from "@/types";
 import EventCard from "./EventCard";
 import SectionFilters from "./SectionFilters";
-import { EMPTY_SECTION_FILTER, matchesSection } from "@/lib/sectionFilter";
+import { matchesSection } from "@/lib/sectionFilter";
+import { useVisitorCountryFilter } from "@/lib/visitorCountry";
 
 /**
  * Event cards, soonest first. kind "convention": cons and one-off events (home page,
@@ -19,7 +20,6 @@ import { EMPTY_SECTION_FILTER, matchesSection } from "@/lib/sectionFilter";
  * with `seeAll` at the right end of that row.
  */
 export default function UpcomingEvents({ kind = "convention", limit = 4, query = "", filters = false, seeAll }: { kind?: "convention" | "community"; limit?: number; query?: string; filters?: boolean; seeAll?: ReactNode }) {
-  const [filter, setFilter] = useState(EMPTY_SECTION_FILTER);
   const tf = useTranslations("Filters");
   const { events } = useEventStore();
   const tCom = useTranslations("Community");
@@ -32,6 +32,8 @@ export default function UpcomingEvents({ kind = "convention", limit = 4, query =
     .filter((e) => isCommunity(e) === (kind === "community"))
     .map((e) => asNext(e, todayISO))
     .filter((e): e is Event => !!e && eventEndsOn(e) >= todayISO);
+  // Starts on the visitor's country when it has events there (lib/visitorCountry), else all.
+  const [filter, setFilter] = useVisitorCountryFilter(all);
   const sorted = all
     .filter((e) => !q || e.name.toLowerCase().includes(q) || e.venue.toLowerCase().includes(q))
     .filter((e) => matchesSection(filterable(e), filter))

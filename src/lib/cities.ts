@@ -10,6 +10,13 @@ export type { Country };
  */
 export const COUNTRIES: Country[] = ["FI", "SE", "NO", "DK", "IS", "EE", "LV", "LT", "AX", "FO", "GL"];
 
+/**
+ * Cookie with the visitor's country (e.g. "FI"), set by src/proxy.ts from the country
+ * header Vercel / Cloudflare add to each request (from the IP address). Only set for
+ * a country in COUNTRIES; no cookie = show all countries (lib/visitorCountry).
+ */
+export const VISITOR_COUNTRY_COOKIE = "visitor-country";
+
 const isCountry = (c: string | undefined): c is Country => !!c && (COUNTRIES as string[]).includes(c);
 
 /** An item's country. Rows from before multi-country support have none: they're Finnish. */
