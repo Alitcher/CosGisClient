@@ -74,7 +74,7 @@ export default async function DonatePage({ params }: { params: Promise<{ locale:
           <h2>{t("whyTitle")}</h2>
           <p>{t("whyText")}</p>
           <div className="why-stats">
-            <div className="s"><div className="n">€0</div><div className="l">{t("statAds")}</div></div>
+            <div className="s"><div className="n">€0</div><div className="l">{t("totalDonate")}</div></div>
             <div className="s"><div className="n">100%</div><div className="l">{t("statToProject")}</div></div>
             <div className="s"><div className="n">∞</div><div className="l">{t("statGratitude")}</div></div>
           </div>

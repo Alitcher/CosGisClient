@@ -591,10 +591,46 @@ body:has(.share-dialog) .cal-peek { visibility: hidden; }
 /* ===========================================================
    ABOUT
    =========================================================== */
-.about-hero { padding-top: 56px; padding-bottom: 30px; max-width: 760px; }
+.about-hero { padding-top: 56px; padding-bottom: 30px; display: flex; gap: 36px; align-items: flex-start; }
+.about-logo { flex: none; width: 160px; height: 160px; display: block; border-radius: 24px; }
+.about-hero-text { flex: 1; min-width: 0; }
 .about-hero h1 { font-size: clamp(30px, 5vw, 48px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
 .about-hero h1 .grad { background: linear-gradient(120deg, var(--primary), var(--green)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .about-hero p { margin-top: 18px; font-size: 17px; color: var(--text-1); }
+/* About page story. Every About section and its text use the full content width (.shell). */
+.story { padding-top: 40px; padding-bottom: 40px; }
+.story::before { content: ""; display: block; height: 1px; background: var(--border); margin-bottom: 40px; }
+.story p { margin-top: 14px; font-size: 16px; color: var(--text-1); line-height: 1.7; }
+.story-text > p:first-child { margin-top: 0; } /* first paragraph lines up with the top of the photo */
+/* Story text on the left, one photo on the right (public/about/story.jpg). */
+.story-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; align-items: start; margin-top: 20px; }
+.story-photo { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); border: 2px solid var(--border); }
+.story-facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 24px; margin-top: 24px; }
+.story-facts dt { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-2); }
+.story-facts dd { font-weight: 700; color: var(--text-0); overflow-wrap: anywhere; }
+.story-time { list-style: none; margin-top: 18px; display: flex; flex-direction: column; }
+.story-time li { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--border); color: var(--text-1); }
+.story-time b { font-family: var(--font-display); color: var(--text-0); }
+.story .story-tagline { margin-top: 24px; font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--text-0); }
+/* Team: same 2-column grid as the credits; round photo (public/about/team1.jpg, team2.jpg) next to the name. */
+.team-grid { grid-template-columns: repeat(2, 1fr); margin-top: 24px; }
+.team-card { padding: 24px; display: flex; gap: 18px; align-items: center; }
+.team-photo { flex: none; width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); }
+.team-card h3 { font-size: 18px; }
+.story .team-card p { margin-top: 4px; font-size: 14px; color: var(--text-2); }
+.story-terms { margin-top: 14px; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; color: var(--text-1); }
+/* Empty photo spot: dashed box with the file name to add. */
+.photo-slot { display: grid; place-items: center; padding: 8px; text-align: center; font-size: 12px; color: var(--text-2); border-style: dashed; background: var(--surface-2); overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .story-layout { grid-template-columns: 1fr; }
+  .story-photo { max-width: 360px; }
+}
+@media (max-width: 640px) {
+  .story { padding-top: 28px; padding-bottom: 28px; }
+  .story::before { margin-bottom: 28px; }
+  .story-facts, .team-grid { grid-template-columns: 1fr; }
+  .story-time li { grid-template-columns: 1fr; gap: 2px; }
+}
 /* About page credits: one card per thing made by someone else (icons, data). */
 .credits { padding-top: 40px; padding-bottom: 40px; }
 .credits-lead { color: var(--text-2); margin-top: 10px; font-size: 15px; }
@@ -604,7 +640,7 @@ body:has(.share-dialog) .cal-peek { visibility: hidden; }
 .credit p { font-size: 13.5px; color: var(--text-2); }
 .credit .credit-by { margin-top: 10px; color: var(--text-1); font-weight: 600; }
 .credit .credit-license { margin-top: 4px; }
-.credit a { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
+.credit a, .story a { color: var(--primary); text-decoration: underline; text-underline-offset: 2px; }
 /* No top padding: the divider line (::before) is the top edge, so the glow starts right on it. */
 .cta-band { text-align: center; padding-top: 0; padding-bottom: 50px; margin-top: 70px; background: radial-gradient(600px 300px at 50% 0%, rgba(0,114,206,0.16), transparent 70%); }
 .cta-band h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
@@ -919,7 +955,8 @@ tbody tr:hover { background: var(--surface-2); }
   .mini-cal { width: 230px; padding: 12px; }
 
   /* About / Donate */
-  .about-hero { padding-top: 32px; }
+  .about-hero { padding-top: 32px; flex-direction: column; gap: 18px; }
+  .about-logo { width: 96px; height: 96px; border-radius: 16px; }
   .about-hero p, .d-hero p { font-size: 16px; }
   .cta-band { padding-top: 0; padding-bottom: 36px; margin-top: 58px; }
   .cta-band h2 { font-size: 24px; }
