@@ -53,8 +53,8 @@
 :root {
   --gold: #fecc02;    /* Swedish yellow */
   --carmine: #9e3039; /* Latvian carmine */
-  --radius: 20px;
-  --radius-sm: 13px;
+  --radius: 4px;
+  --radius-sm: 3px;
   --font: 'Inter', 'Noto Sans Thai', 'Segoe UI', system-ui, sans-serif;
   --font-display: 'Manrope', 'Inter', 'Noto Sans Thai', sans-serif; /* sharp geometric titles */
 }
@@ -196,13 +196,13 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 
 /* ---------- Buttons ---------- */
 .btn {
-  display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px; border: 0;
+  display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: var(--radius); border: 0;
   font-family: var(--font-display); font-weight: 600; font-size: 15px; color: #fff;
   background: var(--btn-grad);
-  box-shadow: 0 4px 0 var(--hard); transition: transform .14s ease, box-shadow .14s ease;
+  transition: transform .14s ease;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--hard); }
-.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--hard); }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(1px); }
 .btn.ghost { background: var(--surface); color: var(--text-0); border: 2px solid var(--border-strong); }
 
 /* ---------- Cards ---------- */
@@ -251,7 +251,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 
 /* hero map box (the real OpenStreetMap, draggable) */
 .hero-visual {
-  position: relative; height: 420px; border-radius: 22px; overflow: hidden;
+  position: relative; height: 420px; border-radius: var(--radius); overflow: hidden;
   border: 2px solid var(--border); background: var(--surface);
 }
 .hero-map { position: absolute; inset: 0; }
@@ -269,6 +269,7 @@ h1, h2, h3, h4, .brand-text, .section-title { font-family: var(--font-display); 
 .upcoming::before, .credits::before, .cta-band::before { content: ""; display: block; height: 1px; background: var(--border); margin-bottom: 40px; }
 .hot-spots { padding-bottom: 50px; } /* last section before the footer */
 .up-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
+.up-actions { margin-top: 22px; flex-wrap: wrap; }
 .up-grid { grid-template-columns: repeat(3, 1fr); }
 /* Home page grids load 4 items; the 4th only shows on tablets, where the grid is 2x2. */
 .home-4 > :nth-child(4) { display: none; }
@@ -712,6 +713,9 @@ tbody tr:hover { background: var(--surface-2); }
 .sd-save p { color: #fff; font-weight: 700; text-align: center; max-width: 420px; }
 .sd-save img { max-width: 100%; max-height: 72vh; border-radius: 10px; -webkit-touch-callout: default; user-select: auto; }
 .sd-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+/* Local admin: "Save to" switch (this computer only / + live site) */
+.write-target { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--text-1); }
+.write-target-warn { color: var(--red); font-weight: 700; }
 .import-select { padding: 10px 12px; font-size: 14px; } /* admin Pending tab: import source */
 /* Home page section filters (SectionFilters): Filters button + chips, slide-in panel. */
 .sf-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: -6px 0 18px; }
@@ -846,14 +850,14 @@ tbody tr:hover { background: var(--surface-2); }
   .hero h1 { font-size: 34px; overflow-wrap: break-word; }
   .hero p.lead { font-size: 16px; }
   .hero-stats { gap: 24px; margin-top: 18px; }
-  .hero-visual { height: 300px; border-radius: 18px; }
+  .hero-visual { height: 300px; }
   .upcoming { padding-top: 28px; }
   .upcoming::before, .credits::before, .cta-band::before { margin-bottom: 28px; }
   .up-grid, .spots-grid, .tiers-grid { grid-template-columns: 1fr; }
   .up-head { margin-bottom: 16px; }
   /* Section buttons: full row, shared evenly */
   .up-head > .flex, .ev-top > .flex { width: 100%; flex-wrap: wrap; }
-  .up-head > .flex > .btn, .ev-top > .flex > .btn { flex: 1 1 auto; justify-content: center; }
+  .up-actions > .btn, .up-head > .flex > .btn, .ev-top > .flex > .btn { flex: 1 1 auto; justify-content: center; }
   .ev-card { padding: 18px; }
   .ev-card:hover, .spot:hover, .row:hover, .tier:hover { transform: none; }
 

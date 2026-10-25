@@ -69,12 +69,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div>
             <h2 className="section-title">{t("upcomingTitle")}</h2>
           </div>
-          <div className="flex gap-sm">
-            <SubmitEventDialog className="btn" label={tc("submitEvent")} />
-            <Link className="btn ghost" href="/events">{t("seeAllEvents")}</Link>
-          </div>
         </div>
         <UpcomingEvents filters />
+        <div className="flex gap-sm up-actions">
+          <SubmitEventDialog className="btn" label={tc("submitEvent")} />
+          <Link className="btn ghost" href="/events">{t("seeAllEvents")}</Link>
+        </div>
       </section>
 
       {/* Repeating local meetups (cosplay cafes, workshops, library clubs), kept apart from the cons. */}
@@ -83,12 +83,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div>
             <h2 className="section-title">{t("communityTitle")}</h2>
           </div>
-          <div className="flex gap-sm">
-            <SubmitEventDialog className="btn" label={tc("submitMeetup")} kind="community" />
-            <Link className="btn ghost" href="/community">{t("seeAllCommunity")}</Link>
-          </div>
         </div>
         <UpcomingEvents kind="community" filters />
+        <div className="flex gap-sm up-actions">
+          <SubmitEventDialog className="btn" label={tc("submitMeetup")} kind="community" />
+          <Link className="btn ghost" href="/community">{t("seeAllCommunity")}</Link>
+        </div>
       </section>
 
       <section className="upcoming hot-spots shell">
@@ -96,12 +96,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <div>
             <h2 className="section-title">{t("hotSpotsTitle")}</h2>
           </div>
-          <div className="flex gap-sm">
-            <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
-            <Link className="btn ghost" href="/spots">{t("seeAllSpots")}</Link>
-          </div>
         </div>
         <HotSpots />
+        <div className="flex gap-sm up-actions">
+          <SubmitSpotDialog className="btn" label={tc("submitSpot")} />
+          <Link className="btn ghost" href="/spots">{t("seeAllSpots")}</Link>
+        </div>
       </section>
 
       <Footer />
